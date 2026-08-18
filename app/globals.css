@@ -1,0 +1,68 @@
+@import "tailwindcss";
+
+@layer utilities {
+  .font-luxury {
+    font-family: 'Bodoni Moda', 'Cinzel', 'Didot', 'Bodoni MT', serif;
+  }
+  .font-cormorant {
+    font-family: 'Cormorant Garamond', 'Georgia', serif;
+  }
+  .font-cinzel {
+    font-family: 'Cinzel', serif;
+  }
+  .font-syne {
+    font-family: 'Syne', sans-serif;
+  }
+  .font-montserrat {
+    font-family: 'Montserrat', sans-serif;
+  }
+  .font-unbounded {
+    font-family: 'Unbounded', sans-serif;
+  }
+  .font-climate {
+    font-family: 'Climate Crisis', 'Arial Black', display, sans-serif;
+  }
+  .font-serif-italic {
+    font-family: 'Cormorant Garamond', 'Playfair Display', Georgia, serif;
+    font-style: italic;
+  }
+  .font-sans {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+  }
+
+  .perspective-1000 { perspective: 1000px; }
+  .perspective-2000 { perspective: 2000px; }
+  .transform-style-3d { transform-style: preserve-3d; }
+  .backface-hidden {
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+  }
+  .rotate-y-180 { transform: rotateY(180deg); }
+}
+
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: #F4F1EE; }
+::-webkit-scrollbar-thumb { background: #D6CFC7; border-radius: 9999px; }
+::-webkit-scrollbar-thumb:hover { background: #5A5A40; }
+
+@keyframes brandPulse {
+  0%, 100% { text-shadow: 0 0 20px rgba(90,90,64,0.15); letter-spacing: -0.04em; }
+  50% { text-shadow: 0 0 35px rgba(45,41,38,0.25); letter-spacing: -0.02em; }
+}
+.animate-brand-pulse { animation: brandPulse 6s ease-in-out infinite; }
+
+@keyframes floatSlow {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-4px); }
+}
+.animate-float-slow { animation: floatSlow 4s ease-in-out infinite; }
+
+@keyframes shimmerEarth {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+.bg-earth-shimmer {
+  background: linear-gradient(90deg, #F4F1EE 0%, #E5E0DA 50%, #F4F1EE 100%);
+  background-size: 200% 100%;
+  animation: shimmerEarth 2s infinite;
+}
