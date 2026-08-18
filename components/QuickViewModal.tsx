@@ -11,7 +11,7 @@ interface QuickViewModalProps {
   onClose: () => void;
 }
 
-const TIKTOK_SHOP_URL = "https://vt.tiktok.com/ZSPNJxSdD/?";
+const TIKTOK_SHOP_URL = "https://vt.tiktok.com/ZS9kHEpuhXLUR-ruhtD/";
 
 export const QuickViewModal: React.FC<QuickViewModalProps> = ({ product, onClose }) => {
   const [activeSide, setActiveSide] = useState<'front' | 'back'>('front');
