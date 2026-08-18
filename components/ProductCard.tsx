@@ -60,7 +60,6 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, forceFlipped 
         <div className="relative w-full aspect-[3/4] bg-[#EFECE6] overflow-hidden cursor-pointer rounded-t-xl" onClick={handleImageClick}>
           <div className="absolute top-2 sm:top-3 left-2 sm:left-3 right-2 sm:right-3 z-20 flex items-center justify-between pointer-events-none">
             <div>{product.isNew ? <span className="px-2 py-0.5 bg-[#1F1D1B] text-[#F7F5F0] font-sans text-[7px] sm:text-[8px] font-bold tracking-widest uppercase rounded-md shadow-xs">NEW</span> : product.isBestseller ? <span className="px-2 py-0.5 bg-[#5A5A40] text-[#F7F5F0] font-sans text-[7px] sm:text-[8px] font-bold tracking-widest uppercase rounded-md shadow-xs">BESTSELLER</span> : null}</div>
-            <span className="px-2 py-0.5 bg-[#F7F5F0]/95 text-[#1F1D1B] font-mono text-[7px] sm:text-[8px] font-bold tracking-wider border border-[#E2DDD5] rounded-md shadow-xs">{product.gsm} GSM</span>
           </div>
           <div className="relative w-full h-full overflow-hidden">
             <img src={product.frontImage} alt={`${product.name} Front`} referrerPolicy="no-referrer" onLoad={() => setImageLoadedFront(true)} className={`absolute inset-0 w-full h-full object-cover object-center transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] ${showBack ? 'opacity-0 scale-105' : imageLoadedFront ? 'opacity-100 group-hover:scale-105' : 'opacity-0'}`} />
