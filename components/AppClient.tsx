@@ -19,7 +19,7 @@ import { useAdmin } from '@/context/AdminContext';
 import { X } from 'lucide-react';
 
 export default function AppClient() {
-  const { isAdmin, products: adminProducts, categories } = useAdmin();
+  const { isAdmin, products: adminProducts, categories, loading, error } = useAdmin();
   const router = useRouter();
   const [adminLoginOpen, setAdminLoginOpen] = useState(false);
   const [activeCategory, setActiveCategory] = useState<Category | ''>('');
@@ -33,7 +33,6 @@ export default function AppClient() {
   const [quickViewProduct, setQuickViewProduct] = useState<Product | null>(null);
   const [customBannerUrl, setCustomBannerUrl] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState<number>(1);
-  const [isFiltering, setIsFiltering] = useState(false);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const ITEMS_PER_PAGE = 6;
 
@@ -56,12 +55,6 @@ export default function AppClient() {
   useEffect(() => {
     try { localStorage.setItem('raw_view_mode_preference', viewMode); } catch {}
   }, [viewMode]);
-
-  useEffect(() => {
-    setIsFiltering(true);
-    const timer = setTimeout(() => setIsFiltering(false), 300);
-    return () => clearTimeout(timer);
-  }, [activeCategory, searchQuery, sortBy, currentPage]);
 
   useEffect(() => {
     if (isAdmin) { setAdminLoginOpen(false); router.push('/admin/dashboard'); }
@@ -142,7 +135,7 @@ export default function AppClient() {
 
   return (
     <div className="min-h-screen bg-[#F7F5F0] text-[#1F1D1B] font-sans flex flex-col relative selection:bg-[#1F1D1B] selection:text-[#F7F5F0]">
-      <TopProgressBar isLoading={isFiltering} />
+      <TopProgressBar isLoading={loading} />
 
       {toastMessage && (
         <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 px-4 py-2.5 bg-[#1F1D1B] text-[#F7F5F0] text-xs font-sans font-semibold tracking-wider shadow-2xl rounded-full border border-[#C2B280]/40 flex items-center gap-2">
@@ -186,15 +179,18 @@ export default function AppClient() {
       />
 
       <main id="product-grid-section" className="flex-1 max-w-7xl w-full mx-auto px-2 sm:px-8 py-2">
-        <AnimatePresence mode="wait">
-          {isFiltering ? (
-            <motion.div key="skeleton" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.2 }}
-              className={`grid gap-3 sm:gap-5 ${viewMode === 'large' ? 'grid-cols-1 md:grid-cols-2 max-w-5xl mx-auto' : 'grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5'}`}>
-              {Array.from({ length: Math.min(ITEMS_PER_PAGE, filteredProducts.length || ITEMS_PER_PAGE) }).map((_, i) => (
-                <ProductSkeletonCard key={i} viewMode={viewMode === 'large' ? 'large' : 'grid'} />
-              ))}
-            </motion.div>
-          ) : filteredProducts.length === 0 ? (
+        {loading ? (
+          <div className={`grid gap-3 sm:gap-5 ${viewMode === 'large' ? 'grid-cols-1 md:grid-cols-2 max-w-5xl mx-auto' : 'grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5'}`}>
+            {Array.from({ length: 6 }).map((_, i) => <ProductSkeletonCard key={i} viewMode={viewMode === 'large' ? 'large' : 'grid'} />)}
+          </div>
+        ) : error ? (
+          <div className="mx-auto my-16 max-w-lg rounded-xl border border-[#e2c8bd] bg-[#fff8f5] p-8 text-center">
+            <p className="font-sans text-sm font-semibold text-[#8d4937]">The catalog could not be loaded.</p>
+            <p className="mt-2 font-sans text-xs leading-5 text-[#936e62]">Please verify the Supabase environment variables and database policies, then refresh this page.</p>
+          </div>
+        ) : (
+          <AnimatePresence mode="wait">
+            {filteredProducts.length === 0 ? (
             <motion.div key="empty" initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ duration: 0.3 }}
               className="py-20 text-center bg-[#E5E0DA] border border-[#D6CFC7] max-w-xl mx-auto my-12 p-8">
               <p className="font-cinzel text-lg font-bold text-[#2D2926] mb-2 uppercase tracking-wide">No matching pieces found</p>
@@ -204,7 +200,7 @@ export default function AppClient() {
                 Reset Filters
               </button>
             </motion.div>
-          ) : (
+            ) : (
             <motion.div key={`grid-${activeCategory}-${searchQuery}-${currentPage}-${viewMode}`} layout
               className={`grid gap-3 sm:gap-5 ${viewMode === 'large' ? 'grid-cols-1 md:grid-cols-2 max-w-5xl mx-auto' : 'grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5'}`}>
               <AnimatePresence mode="popLayout">
@@ -218,8 +214,9 @@ export default function AppClient() {
                 ))}
               </AnimatePresence>
             </motion.div>
-          )}
-        </AnimatePresence>
+            )}
+          </AnimatePresence>
+        )}
       </main>
 
       <Footer currentPage={currentPage} totalPages={totalPages} onPageChange={handlePageChange} />
