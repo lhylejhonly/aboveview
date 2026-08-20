@@ -30,7 +30,10 @@ export function isValidAdminSession(value?: string) {
 
 export function isValidAdminPassword(password: string) {
   const expected = process.env.ADMIN_PASSWORD;
-  if (!expected || expected.length < 12) throw new Error('ADMIN_PASSWORD must be configured and at least 12 characters.');
+  // Validate that a password is configured, then compare it exactly. The
+  // previous minimum-length check rejected existing local passwords before
+  // they could ever be compared and surfaced as a misleading login failure.
+  if (!expected) throw new Error('ADMIN_PASSWORD must be configured.');
   const provided = Buffer.from(password);
   const configured = Buffer.from(expected);
   return provided.length === configured.length && crypto.timingSafeEqual(provided, configured);
