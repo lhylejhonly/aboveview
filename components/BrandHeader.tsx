@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { BRAND_NAME } from '@/data/products';
 import { motion } from 'motion/react';
 import { RotateCcw } from 'lucide-react';
+import { GlitterWrap } from '@/components/GlitterWrap';
 
 interface BrandHeaderProps {
   allFlipped?: boolean;
@@ -31,6 +32,7 @@ export const BrandHeader: React.FC<BrandHeaderProps> = ({ onLogoTap }) => {
         onTouchEnd={onLogoTap}
         className="w-full pt-10 pb-9 px-4 sm:px-8 border-b border-[#E2DDD5] bg-gradient-to-b from-[#FAF9F5] via-[#F7F5F0] to-[#EFECE6] relative overflow-hidden flex flex-col items-center justify-center min-h-[260px] sm:min-h-[300px]"
       >
+        <GlitterWrap />
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] sm:w-[800px] h-[240px] bg-radial from-[#C2B280]/12 via-[#E2DDD5]/20 to-transparent rounded-full blur-3xl pointer-events-none" />
         <div className="absolute inset-0 bg-[radial-gradient(#1F1D1B_0.5px,transparent_0.5px)] [background-size:24px_24px] opacity-[0.025] pointer-events-none" />
 
