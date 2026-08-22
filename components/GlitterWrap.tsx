@@ -39,7 +39,7 @@ export function GlitterWrap({ colors = ['#FFFFFF', '#D4B483', '#FFE500'] }: { co
     const palette = colors.map(parseColor);
     const stars: Star[] = [];
     const particleCount = 280;
-    const speed = 0.020 * Math.random() + 0.005 ;
+    const speed = 0.020;
     const focalDepth = 0.13;
     let width = 1;
     let height = 1;
@@ -134,6 +134,16 @@ export function GlitterWrap({ colors = ['#FFFFFF', '#D4B483', '#FFE500'] }: { co
           context.lineTo(x, y);
           context.stroke();
         }
+
+        // A longer, subtle ray gives the field the radial burst treatment from
+        // the reference design while the short trail keeps each particle crisp.
+        context.globalAlpha = alpha * 0.13;
+        context.strokeStyle = colorString;
+        context.lineWidth = Math.max(0.35, radius * 0.18);
+        context.beginPath();
+        context.moveTo(centerX, centerY);
+        context.lineTo(x, y);
+        context.stroke();
 
         context.globalAlpha = alpha;
         context.fillStyle = colorString;
