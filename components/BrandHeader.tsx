@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useState } from 'react';
-import Link from 'next/link';
 import { motion } from 'motion/react';
 import { RotateCcw } from 'lucide-react';
 import { GlitterWrap } from '@/components/GlitterWrap';
@@ -86,19 +85,6 @@ export const BrandHeader: React.FC<BrandHeaderProps> = ({ onLogoTap }) => {
         >
           Premium streetwear crafted for those who move with purpose.
         </motion.p>
-
-        <motion.div
-          initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.8 }}
-          className="mt-5 flex flex-wrap items-center justify-center gap-3"
-        >
-          <Link href="#product-grid-section" className="inline-flex items-center justify-center rounded-full bg-[#D4B483] px-9 py-3.5 text-[11px] font-black uppercase tracking-[0.2em] text-[#111111] transition-all duration-300 hover:scale-105 hover:bg-white">
-            Shop Now
-          </Link>
-          <Link href="#product-grid-section" className="inline-flex items-center justify-center rounded-full border border-white/25 px-9 py-3.5 text-[11px] font-black uppercase tracking-[0.2em] text-white/75 transition-all duration-300 hover:border-white/60 hover:text-white">
-            View Collection
-          </Link>
-        </motion.div>
 
         <motion.div
           initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.6, delay: 1.2 }}
