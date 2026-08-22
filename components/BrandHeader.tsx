@@ -1,6 +1,7 @@
 'use client';
+
 import React, { useState } from 'react';
-import { BRAND_NAME } from '@/data/products';
+import Link from 'next/link';
 import { motion } from 'motion/react';
 import { RotateCcw } from 'lucide-react';
 import { GlitterWrap } from '@/components/GlitterWrap';
@@ -17,129 +18,106 @@ interface BrandHeaderProps {
 }
 
 export const BrandHeader: React.FC<BrandHeaderProps> = ({ onLogoTap }) => {
-  const lettersAbove = ['A', 'B', 'O', 'V', 'E'];
-  const lettersApprl = ['A', 'P', 'P', 'R', 'L'];
   const [animationKey, setAnimationKey] = useState(0);
 
-  const handleReplay = () => {
-    setAnimationKey((prev) => prev + 1);
-  };
-
   return (
-    <div className="w-full relative overflow-hidden bg-[#F7F5F0]">
-      <header
-        key={animationKey}
-        onTouchEnd={onLogoTap}
-        className="w-full pt-10 pb-9 px-4 sm:px-8 border-b border-[#E2DDD5] bg-gradient-to-b from-[#FAF9F5] via-[#F7F5F0] to-[#EFECE6] relative overflow-hidden flex flex-col items-center justify-center min-h-[260px] sm:min-h-[300px]"
+    <section className="relative min-h-[calc(100vh-1px)] overflow-hidden bg-[#0A0A0A] text-white">
+      <motion.div
+        key={`background-${animationKey}`}
+        initial={{ scale: 1.14, opacity: 0 }}
+        animate={{ scale: 1.08, opacity: 1 }}
+        transition={{ duration: 1.4, ease: [0.22, 1, 0.36, 1] }}
+        className="absolute inset-0"
       >
-        <GlitterWrap />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] sm:w-[800px] h-[240px] bg-radial from-[#C2B280]/12 via-[#E2DDD5]/20 to-transparent rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute inset-0 bg-[radial-gradient(#1F1D1B_0.5px,transparent_0.5px)] [background-size:24px_24px] opacity-[0.025] pointer-events-none" />
+        <img
+          src="/images/apprl_jacket_front_1786468859192.jpg"
+          alt="Above Apprl collection"
+          fetchPriority="high"
+          className="h-full w-full object-cover object-center"
+        />
+        <div className="absolute inset-0 bg-[#0A0A0A]/55 md:bg-[#0A0A0A]/65" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0A] via-[#0A0A0A]/30 to-[#0A0A0A]/20" />
+      </motion.div>
 
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_60%_50%_at_50%_55%,rgba(212,180,131,0.14)_0%,transparent_70%)]" />
+      <GlitterWrap colors={['#D4B483', '#FFFFFF', '#8E7551']} />
+
+      <div className="relative z-10 flex min-h-[calc(100vh-1px)] flex-col items-center justify-center px-4 py-20 text-center">
         <motion.div
-          initial={{ scale: 1 }}
-          animate={{ scale: 1.022 }}
-          transition={{ duration: 7.5, ease: [0.25, 1, 0.5, 1] }}
-          className="max-w-7xl mx-auto flex flex-col items-center text-center relative z-10 w-full transform-gpu"
+          key={`tag-${animationKey}`}
+          initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="mb-8 inline-flex items-center gap-3 sm:mb-10"
         >
-          <motion.div
-            initial={{ opacity: 0, y: 10, letterSpacing: '0.22em' }}
-            animate={{ opacity: 1, y: 0, letterSpacing: '0.38em' }}
-            transition={{ duration: 1.2, delay: 0.4, ease: [0.16, 1, 0.3, 1] }}
-            className="mb-3"
-          >
-            <span className="text-[10px] sm:text-xs font-sans font-semibold text-[#8E8B82] uppercase tracking-[0.38em]">
-              KEEP RISING
-            </span>
-          </motion.div>
-
-          <div className="relative my-2 flex flex-col items-center justify-center">
-            <motion.div
-              initial={{ clipPath: 'inset(0% 100% 0% 0%)', opacity: 0, y: 8 }}
-              animate={{ clipPath: 'inset(0% 0% 0% 0%)', opacity: 1, y: 0 }}
-              transition={{ duration: 1.6, delay: 2.0, ease: [0.22, 1, 0.36, 1] }}
-              className="relative cursor-pointer select-none group transform-gpu flex flex-col items-center justify-center gap-1 sm:gap-2"
-            >
-              <h1 className="font-climate text-4xl sm:text-5xl md:text-6xl lg:text-7xl text-[#1F1D1B] tracking-tight uppercase leading-none drop-shadow-xs flex items-center justify-center gap-[0.035em]">
-                {lettersAbove.map((char, index) => (
-                  <motion.span
-                    key={`above-${index}`}
-                    whileHover={{ scale: 1.12, y: -4, color: '#B85D3D', transition: { duration: 0.18, ease: 'easeOut' } }}
-                    whileTap={{ scale: 0.95 }}
-                    className="inline-block transition-colors duration-150 transform-gpu will-change-transform"
-                  >
-                    {char}
-                  </motion.span>
-                ))}
-              </h1>
-
-              <h2 className="font-climate text-3xl sm:text-4xl md:text-5xl lg:text-6xl text-[#1F1D1B] tracking-tight uppercase leading-none drop-shadow-xs flex items-center justify-center gap-[0.035em]">
-                {lettersApprl.map((char, index) => (
-                  <motion.span
-                    key={`apprl-${index}`}
-                    whileHover={{ scale: 1.12, y: -4, color: '#B85D3D', transition: { duration: 0.18, ease: 'easeOut' } }}
-                    whileTap={{ scale: 0.95 }}
-                    className="inline-block transition-colors duration-150 transform-gpu will-change-transform"
-                  >
-                    {char}
-                  </motion.span>
-                ))}
-              </h2>
-
-              <motion.div
-                initial={{ x: '-120%', opacity: 0 }}
-                animate={{ x: '220%', opacity: [0, 0.85, 0.85, 0] }}
-                transition={{ duration: 2.0, delay: 3.8, ease: [0.25, 0.1, 0.25, 1] }}
-                className="absolute inset-y-0 w-1/3 pointer-events-none z-20"
-                style={{
-                  background: 'linear-gradient(90deg, transparent 0%, rgba(255,255,255,0) 20%, rgba(255,255,255,0.7) 50%, rgba(194,178,128,0.3) 70%, transparent 100%)',
-                  mixBlendMode: 'overlay',
-                }}
-              />
-            </motion.div>
-          </div>
-
-          <div className="flex items-center justify-center gap-3 my-3 relative">
-            <motion.div
-              initial={{ scaleX: 0, opacity: 0 }} animate={{ scaleX: 1, opacity: 1 }}
-              transition={{ duration: 1.1, delay: 1.2, ease: [0.16, 1, 0.3, 1] }}
-              style={{ transformOrigin: 'right center' }}
-              className="w-12 sm:w-20 md:w-24 h-[1px] bg-gradient-to-r from-transparent via-[#C2B280] to-[#C2B280]"
-            />
-            <motion.div
-              initial={{ opacity: 0, scale: 0.5, rotate: -45 }} animate={{ opacity: 1, scale: 1, rotate: 45 }}
-              transition={{ duration: 1.0, delay: 1.5, ease: [0.16, 1, 0.3, 1] }}
-              className="w-2 h-2 bg-[#C2B280] shadow-xs shrink-0"
-            />
-            <motion.div
-              initial={{ scaleX: 0, opacity: 0 }} animate={{ scaleX: 1, opacity: 1 }}
-              transition={{ duration: 1.1, delay: 1.2, ease: [0.16, 1, 0.3, 1] }}
-              style={{ transformOrigin: 'left center' }}
-              className="w-12 sm:w-20 md:w-24 h-[1px] bg-gradient-to-r from-[#C2B280] via-[#C2B280] to-transparent"
-            />
-          </div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1.1, delay: 4.8, ease: [0.16, 1, 0.3, 1] }}
-            className="mt-0.5"
-          >
-            <p className="font-cormorant text-xs sm:text-sm text-[#5A5A40] tracking-[0.38em] uppercase font-semibold italic">
-              By: Lyle
-            </p>
-          </motion.div>
+          <span className="h-px w-8 bg-[#D4B483]/60" />
+          <span className="text-[10px] font-black uppercase tracking-[0.35em] text-[#D4B483]/80">New Season · SS25</span>
+          <span className="h-px w-8 bg-[#D4B483]/60" />
         </motion.div>
 
-        <button
-          onClick={handleReplay}
-          className="absolute bottom-2.5 right-3 sm:right-6 opacity-40 hover:opacity-100 transition-opacity flex items-center gap-1 text-[9px] font-sans tracking-widest text-[#8E8B82] uppercase px-2 py-1 rounded-md hover:bg-[#EFECE6] border border-transparent hover:border-[#E2DDD5]"
-          title="Replay Title Reveal"
-          id="replay-title-reveal-btn"
+        <motion.h1
+          key={`title-${animationKey}`}
+          initial={{ opacity: 0, scale: 0.96 }} animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1], delay: 0.15 }}
+          onClick={onLogoTap}
+          className="font-climate relative mb-4 w-full select-none text-[clamp(2.5rem,7vw,7rem)] uppercase leading-none tracking-tight sm:mb-6 lg:mb-8"
         >
-          <RotateCcw className="w-2.5 h-2.5" />
-          <span className="hidden sm:inline">REPLAY INTRO</span>
-        </button>
-      </header>
-    </div>
+          ABOVE APPRL
+        </motion.h1>
+
+        <motion.p
+          key={`byline-${animationKey}`}
+          initial={{ opacity: 0 }} animate={{ opacity: 1 }}
+          transition={{ duration: 0.6, delay: 0.5 }}
+          className="-mt-1 font-cormorant text-sm italic tracking-[0.22em] text-[#D4B483]/75"
+        >
+          by Lyle Pelayo
+        </motion.p>
+
+        <motion.div
+          initial={{ scaleX: 0 }} animate={{ scaleX: 1 }}
+          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1], delay: 0.55 }}
+          className="mt-2 h-px w-24 bg-gradient-to-r from-transparent via-[#D4B483] to-transparent sm:w-32"
+        />
+
+        <motion.p
+          initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.65 }}
+          className="mt-3 max-w-[280px] text-xs leading-5 tracking-wide text-white/60 sm:max-w-xs sm:text-sm sm:leading-6"
+        >
+          Premium streetwear crafted for those who move with purpose.
+        </motion.p>
+
+        <motion.div
+          initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.8 }}
+          className="mt-5 flex flex-wrap items-center justify-center gap-3"
+        >
+          <Link href="#product-grid-section" className="inline-flex items-center justify-center rounded-full bg-[#D4B483] px-9 py-3.5 text-[11px] font-black uppercase tracking-[0.2em] text-[#111111] transition-all duration-300 hover:scale-105 hover:bg-white">
+            Shop Now
+          </Link>
+          <Link href="#product-grid-section" className="inline-flex items-center justify-center rounded-full border border-white/25 px-9 py-3.5 text-[11px] font-black uppercase tracking-[0.2em] text-white/75 transition-all duration-300 hover:border-white/60 hover:text-white">
+            View Collection
+          </Link>
+        </motion.div>
+
+        <motion.div
+          initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.6, delay: 1.2 }}
+          className="mt-20 flex flex-col items-center gap-2"
+        >
+          <motion.div animate={{ y: [0, 6, 0] }} transition={{ repeat: Infinity, duration: 1.6, ease: 'easeInOut' }} className="h-6 w-px bg-gradient-to-b from-[#D4B483]/60 to-transparent" />
+          <span className="text-[9px] uppercase tracking-[0.3em] text-white/35">Scroll</span>
+        </motion.div>
+      </div>
+
+      <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 1.1 }} className="absolute bottom-10 right-8 hidden flex-col items-end gap-1 md:flex">
+        <span className="text-[9px] uppercase tracking-[0.3em] text-white/35">SS25 Collection</span>
+        <span className="text-[9px] uppercase tracking-[0.3em] text-[#D4B483]/60">Above Apparel</span>
+      </motion.div>
+
+      <button onClick={() => setAnimationKey((key) => key + 1)} className="absolute bottom-2.5 right-3 z-20 flex items-center gap-1 rounded-md border border-transparent px-2 py-1 text-[9px] uppercase tracking-widest text-white/40 transition-opacity hover:border-white/20 hover:bg-white/10 hover:text-white sm:right-6" title="Replay title reveal">
+        <RotateCcw className="h-2.5 w-2.5" />
+        <span className="hidden sm:inline">Replay Intro</span>
+      </button>
+    </section>
   );
 };

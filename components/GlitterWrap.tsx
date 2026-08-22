@@ -5,7 +5,7 @@ import { useEffect, useRef } from 'react';
 type Star = { x: number; y: number; z: number; speed: number; flash: number };
 
 /** Lightweight storefront adaptation of the Originkit Glitter Wrap preset. */
-export function GlitterWrap() {
+export function GlitterWrap({ colors = ['#000000', '#494343', '#141313'] }: { colors?: string[] }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
@@ -15,7 +15,6 @@ export function GlitterWrap() {
     if (!context) return;
 
     const stars: Star[] = [];
-    const colors = ['#000000', '#494343', '#141313'];
     let frame = 0;
     let width = 1;
     let height = 1;
@@ -57,7 +56,10 @@ export function GlitterWrap() {
       context.globalCompositeOperation = 'destination-out';
       context.fillStyle = 'rgba(255, 255, 255, 0.12)';
       context.fillRect(0, 0, width, height);
-      context.globalCompositeOperation = 'lighter';
+      // The preset palette is intentionally black/charcoal. Additive
+      // compositing makes black particles invisible, so render the stars with
+      // normal source-over blending after erasing the previous frame.
+      context.globalCompositeOperation = 'source-over';
 
       stars.forEach((star, index) => {
         const previousZ = star.z;
