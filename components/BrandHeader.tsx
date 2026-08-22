@@ -21,7 +21,7 @@ export const BrandHeader: React.FC<BrandHeaderProps> = ({ onLogoTap }) => {
   const [animationKey, setAnimationKey] = useState(0);
 
   return (
-    <section className="relative min-h-[calc(100vh-1px)] overflow-hidden bg-[#0A0A0A] text-white">
+    <section className="relative h-[min(86svh,760px)] min-h-[540px] overflow-hidden bg-[#0A0A0A] text-white">
       <motion.div
         key={`background-${animationKey}`}
         initial={{ scale: 1.14, opacity: 0 }}
@@ -42,7 +42,7 @@ export const BrandHeader: React.FC<BrandHeaderProps> = ({ onLogoTap }) => {
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_60%_50%_at_50%_55%,rgba(212,180,131,0.14)_0%,transparent_70%)]" />
       <GlitterWrap colors={['#D4B483', '#FFFFFF', '#8E7551']} />
 
-      <div className="relative z-10 flex min-h-[calc(100vh-1px)] flex-col items-center justify-center px-4 py-20 text-center">
+      <div className="relative z-10 flex h-full min-h-0 flex-col items-center justify-center px-4 py-12 text-center sm:py-16">
         <motion.div
           key={`tag-${animationKey}`}
           initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
@@ -102,7 +102,7 @@ export const BrandHeader: React.FC<BrandHeaderProps> = ({ onLogoTap }) => {
 
         <motion.div
           initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.6, delay: 1.2 }}
-          className="mt-20 flex flex-col items-center gap-2"
+          className="mt-10 flex flex-col items-center gap-2 sm:mt-14"
         >
           <motion.div animate={{ y: [0, 6, 0] }} transition={{ repeat: Infinity, duration: 1.6, ease: 'easeInOut' }} className="h-6 w-px bg-gradient-to-b from-[#D4B483]/60 to-transparent" />
           <span className="text-[9px] uppercase tracking-[0.3em] text-white/35">Scroll</span>
