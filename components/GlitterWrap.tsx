@@ -39,7 +39,7 @@ export function GlitterWrap({ colors = ['#FFFFFF', '#D4B483', '#FFE500'] }: { co
     const palette = colors.map(parseColor);
     const stars: Star[] = [];
     const particleCount = 280;
-    const speed = 0.014;
+    const speed = 0.020 * Math.random() + 0.005 ;
     const focalDepth = 0.13;
     let width = 1;
     let height = 1;
@@ -140,7 +140,7 @@ export function GlitterWrap({ colors = ['#FFFFFF', '#D4B483', '#FFE500'] }: { co
         context.fillRect(x - radius, y - radius, radius * 2, radius * 2);
         if (flashing) {
           context.globalAlpha = alpha * 0.45;
-          context.fillRect(x - radius * 1.8, y - 0.5, radius * 3.6, 1);
+          context.fillRect(x - radius * 2.8, y - 3.5, radius * 3.6, 1);
           context.fillRect(x - 0.5, y - radius * 1.8, 1, radius * 3.6);
         }
         star.px = x;
