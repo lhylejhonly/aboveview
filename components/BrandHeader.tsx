@@ -42,7 +42,7 @@ export const BrandHeader: React.FC<BrandHeaderProps> = ({ onLogoTap }) => {
       <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(115deg,rgba(212,180,131,0.08),transparent_32%,transparent_68%,rgba(255,255,255,0.04))]" />
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_35%,rgba(0,0,0,0.62)_100%)]" />
       <div className="pointer-events-none absolute inset-0 opacity-[0.035] [background-image:linear-gradient(rgba(255,255,255,0.7)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.7)_1px,transparent_1px)] [background-size:56px_56px]" />
-      <StarBurst color="#D4B483" speed={10} starCount={110} opacity={0.7} />
+      <StarBurst centerY={58} />
       <div className="relative z-10 flex h-full min-h-0 flex-col items-center justify-center px-4 py-12 text-center sm:py-16">
         <motion.div
           key={`tag-${animationKey}`}
