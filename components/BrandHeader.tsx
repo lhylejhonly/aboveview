@@ -23,8 +23,8 @@ export const BrandHeader: React.FC<BrandHeaderProps> = ({ onLogoTap }) => {
     <section className="relative h-[min(86svh,760px)] min-h-[540px] overflow-hidden bg-[#0A0A0A] text-white">
       <motion.div
         key={`background-${animationKey}`}
-        initial={{ scale: 1.14, opacity: 0 }}
-        animate={{ scale: 1.08, opacity: 1 }}
+        initial={{ scale: 1.04, opacity: 0 }}
+        animate={{ scale: 1.02, opacity: 1 }}
         transition={{ duration: 1.4, ease: [0.22, 1, 0.36, 1] }}
         className="absolute inset-0"
       >
