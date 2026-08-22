@@ -5,7 +5,7 @@ import { useEffect, useRef } from 'react';
 type Star = { x: number; y: number; z: number; speed: number; flash: number };
 
 /** Lightweight storefront adaptation of the Originkit Glitter Wrap preset. */
-export function GlitterWrap({ colors = ['#000000', '#494343', '#141313'] }: { colors?: string[] }) {
+export function GlitterWrap({ colors = ['#FFFFFF', '#D4B483', '#8E7551'] }: { colors?: string[] }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
@@ -54,12 +54,9 @@ export function GlitterWrap({ colors = ['#000000', '#494343', '#141313'] }: { co
       const scale = Math.min(width, height) * 0.9;
 
       context.globalCompositeOperation = 'destination-out';
-      context.fillStyle = 'rgba(255, 255, 255, 0.12)';
+      context.fillStyle = 'rgba(0, 0, 0, 0.14)';
       context.fillRect(0, 0, width, height);
-      // The preset palette is intentionally black/charcoal. Additive
-      // compositing makes black particles invisible, so render the stars with
-      // normal source-over blending after erasing the previous frame.
-      context.globalCompositeOperation = 'source-over';
+      context.globalCompositeOperation = 'lighter';
 
       stars.forEach((star, index) => {
         const previousZ = star.z;
@@ -79,8 +76,8 @@ export function GlitterWrap({ colors = ['#000000', '#494343', '#141313'] }: { co
         const previousY = centerY + star.y * previousPerspective * scale;
         const life = Math.min(1, (1 - star.z) * 1.15);
         const size = Math.min(3.5, 0.35 + life * 2.1);
-        const sparkle = Math.random() > 0.996;
-        const alpha = Math.min(0.55, 0.08 + life * 0.42) * (sparkle ? 1.8 : 1);
+        const sparkle = Math.random() > 0.994;
+        const alpha = Math.min(0.72, 0.08 + life * 0.5) * (sparkle ? 1.8 : 1);
 
         context.globalAlpha = alpha * 0.45;
         context.strokeStyle = colors[index % colors.length];
@@ -90,7 +87,7 @@ export function GlitterWrap({ colors = ['#000000', '#494343', '#141313'] }: { co
         context.lineTo(x, y);
         context.stroke();
         context.globalAlpha = alpha;
-        context.fillStyle = sparkle ? '#000000' : colors[index % colors.length];
+        context.fillStyle = colors[index % colors.length];
         context.fillRect(x - size / 2, y - size / 2, size, size);
         if (sparkle) {
           context.globalAlpha = alpha * 0.35;
@@ -100,6 +97,7 @@ export function GlitterWrap({ colors = ['#000000', '#494343', '#141313'] }: { co
       });
 
       context.globalAlpha = 1;
+      context.globalCompositeOperation = 'source-over';
       frame = requestAnimationFrame(draw);
     };
 
