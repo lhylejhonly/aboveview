@@ -32,7 +32,7 @@ export function GlitterWrap({ colors = ['#FFFFFF', '#D4B483', '#8E7551'] }: { co
 
     const reset = (star: Star, initial = false) => {
       const angle = Math.random() * Math.PI * 2;
-      const radius = 0.2 + Math.random() * 0.8;
+      const radius = 0.35 + Math.random() * 1.35;
       star.x = Math.cos(angle) * radius;
       star.y = Math.sin(angle) * radius;
       star.z = initial ? Math.random() : 1;
@@ -51,7 +51,7 @@ export function GlitterWrap({ colors = ['#FFFFFF', '#D4B483', '#8E7551'] }: { co
       lastTime = time;
       const centerX = width / 2;
       const centerY = height / 2;
-      const scale = Math.min(width, height) * 0.9;
+      const scale = Math.max(width, height) * 0.95;
 
       context.globalCompositeOperation = 'destination-out';
       context.fillStyle = 'rgba(0, 0, 0, 0.14)';
@@ -60,10 +60,10 @@ export function GlitterWrap({ colors = ['#FFFFFF', '#D4B483', '#8E7551'] }: { co
 
       stars.forEach((star, index) => {
         const previousZ = star.z;
-        star.z -= delta * 0.0064 * star.speed;
+        star.z -= delta * 0.014 * star.speed;
         if (star.z <= 0.07) reset(star);
 
-        const perspective = 0.07 / Math.max(star.z, 0.001);
+        const perspective = 0.13 / Math.max(star.z, 0.001);
         const x = centerX + star.x * perspective * scale;
         const y = centerY + star.y * perspective * scale;
         if (x < -20 || x > width + 20 || y < -20 || y > height + 20) {
@@ -71,13 +71,13 @@ export function GlitterWrap({ colors = ['#FFFFFF', '#D4B483', '#8E7551'] }: { co
           return;
         }
 
-        const previousPerspective = 0.07 / Math.max(previousZ, 0.001);
+        const previousPerspective = 0.13 / Math.max(previousZ, 0.001);
         const previousX = centerX + star.x * previousPerspective * scale;
         const previousY = centerY + star.y * previousPerspective * scale;
         const life = Math.min(1, (1 - star.z) * 1.15);
-        const size = Math.min(3.5, 0.35 + life * 2.1);
-        const sparkle = Math.random() > 0.994;
-        const alpha = Math.min(0.72, 0.08 + life * 0.5) * (sparkle ? 1.8 : 1);
+        const size = Math.min(7, 0.7 + life * 4.6);
+        const sparkle = Math.random() > 0.991;
+        const alpha = Math.min(0.9, 0.16 + life * 0.65) * (sparkle ? 1.8 : 1);
 
         context.globalAlpha = alpha * 0.45;
         context.strokeStyle = colors[index % colors.length];
@@ -111,5 +111,5 @@ export function GlitterWrap({ colors = ['#FFFFFF', '#D4B483', '#8E7551'] }: { co
     };
   }, []);
 
-  return <canvas ref={canvasRef} aria-hidden="true" className="absolute inset-0 h-full w-full pointer-events-none opacity-35" />;
+  return <canvas ref={canvasRef} aria-hidden="true" className="absolute inset-0 h-full w-full pointer-events-none opacity-75" />;
 }
