@@ -231,22 +231,22 @@ export const FilterBar: React.FC<FilterBarProps> = ({
             </button>
             <div className="flex items-center gap-2 mb-4 text-[#2D2926]">
               <Ruler className="w-5 h-5 text-[#5A5A40]" />
-              <h3 className="font-sans text-sm font-semibold uppercase tracking-[0.2em]">Official Size Guide & Fit Specs</h3>
+              <h3 className="font-sans text-sm font-semibold uppercase tracking-[0.2em]">T-Shirt Size Chart</h3>
             </div>
             <p className="font-sans text-xs text-[#5A5A40] mb-5 tracking-wide leading-relaxed">
-              All heavyweight apparel is tailored in an oversized boxy silhouette. Order your standard size for a relaxed drop-shoulder fit.
+              Heavy oversized French Terry T-shirt. Measure a similar shirt flat and compare the length, width, and sleeve measurements below.
             </p>
             <div className="overflow-x-auto border border-[#D6CFC7] mb-6">
               <table className="w-full text-xs font-sans text-left text-[#2D2926]">
                 <thead className="bg-[#E5E0DA] text-[10px] uppercase tracking-widest border-b border-[#D6CFC7]">
                   <tr>
-                    {['Size', 'Chest (Inches)', 'Length (Inches)', 'Shoulder (Inches)'].map(h => (
+                    {['Size', 'Length', 'Width', 'Sleeves'].map(h => (
                       <th key={h} className="py-2.5 px-3">{h}</th>
                     ))}
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-[#D6CFC7]/60 font-light">
-                  {[['S','42" - 44"','28.5"','22.0"'],['M','45" - 47"','29.5"','23.0"'],['L','48" - 50"','30.5"','24.0"'],['XL','51" - 53"','31.5"','25.0"'],['XXL','54" - 56"','32.5"','26.0"']].map(([size, ...vals]) => (
+                  {[['XS','27"','21"','9.25"'],['S','28"','22"','9"'],['M','29"','23"','9.5"'],['L','30"','24"','10.25"'],['XL','31"','25"','10.5"'],['2XL','32"','26"','10.75"']].map(([size, ...vals]) => (
                     <tr key={size}>
                       <td className="py-2 px-3 font-medium">{size}</td>
                       {vals.map((v, i) => <td key={i} className="py-2 px-3">{v}</td>)}
