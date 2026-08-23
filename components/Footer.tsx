@@ -56,7 +56,7 @@ export const Footer: React.FC<FooterProps> = ({
       {/* 2. Centered Social Media Icons */}
       <div className="w-full py-10 sm:py-12 flex items-center justify-center gap-8 sm:gap-12">
         <a
-          href="https://facebook.com"
+          href="https://www.facebook.com/aboveapprl/"
           target="_blank"
           rel="noopener noreferrer"
           className="text-[#2D2926] hover:text-[#5A5A40] transition-colors p-1"
