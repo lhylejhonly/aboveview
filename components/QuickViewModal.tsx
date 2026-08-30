@@ -18,6 +18,9 @@ const getDefaultColor = (product: Product) =>
   ?? product.colors[0]
   ?? { name: 'Natural', hex: '#B85D3D' };
 
+const versionImage = (url: string, version?: string) =>
+  version ? `${url}${url.includes('?') ? '&' : '?'}v=${encodeURIComponent(version)}` : url;
+
 export const QuickViewModal: React.FC<QuickViewModalProps> = ({ product, onClose }) => {
   const [activeSide, setActiveSide] = useState<'front' | 'back'>('front');
   const [selectedColor, setSelectedColor] = useState(product ? getDefaultColor(product) : { name: 'Natural', hex: '#B85D3D' });
@@ -59,9 +62,9 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({ product, onClose
     window.open(TIKTOK_SHOP_URL, "_blank", "noopener,noreferrer");
   };
 
-  const currentImage = activeSide === 'front'
+  const currentImage = versionImage(activeSide === 'front'
     ? colorImageSelected ? selectedColor.frontImage ?? product.frontImage : product.frontImage
-    : colorImageSelected ? selectedColor.backImage ?? product.backImage : product.backImage;
+    : colorImageSelected ? selectedColor.backImage ?? product.backImage : product.backImage, product.updatedAt);
 
   return (
     <AnimatePresence>

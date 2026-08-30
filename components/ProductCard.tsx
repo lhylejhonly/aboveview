@@ -20,6 +20,9 @@ const getDefaultColor = (product: Product) =>
   ?? product.colors[0]
   ?? { name: 'Natural', hex: '#B85D3D' };
 
+const versionImage = (url: string, version?: string) =>
+  version ? `${url}${url.includes('?') ? '&' : '?'}v=${encodeURIComponent(version)}` : url;
+
 export const ProductCard: React.FC<ProductCardProps> = ({ product, forceFlipped = false, onQuickView }) => {
   const [isFlipped, setIsFlipped] = useState(forceFlipped);
   const [imageLoadedFront, setImageLoadedFront] = useState(false);
@@ -49,8 +52,8 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, forceFlipped 
   const handleOpenTikTok = () => window.open(TIKTOK_SHOP_URL, "_blank", "noopener,noreferrer");
   const handleImageClick = () => onQuickView ? onQuickView(product) : handleOpenTikTok();
   const showBack = isFlipped || isHovered;
-  const frontImage = colorImageSelected ? selectedColor.frontImage ?? product.frontImage : product.frontImage;
-  const backImage = colorImageSelected ? selectedColor.backImage ?? product.backImage : product.backImage;
+  const frontImage = versionImage(colorImageSelected ? selectedColor.frontImage ?? product.frontImage : product.frontImage, product.updatedAt);
+  const backImage = versionImage(colorImageSelected ? selectedColor.backImage ?? product.backImage : product.backImage, product.updatedAt);
 
   return (
     <div style={{ perspective: 1000 }} className="w-full min-w-0 h-full">
