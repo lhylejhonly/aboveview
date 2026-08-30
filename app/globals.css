@@ -68,5 +68,5 @@
 }
 
 .product-color-black {
-  filter: grayscale(1) brightness(0.16) contrast(1.35) !important;
+  filter: grayscale(1) brightness(0.28) contrast(1.15) !important;
 }
