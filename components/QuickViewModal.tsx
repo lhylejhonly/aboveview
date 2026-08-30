@@ -13,9 +13,14 @@ interface QuickViewModalProps {
 
 const TIKTOK_SHOP_URL = "https://vt.tiktok.com/ZS9kHEpuhXLUR-ruhtD/";
 
+const getDefaultColor = (product: Product) =>
+  product.colors.find((color) => product.name.toLowerCase().includes(color.name.toLowerCase()))
+  ?? product.colors[0]
+  ?? { name: 'Natural', hex: '#B85D3D' };
+
 export const QuickViewModal: React.FC<QuickViewModalProps> = ({ product, onClose }) => {
   const [activeSide, setActiveSide] = useState<'front' | 'back'>('front');
-  const [selectedColor, setSelectedColor] = useState(product?.colors[0] || { name: 'Natural', hex: '#B85D3D' });
+  const [selectedColor, setSelectedColor] = useState(product ? getDefaultColor(product) : { name: 'Natural', hex: '#B85D3D' });
   const [colorImageSelected, setColorImageSelected] = useState(false);
   const [selectedSize, setSelectedSize] = useState<string>(product?.sizes[0] || 'M');
   const [copiedLink, setCopiedLink] = useState(false);
@@ -23,7 +28,7 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({ product, onClose
   useEffect(() => {
     if (product) {
       setActiveSide('front');
-      setSelectedColor(product.colors[0] || { name: 'Natural', hex: '#B85D3D' });
+      setSelectedColor(getDefaultColor(product));
       setColorImageSelected(false);
       setSelectedSize(product.sizes[0] || 'M');
       

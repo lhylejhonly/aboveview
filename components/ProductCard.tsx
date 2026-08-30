@@ -15,11 +15,16 @@ interface ProductCardProps {
 
 const TIKTOK_SHOP_URL = "https://vt.tiktok.com/ZS9kHEpuhXLUR-ruhtD/";
 
+const getDefaultColor = (product: Product) =>
+  product.colors.find((color) => product.name.toLowerCase().includes(color.name.toLowerCase()))
+  ?? product.colors[0]
+  ?? { name: 'Natural', hex: '#B85D3D' };
+
 export const ProductCard: React.FC<ProductCardProps> = ({ product, forceFlipped = false, onQuickView }) => {
   const [isFlipped, setIsFlipped] = useState(forceFlipped);
   const [imageLoadedFront, setImageLoadedFront] = useState(false);
   const [imageLoadedBack, setImageLoadedBack] = useState(false);
-  const [selectedColor, setSelectedColor] = useState(product.colors[0] || { name: 'Natural', hex: '#B85D3D' });
+  const [selectedColor, setSelectedColor] = useState(getDefaultColor(product));
   const [colorImageSelected, setColorImageSelected] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   const cardRef = useRef<HTMLDivElement>(null);
