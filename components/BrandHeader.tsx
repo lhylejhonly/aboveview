@@ -29,7 +29,7 @@ export const BrandHeader: React.FC<BrandHeaderProps> = ({ onLogoTap }) => {
         className="absolute inset-0"
       >
         <img
-          src="/images/apprl_jacket_front_1786468859192.jpg"
+          src="/images/above-hero.jpg.jpg"
           alt="Above Apprl collection"
           fetchPriority="high"
           className="h-full w-full object-cover object-center"
