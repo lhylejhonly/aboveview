@@ -53,6 +53,7 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({ product, onClose
   };
 
   const currentImage = activeSide === 'front' ? product.frontImage : product.backImage;
+  const isBlackSelected = selectedColor.name.trim().toLowerCase().includes('black');
 
   return (
     <AnimatePresence>
@@ -115,6 +116,7 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({ product, onClose
                 initial={{ opacity: 0.8, scale: 0.98 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.25 }}
+                style={isBlackSelected ? { filter: 'grayscale(1) brightness(0.28) contrast(1.15)' } : undefined}
                 className="w-full h-full object-cover object-center"
               />
 
