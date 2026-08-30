@@ -52,7 +52,9 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({ product, onClose
     window.open(TIKTOK_SHOP_URL, "_blank", "noopener,noreferrer");
   };
 
-  const currentImage = activeSide === 'front' ? product.frontImage : product.backImage;
+  const currentImage = activeSide === 'front'
+    ? selectedColor.frontImage ?? product.frontImage
+    : selectedColor.backImage ?? product.backImage;
 
   return (
     <AnimatePresence>
@@ -108,7 +110,7 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({ product, onClose
             {/* Main Image View */}
             <div className="relative w-full aspect-[3/4] overflow-hidden rounded-xs bg-[#D6CFC7]/30 my-auto flex items-center justify-center">
               <motion.img
-                key={`${product.id}-${activeSide}`}
+                key={`${product.id}-${selectedColor.name}-${activeSide}`}
                 src={currentImage}
                 alt={product.name}
                 referrerPolicy="no-referrer"

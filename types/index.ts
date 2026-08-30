@@ -16,6 +16,8 @@ export type Category =
 export interface ColorOption {
   name: string;
   hex: string;
+  frontImage?: string;
+  backImage?: string;
 }
 
 export interface Product {
