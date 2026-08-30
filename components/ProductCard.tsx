@@ -20,6 +20,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, forceFlipped 
   const [imageLoadedFront, setImageLoadedFront] = useState(false);
   const [imageLoadedBack, setImageLoadedBack] = useState(false);
   const [selectedColor, setSelectedColor] = useState(product.colors[0] || { name: 'Natural', hex: '#B85D3D' });
+  const [colorImageSelected, setColorImageSelected] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   const cardRef = useRef<HTMLDivElement>(null);
   const mouseX = useMotionValue(0.5);
@@ -43,8 +44,8 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, forceFlipped 
   const handleOpenTikTok = () => window.open(TIKTOK_SHOP_URL, "_blank", "noopener,noreferrer");
   const handleImageClick = () => onQuickView ? onQuickView(product) : handleOpenTikTok();
   const showBack = isFlipped || isHovered;
-  const frontImage = selectedColor.frontImage ?? product.frontImage;
-  const backImage = selectedColor.backImage ?? product.backImage;
+  const frontImage = colorImageSelected ? selectedColor.frontImage ?? product.frontImage : product.frontImage;
+  const backImage = colorImageSelected ? selectedColor.backImage ?? product.backImage : product.backImage;
 
   return (
     <div style={{ perspective: 1000 }} className="w-full min-w-0 h-full">
@@ -72,7 +73,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, forceFlipped 
         <div className="p-2.5 sm:p-3.5 flex flex-col justify-between gap-1.5 sm:gap-2 min-w-0 w-full flex-1">
           <div>
             <h3 onClick={handleOpenTikTok} className="font-sans text-[11px] sm:text-xs font-bold tracking-wider uppercase text-[#1F1D1B] hover:text-[#B85D3D] transition-colors cursor-pointer line-clamp-1">{product.name}</h3>
-            <div className="flex items-center justify-between my-1.5 sm:my-2 min-w-0"><div className="flex items-center gap-1 sm:gap-1.5 shrink-0">{product.colors.map(color => <button key={color.name} onClick={e => { e.stopPropagation(); setSelectedColor(color); }} className={`w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full border transition-all ${selectedColor.name === color.name ? 'ring-2 ring-[#1F1D1B] ring-offset-1 scale-110' : 'border-black/20 hover:scale-105'}`} style={{ backgroundColor: getColorHex(color.name, color.hex) }} title={color.name} />)}</div><span className="text-[8px] sm:text-[9px] font-sans font-semibold text-[#8E8B82] uppercase tracking-wider truncate max-w-[65px] sm:max-w-[70px] text-right">{selectedColor.name}</span></div>
+            <div className="flex items-center justify-between my-1.5 sm:my-2 min-w-0"><div className="flex items-center gap-1 sm:gap-1.5 shrink-0">{product.colors.map(color => <button key={color.name} onClick={e => { e.stopPropagation(); setSelectedColor(color); setColorImageSelected(true); }} className={`w-2.5 h-2.5 sm:w-3 sm:h-3 rounded-full border transition-all ${selectedColor.name === color.name ? 'ring-2 ring-[#1F1D1B] ring-offset-1 scale-110' : 'border-black/20 hover:scale-105'}`} style={{ backgroundColor: getColorHex(color.name, color.hex) }} title={color.name} />)}</div><span className="text-[8px] sm:text-[9px] font-sans font-semibold text-[#8E8B82] uppercase tracking-wider truncate max-w-[65px] sm:max-w-[70px] text-right">{selectedColor.name}</span></div>
           </div>
           <div className="pt-2 border-t border-[#E2DDD5] flex items-center justify-between gap-1.5 sm:gap-2 min-w-0 w-full"><div className="flex flex-col min-w-0"><span className="font-sans text-xs sm:text-sm font-bold tracking-tight text-[#1F1D1B] truncate leading-tight">{formatPrice(product.price)}</span>{product.originalPrice && <span className="font-sans text-[8px] sm:text-[9px] font-medium text-[#8E8B82] line-through truncate leading-tight mt-0.5">{formatPrice(product.originalPrice)}</span>}</div><motion.button onClick={e => { e.stopPropagation(); handleOpenTikTok(); }} whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }} className="inline-flex items-center justify-center gap-1 sm:gap-1.5 px-2 sm:px-2.5 md:px-3 py-1.5 font-sans text-[8px] sm:text-[9px] md:text-[10px] font-bold tracking-wider text-[#F7F5F0] bg-[#1F1D1B] hover:bg-[#B85D3D] uppercase transition-colors rounded-md shrink-0 shadow-xs whitespace-nowrap" id={`order-btn-${product.id}`} title="Order on TikTok Shop"><ShoppingBag className="w-2.5 h-2.5 sm:w-3 sm:h-3 shrink-0 text-[#C2B280]" /><span>ORDER</span><ExternalLink className="w-2 h-2 sm:w-2.5 sm:h-2.5 text-[#E5E0DA] shrink-0 hidden sm:inline-block" /></motion.button></div>
         </div>

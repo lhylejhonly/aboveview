@@ -16,6 +16,7 @@ const TIKTOK_SHOP_URL = "https://vt.tiktok.com/ZS9kHEpuhXLUR-ruhtD/";
 export const QuickViewModal: React.FC<QuickViewModalProps> = ({ product, onClose }) => {
   const [activeSide, setActiveSide] = useState<'front' | 'back'>('front');
   const [selectedColor, setSelectedColor] = useState(product?.colors[0] || { name: 'Natural', hex: '#B85D3D' });
+  const [colorImageSelected, setColorImageSelected] = useState(false);
   const [selectedSize, setSelectedSize] = useState<string>(product?.sizes[0] || 'M');
   const [copiedLink, setCopiedLink] = useState(false);
 
@@ -23,6 +24,7 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({ product, onClose
     if (product) {
       setActiveSide('front');
       setSelectedColor(product.colors[0] || { name: 'Natural', hex: '#B85D3D' });
+      setColorImageSelected(false);
       setSelectedSize(product.sizes[0] || 'M');
       
       // Prevent background body scroll when modal is open
@@ -53,8 +55,8 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({ product, onClose
   };
 
   const currentImage = activeSide === 'front'
-    ? selectedColor.frontImage ?? product.frontImage
-    : selectedColor.backImage ?? product.backImage;
+    ? colorImageSelected ? selectedColor.frontImage ?? product.frontImage : product.frontImage
+    : colorImageSelected ? selectedColor.backImage ?? product.backImage : product.backImage;
 
   return (
     <AnimatePresence>
@@ -218,7 +220,7 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({ product, onClose
                   {product.colors.map((color) => (
                     <button
                       key={color.name}
-                      onClick={() => setSelectedColor(color)}
+                      onClick={() => { setSelectedColor(color); setColorImageSelected(true); }}
                       className={`relative p-0.5 rounded-full border-2 transition-all ${
                         selectedColor.name === color.name
                           ? 'border-[#2D2926] scale-110'
