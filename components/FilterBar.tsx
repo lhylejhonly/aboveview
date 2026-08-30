@@ -64,7 +64,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
   const activeCategoryLabel = categories.find(c => c.id === activeCategory)?.label || 'NO COLLECTIONS';
 
   return (
-    <div className="w-full max-w-7xl mx-auto px-4 sm:px-8 py-3.5 mb-6 border-b border-[#E2DDD5] bg-[#F7F5F0]/95 sticky top-0 z-30 backdrop-blur-md shadow-xs">
+    <div className="w-full max-w-7xl mx-auto px-4 sm:px-8 py-3.5 mb-6 border-b border-[#E2DDD5] bg-[#F7F5F0]">
 
       {/* 1. Top nav: Home | Size Chart */}
       <div className="flex items-center justify-center gap-3 mb-3 text-xs font-sans tracking-widest uppercase">
