@@ -21,8 +21,7 @@ export const Footer: React.FC<FooterProps> = ({
   totalPages = 5,
   onPageChange,
 }) => {
-  const maxPages = Math.max(5, totalPages);
-  const pages = Array.from({ length: maxPages }, (_, i) => i + 1);
+  const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
 
   const handlePageClick = (page: number) => {
     if (onPageChange) {
@@ -33,25 +32,29 @@ export const Footer: React.FC<FooterProps> = ({
   return (
     <footer className="w-full bg-[#F4F1EE] text-[#2D2926] mt-16 border-t border-[#D6CFC7]/60">
       
-      {/* 1. Centered Pagination Row */}
-      <div className="w-full py-10 sm:py-14 flex items-center justify-center gap-2 sm:gap-4">
-        {pages.map((page) => (
-          <button
-            key={page}
-            onClick={() => handlePageClick(page)}
-            className={`w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center font-sans text-sm transition-all ${
-              currentPage === page
-                ? 'bg-[#2D2926] text-[#F4F1EE] font-semibold shadow-sm scale-105'
-                : 'text-[#8E8B82] hover:text-[#2D2926] font-light hover:bg-[#E5E0DA]/50'
-            }`}
-          >
-            {page}
-          </button>
-        ))}
-      </div>
+      {totalPages > 1 && (
+        <>
+          {/* 1. Centered Pagination Row */}
+          <div className="w-full py-10 sm:py-14 flex items-center justify-center gap-2 sm:gap-4">
+            {pages.map((page) => (
+              <button
+                key={page}
+                onClick={() => handlePageClick(page)}
+                className={`w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center font-sans text-sm transition-all ${
+                  currentPage === page
+                    ? 'bg-[#2D2926] text-[#F4F1EE] font-semibold shadow-sm scale-105'
+                    : 'text-[#8E8B82] hover:text-[#2D2926] font-light hover:bg-[#E5E0DA]/50'
+                }`}
+              >
+                {page}
+              </button>
+            ))}
+          </div>
 
-      {/* Divider Line */}
-      <div className="w-full border-t border-[#D6CFC7]/60" />
+          {/* Divider Line */}
+          <div className="w-full border-t border-[#D6CFC7]/60" />
+        </>
+      )}
 
       {/* 2. Centered Social Media Icons */}
       <div className="w-full py-10 sm:py-12 flex items-center justify-center gap-8 sm:gap-12">
