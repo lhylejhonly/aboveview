@@ -20,7 +20,7 @@ export const BrandHeader: React.FC<BrandHeaderProps> = ({ onLogoTap }) => {
   const [animationKey, setAnimationKey] = useState(0);
 
   return (
-    <section className="relative h-[min(86svh,760px)] min-h-[540px] overflow-hidden bg-[#0A0A0A] text-white">
+    <section className="relative h-[min(78svh,680px)] min-h-[480px] overflow-hidden bg-[#0A0A0A] text-white">
       <motion.div
         key={`background-${animationKey}`}
         initial={{ scale: 1.01, opacity: 0 }}
