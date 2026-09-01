@@ -225,7 +225,7 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({ product, onClose
                   Color: <span className="font-normal text-[#5A5A40]">{selectedColor.name}</span>
                 </label>
                 <div className="flex items-center gap-2">
-                  {product.colors.map((color) => (
+                  {product.colors.filter((color) => color.name.trim().toLowerCase() !== 'black').map((color) => (
                     <button
                       key={color.name}
                       onClick={() => { setSelectedColor(color); setColorImageSelected(true); }}
