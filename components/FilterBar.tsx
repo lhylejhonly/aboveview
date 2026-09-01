@@ -153,7 +153,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
       </div>
 
       {/* 3. Controls: Search and Sort */}
-      <div className="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-[#E2DDD5] max-w-6xl mx-auto">
+      <div className="flex flex-wrap items-center justify-between gap-3 pt-3 max-w-6xl mx-auto">
         <div className="text-[11px] font-sans text-[#5A5A40] uppercase tracking-wider font-semibold">
           COLLECTION ({activeCategoryLabel})
         </div>
