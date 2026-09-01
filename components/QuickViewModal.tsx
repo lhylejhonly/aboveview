@@ -4,7 +4,6 @@ import { motion, AnimatePresence } from 'motion/react';
 import { X, ShoppingBag, ExternalLink, Star, ShieldCheck, Sparkles, Check, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Product } from '@/types';
 import { formatPrice } from '@/lib/currency';
-import { getColorHex } from '@/lib/colors';
 
 interface QuickViewModalProps {
   product: Product | null;
@@ -13,26 +12,17 @@ interface QuickViewModalProps {
 
 const TIKTOK_SHOP_URL = "https://vt.tiktok.com/ZS9kHEpuhXLUR-ruhtD/";
 
-const getDefaultColor = (product: Product) =>
-  product.colors.find((color) => product.name.toLowerCase().includes(color.name.toLowerCase()))
-  ?? product.colors[0]
-  ?? { name: 'Natural', hex: '#B85D3D' };
-
 const versionImage = (url: string, version?: string) =>
   version ? `${url}${url.includes('?') ? '&' : '?'}v=${encodeURIComponent(version)}` : url;
 
 export const QuickViewModal: React.FC<QuickViewModalProps> = ({ product, onClose }) => {
   const [activeSide, setActiveSide] = useState<'front' | 'back'>('front');
-  const [selectedColor, setSelectedColor] = useState(product ? getDefaultColor(product) : { name: 'Natural', hex: '#B85D3D' });
-  const [colorImageSelected, setColorImageSelected] = useState(false);
   const [selectedSize, setSelectedSize] = useState<string>(product?.sizes[0] || 'M');
   const [copiedLink, setCopiedLink] = useState(false);
 
   useEffect(() => {
     if (product) {
       setActiveSide('front');
-      setSelectedColor(getDefaultColor(product));
-      setColorImageSelected(false);
       setSelectedSize(product.sizes[0] || 'M');
       
       // Prevent background body scroll when modal is open
@@ -62,9 +52,7 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({ product, onClose
     window.open(TIKTOK_SHOP_URL, "_blank", "noopener,noreferrer");
   };
 
-  const currentImage = versionImage(activeSide === 'front'
-    ? colorImageSelected ? selectedColor.frontImage ?? product.frontImage : product.frontImage
-    : colorImageSelected ? selectedColor.backImage ?? product.backImage : product.backImage, product.updatedAt);
+  const currentImage = versionImage(activeSide === 'front' ? product.frontImage : product.backImage, product.updatedAt);
 
   return (
     <AnimatePresence>
@@ -120,7 +108,7 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({ product, onClose
             {/* Main Image View */}
             <div className="relative w-full aspect-[3/4] overflow-hidden rounded-xs bg-[#D6CFC7]/30 my-auto flex items-center justify-center">
               <motion.img
-                key={`${product.id}-${selectedColor.name}-${activeSide}`}
+                key={`${product.id}-${activeSide}`}
                 src={currentImage}
                 alt={product.name}
                 referrerPolicy="no-referrer"
@@ -216,32 +204,6 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({ product, onClose
                 <div>
                   <span className="text-[#8E8B82] block text-[10px] uppercase tracking-wider">Fit Type</span>
                   <span className="font-medium text-[#2D2926]">{product.fitType}</span>
-                </div>
-              </div>
-
-              {/* Color Swatch Picker */}
-              <div>
-                <label className="block text-xs font-sans font-semibold uppercase tracking-wider text-[#2D2926] mb-2">
-                  Color: <span className="font-normal text-[#5A5A40]">{selectedColor.name}</span>
-                </label>
-                <div className="flex items-center gap-2">
-                  {product.colors.filter((color) => color.name.trim().toLowerCase() !== 'black').map((color) => (
-                    <button
-                      key={color.name}
-                      onClick={() => { setSelectedColor(color); setColorImageSelected(true); }}
-                      className={`relative p-0.5 rounded-full border-2 transition-all ${
-                        selectedColor.name === color.name
-                          ? 'border-[#2D2926] scale-110'
-                          : 'border-transparent hover:scale-105'
-                      }`}
-                      title={color.name}
-                    >
-                      <div
-                        className="w-5 h-5 rounded-full border border-black/20"
-                        style={{ backgroundColor: getColorHex(color.name, color.hex) }}
-                      />
-                    </button>
-                  ))}
                 </div>
               </div>
 
