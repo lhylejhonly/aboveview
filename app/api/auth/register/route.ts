@@ -6,9 +6,9 @@ const escapeHtml = (value: string) => value.replace(/[&<>'"]/g, char => ({ '&': 
 
 export async function POST(request: Request) {
   const { email, password } = await request.json() as { email?: string; password?: string };
-  const smtpHost = process.env.SMTP_HOST;
-  const smtpUser = process.env.SMTP_USER;
-  const smtpPassword = process.env.SMTP_PASSWORD;
+  const smtpHost = process.env.SMTP_HOST?.trim();
+  const smtpUser = process.env.SMTP_USER?.trim();
+  const smtpPassword = process.env.SMTP_PASSWORD?.replace(/\s+/g, '');
   if (!email || !password || password.length < 6) return NextResponse.json({ error: 'Enter a valid email and a password with at least 6 characters.' }, { status: 400 });
   if (!smtpHost || !smtpUser || !smtpPassword) return NextResponse.json({ error: 'Registration email is not configured yet.' }, { status: 503 });
   if (!smtpHost.includes('.')) return NextResponse.json({ error: 'SMTP_HOST must be a mail server hostname, such as smtp.gmail.com.' }, { status: 503 });
@@ -24,6 +24,10 @@ export async function POST(request: Request) {
     return NextResponse.json({ sent: true });
   } catch (caught) {
     console.error('Registration email failed:', caught);
-    return NextResponse.json({ error: 'We could not send the confirmation email. Please check the SMTP settings and try again.' }, { status: 502 });
+    const createdUserId = data?.user?.id;
+    if (createdUserId) await getSupabaseAdmin().auth.admin.deleteUser(createdUserId);
+    const smtpError = caught as { code?: string; responseCode?: number };
+    if (smtpError.code === 'EAUTH' || smtpError.responseCode === 535) return NextResponse.json({ error: 'Gmail rejected the SMTP login. Use a Gmail App Password, not your normal Gmail password, and update SMTP_USER and SMTP_PASSWORD in Vercel.' }, { status: 502 });
+    return NextResponse.json({ error: 'We could not send the confirmation email. Please verify the Vercel SMTP settings and try again.' }, { status: 502 });
   }
 }
