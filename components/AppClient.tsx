@@ -15,6 +15,9 @@ import { WallpaperGeneratorStudio } from '@/components/WallpaperGeneratorStudio'
 import { QuickViewModal } from '@/components/QuickViewModal';
 import { TopProgressBar } from '@/components/TopProgressBar';
 import { AdminLogin } from '@/components/AdminLogin';
+import { CustomerOrderModal } from '@/components/CustomerOrderModal';
+import { StoreHeader } from '@/components/StoreHeader';
+import { CustomerLoginModal } from '@/components/CustomerLoginModal';
 import { useAdmin } from '@/context/AdminContext';
 import { X } from 'lucide-react';
 
@@ -31,6 +34,9 @@ export default function AppClient() {
   const [stylistOpen, setStylistOpen] = useState(false);
   const [wallpaperStudioOpen, setWallpaperStudioOpen] = useState(false);
   const [quickViewProduct, setQuickViewProduct] = useState<Product | null>(null);
+  const [orderProduct, setOrderProduct] = useState<Product | null>(null);
+  const [orderSize, setOrderSize] = useState<string | undefined>();
+  const [customerLoginOpen, setCustomerLoginOpen] = useState(false);
   const [customBannerUrl, setCustomBannerUrl] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
@@ -136,6 +142,7 @@ export default function AppClient() {
   return (
     <div className="min-h-screen bg-[#F7F5F0] text-[#1F1D1B] font-sans flex flex-col relative selection:bg-[#1F1D1B] selection:text-[#F7F5F0]">
       <TopProgressBar isLoading={loading} />
+      <StoreHeader onOpenLogin={() => setCustomerLoginOpen(true)} />
 
       {toastMessage && (
         <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 px-4 py-2.5 bg-[#1F1D1B] text-[#F7F5F0] text-xs font-sans font-semibold tracking-wider shadow-2xl rounded-full border border-[#C2B280]/40 flex items-center gap-2">
@@ -209,7 +216,7 @@ export default function AppClient() {
                     whileInView={{ opacity: 1, y: 0, scale: 1 }} viewport={{ once: true, margin: "-50px" }}
                     transition={{ duration: 0.55, delay: Math.min((index % 4) * 0.05, 0.2), ease: [0.16, 1, 0.3, 1] }}
                     className="w-full h-full flex">
-                    <ProductCard product={product} forceFlipped={allFlipped} soundEnabled={soundEnabled} onQuickView={setQuickViewProduct} />
+                    <ProductCard product={product} forceFlipped={allFlipped} soundEnabled={soundEnabled} onQuickView={setQuickViewProduct} onOrder={(item) => { setQuickViewProduct(null); setOrderSize(undefined); setOrderProduct(item); }} />
                   </motion.div>
                 ))}
               </AnimatePresence>
@@ -223,7 +230,9 @@ export default function AppClient() {
 
       <StylistDrawer isOpen={stylistOpen} onClose={() => setStylistOpen(false)} />
       <WallpaperGeneratorStudio isOpen={wallpaperStudioOpen} onClose={() => setWallpaperStudioOpen(false)} onApplyBannerToStore={(url) => { setCustomBannerUrl(url); showToast('Applied custom AI banner to Store Hero!'); }} />
-      <QuickViewModal product={quickViewProduct} onClose={() => setQuickViewProduct(null)} />
+      <QuickViewModal product={quickViewProduct} onClose={() => setQuickViewProduct(null)} onOrder={(item, size) => { setQuickViewProduct(null); setOrderSize(size); setOrderProduct(item); }} />
+      <CustomerOrderModal product={orderProduct} initialSize={orderSize} onClose={() => setOrderProduct(null)} />
+      {customerLoginOpen && <CustomerLoginModal onClose={() => setCustomerLoginOpen(false)} />}
 
       {adminLoginOpen && !isAdmin && <AdminLogin onCancel={() => setAdminLoginOpen(false)} />}
 

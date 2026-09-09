@@ -1,21 +1,20 @@
 'use client';
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { X, ShoppingBag, ExternalLink, Star, ShieldCheck, Sparkles, Check, ChevronLeft, ChevronRight } from 'lucide-react';
+import { X, ShoppingBag, Star, ShieldCheck, Sparkles, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Product } from '@/types';
 import { formatPrice } from '@/lib/currency';
 
 interface QuickViewModalProps {
   product: Product | null;
   onClose: () => void;
+  onOrder?: (product: Product, size: string) => void;
 }
-
-const TIKTOK_SHOP_URL = "https://vt.tiktok.com/ZS9kHEpuhXLUR-ruhtD/";
 
 const versionImage = (url: string, version?: string) =>
   version ? `${url}${url.includes('?') ? '&' : '?'}v=${encodeURIComponent(version)}` : url;
 
-export const QuickViewModal: React.FC<QuickViewModalProps> = ({ product, onClose }) => {
+export const QuickViewModal: React.FC<QuickViewModalProps> = ({ product, onClose, onOrder }) => {
   const [activeSide, setActiveSide] = useState<'front' | 'back'>('front');
   const [selectedSize, setSelectedSize] = useState<string>(product?.sizes[0] || 'M');
   const [copiedLink, setCopiedLink] = useState(false);
@@ -47,10 +46,6 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({ product, onClose
   }, [onClose]);
 
   if (!product) return null;
-
-  const handleOpenTikTok = () => {
-    window.open(TIKTOK_SHOP_URL, "_blank", "noopener,noreferrer");
-  };
 
   const currentImage = versionImage(activeSide === 'front' ? product.frontImage : product.backImage, product.updatedAt);
 
@@ -233,12 +228,11 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({ product, onClose
             {/* Action Buttons */}
             <div className="pt-6 mt-6 border-t border-[#D6CFC7] flex flex-col gap-2">
               <button
-                onClick={handleOpenTikTok}
+                onClick={() => onOrder?.(product, selectedSize)}
                 className="w-full py-3.5 px-4 bg-[#2D2926] hover:bg-[#5A5A40] text-[#F4F1EE] font-sans text-xs font-black uppercase tracking-widest transition-colors flex items-center justify-center gap-2 shadow-md group"
               >
                 <ShoppingBag className="w-4 h-4 transition-transform group-hover:scale-110" />
-                <span>ORDER ON TIKTOK SHOP</span>
-                <ExternalLink className="w-3.5 h-3.5 text-[#E5E0DA]" />
+                <span>ORDER NOW</span>
               </button>
 
               <div className="flex items-center justify-between text-[11px] text-[#8E8B82] pt-1">

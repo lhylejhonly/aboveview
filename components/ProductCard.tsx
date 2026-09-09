@@ -1,6 +1,6 @@
 'use client';
 import React, { useState, useEffect, useRef } from 'react';
-import { ShoppingBag, ExternalLink, Eye } from 'lucide-react';
+import { ShoppingBag, Eye } from 'lucide-react';
 import { motion, useMotionValue, useSpring, useTransform } from 'motion/react';
 import { Product } from '@/types';
 import { formatPrice } from '@/lib/currency';
@@ -10,14 +10,13 @@ interface ProductCardProps {
   forceFlipped?: boolean;
   soundEnabled?: boolean;
   onQuickView?: (product: Product) => void;
+  onOrder?: (product: Product) => void;
 }
-
-const TIKTOK_SHOP_URL = "https://vt.tiktok.com/ZS9kHEpuhXLUR-ruhtD/";
 
 const versionImage = (url: string, version?: string) =>
   version ? `${url}${url.includes('?') ? '&' : '?'}v=${encodeURIComponent(version)}` : url;
 
-export const ProductCard: React.FC<ProductCardProps> = ({ product, forceFlipped = false, onQuickView }) => {
+export const ProductCard: React.FC<ProductCardProps> = ({ product, forceFlipped = false, onQuickView, onOrder }) => {
   const [isFlipped, setIsFlipped] = useState(forceFlipped);
   const [imageLoadedFront, setImageLoadedFront] = useState(false);
   const [imageLoadedBack, setImageLoadedBack] = useState(false);
@@ -41,8 +40,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, forceFlipped 
     mouseX.set((e.clientX - rect.left) / rect.width);
     mouseY.set((e.clientY - rect.top) / rect.height);
   };
-  const handleOpenTikTok = () => window.open(TIKTOK_SHOP_URL, "_blank", "noopener,noreferrer");
-  const handleImageClick = () => onQuickView ? onQuickView(product) : handleOpenTikTok();
+  const handleImageClick = () => onQuickView ? onQuickView(product) : onOrder?.(product);
   const showBack = isFlipped || isHovered;
   const frontImage = versionImage(product.frontImage, product.updatedAt);
   const backImage = versionImage(product.backImage, product.updatedAt);
@@ -73,10 +71,10 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, forceFlipped 
         </div>
         <div className="p-3.5 sm:p-5 flex flex-col justify-between gap-4 min-w-0 w-full flex-1">
           <div>
-            <h3 onClick={handleOpenTikTok} className="font-sans text-xs sm:text-sm font-extrabold tracking-[0.01em] uppercase text-[#1F1D1B] hover:text-[#B85D3D] transition-colors cursor-pointer line-clamp-2 leading-snug">{product.name}</h3>
+            <h3 onClick={() => onQuickView?.(product)} className="font-sans text-xs sm:text-sm font-extrabold tracking-[0.01em] uppercase text-[#1F1D1B] hover:text-[#B85D3D] transition-colors cursor-pointer line-clamp-2 leading-snug">{product.name}</h3>
             <p className="mt-2 font-sans text-[10px] sm:text-[11px] leading-relaxed text-[#8E8B82] line-clamp-2">{product.description}</p>
           </div>
-          <div className="flex items-center justify-between gap-2 sm:gap-3 min-w-0 w-full"><div className="flex flex-col min-w-0"><span className="font-sans text-sm sm:text-base font-extrabold tracking-tight text-[#1F1D1B] truncate leading-tight">{formatPrice(product.price)}</span>{product.originalPrice && <span className="font-sans text-[9px] sm:text-[10px] font-medium text-[#8E8B82] line-through truncate leading-tight mt-1">{formatPrice(product.originalPrice)}</span>}</div><motion.button onClick={e => { e.stopPropagation(); handleOpenTikTok(); }} whileHover={{ scale: 1.06 }} whileTap={{ scale: 0.95 }} className="inline-flex items-center justify-center gap-1 sm:gap-1.5 px-2.5 sm:px-3 md:px-3.5 py-2 font-sans text-[8px] sm:text-[9px] md:text-[10px] font-bold tracking-wider text-[#F7F5F0] bg-[#1F1D1B] hover:bg-[#2D2926] hover:shadow-[0_6px_16px_rgba(31,29,27,0.24)] uppercase transition-all duration-200 rounded-lg shrink-0 shadow-[0_3px_10px_rgba(31,29,27,0.16)] whitespace-nowrap" id={`order-btn-${product.id}`} title="Order on TikTok Shop"><ShoppingBag className="w-2.5 h-2.5 sm:w-3 sm:h-3 shrink-0 text-[#C2B280]" /><span>ORDER</span><ExternalLink className="w-2 h-2 sm:w-2.5 sm:h-2.5 text-[#E5E0DA] shrink-0 hidden sm:inline-block" /></motion.button></div>
+          <div className="flex items-center justify-between gap-2 sm:gap-3 min-w-0 w-full"><div className="flex flex-col min-w-0"><span className="font-sans text-sm sm:text-base font-extrabold tracking-tight text-[#1F1D1B] truncate leading-tight">{formatPrice(product.price)}</span>{product.originalPrice && <span className="font-sans text-[9px] sm:text-[10px] font-medium text-[#8E8B82] line-through truncate leading-tight mt-1">{formatPrice(product.originalPrice)}</span>}</div><motion.button onClick={e => { e.stopPropagation(); onOrder?.(product); }} whileHover={{ scale: 1.06 }} whileTap={{ scale: 0.95 }} className="inline-flex items-center justify-center gap-1 sm:gap-1.5 px-2.5 sm:px-3 md:px-3.5 py-2 font-sans text-[8px] sm:text-[9px] md:text-[10px] font-bold tracking-wider text-[#F7F5F0] bg-[#1F1D1B] hover:bg-[#2D2926] hover:shadow-[0_6px_16px_rgba(31,29,27,0.24)] uppercase transition-all duration-200 rounded-lg shrink-0 shadow-[0_3px_10px_rgba(31,29,27,0.16)] whitespace-nowrap" id={`order-btn-${product.id}`} title="Open order form"><ShoppingBag className="w-2.5 h-2.5 sm:w-3 sm:h-3 shrink-0 text-[#C2B280]" /><span>ORDER</span></motion.button></div>
         </div>
       </motion.div>
     </div>
