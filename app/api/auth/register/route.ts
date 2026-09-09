@@ -6,9 +6,10 @@ const escapeHtml = (value: string) => value.replace(/[&<>'"]/g, char => ({ '&': 
 
 export async function POST(request: Request) {
   const { email, password } = await request.json() as { email?: string; password?: string };
-  const smtpHost = process.env.SMTP_HOST?.trim();
-  const smtpUser = process.env.SMTP_USER?.trim();
-  const smtpPassword = process.env.SMTP_PASSWORD?.replace(/\s+/g, '');
+  const cleanEnv = (value: string | undefined, key: string) => value?.trim().replace(new RegExp(`^${key}=`, 'i'), '').replace(/^['"]|['"]$/g, '').trim();
+  const smtpHost = cleanEnv(process.env.SMTP_HOST, 'SMTP_HOST');
+  const smtpUser = cleanEnv(process.env.SMTP_USER, 'SMTP_USER');
+  const smtpPassword = cleanEnv(process.env.SMTP_PASSWORD, 'SMTP_PASSWORD')?.replace(/\s+/g, '');
   if (!email || !password || password.length < 6) return NextResponse.json({ error: 'Enter a valid email and a password with at least 6 characters.' }, { status: 400 });
   if (!smtpHost || !smtpUser || !smtpPassword) return NextResponse.json({ error: 'Registration email is not configured yet.' }, { status: 503 });
   if (!smtpHost.includes('.')) return NextResponse.json({ error: 'SMTP_HOST must be a mail server hostname, such as smtp.gmail.com.' }, { status: 503 });
@@ -30,6 +31,7 @@ export async function POST(request: Request) {
     if (createdUserId) await getSupabaseAdmin().auth.admin.deleteUser(createdUserId);
     const smtpError = caught as { code?: string; responseCode?: number };
     if (smtpError.code === 'EAUTH' || smtpError.responseCode === 535) return NextResponse.json({ error: 'Gmail rejected the SMTP login. Use a Gmail App Password, not your normal Gmail password, and update SMTP_USER and SMTP_PASSWORD in Vercel.' }, { status: 502 });
+    if (smtpError.code === 'EDNS' || smtpError.code === 'ENOTFOUND') return NextResponse.json({ error: 'SMTP DNS lookup failed. Set the Vercel SMTP_HOST value to exactly smtp.gmail.com, without quotes or SMTP_HOST=.' }, { status: 502 });
     if (smtpError.code === 'ETIMEDOUT' || smtpError.code === 'ECONNREFUSED' || smtpError.code === 'ESOCKET') return NextResponse.json({ error: `SMTP connection failed (${smtpError.code}). Verify SMTP_HOST=smtp.gmail.com and SMTP_PORT=587 in Vercel.` }, { status: 502 });
     if (smtpError.code === 'EENVELOPE') return NextResponse.json({ error: 'Gmail rejected the sender address. Set SMTP_FROM to Above Apprl <aboveapprl@gmail.com>.' }, { status: 502 });
     return NextResponse.json({ error: `SMTP email failed (${smtpError.code ?? 'UNKNOWN'}). Verify the Gmail SMTP settings in Vercel.` }, { status: 502 });
