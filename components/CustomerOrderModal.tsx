@@ -55,10 +55,12 @@ export function CustomerOrderModal({ product, initialSize, onClose }: CustomerOr
       const result = await supabase.auth.signInWithPassword({ email, password });
       if (result.error) setError(result.error.message); else if (result.data.session) { setUserId(result.data.session.user.id); setMessage('Signed in. Complete your delivery details below.'); }
     } else {
-      const response = await fetch('/api/auth/register', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email, password }) });
-      const data = await response.json() as { error?: string };
-      if (!response.ok) setError(data.error ?? 'Unable to create your account.');
-      else { setMessage('Confirmation email sent by Above Apprl. Open the link in your email, then return here and sign in to continue.'); setAuthMode('sign-in'); }
+      try {
+        const response = await fetch('/api/auth/register', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email, password }), signal: AbortSignal.timeout(15000) });
+        const data = await response.json() as { error?: string };
+        if (!response.ok) setError(data.error ?? 'Unable to create your account.');
+        else { setMessage('Confirmation email sent by Above Apprl. Open the link in your email, then return here and sign in to continue.'); setAuthMode('sign-in'); }
+      } catch { setError('The registration request timed out. Please check your connection and try again.'); }
     }
     setSubmitting(false);
   };
