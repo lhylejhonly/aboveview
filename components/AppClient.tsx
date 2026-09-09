@@ -18,6 +18,7 @@ import { AdminLogin } from '@/components/AdminLogin';
 import { CustomerOrderModal } from '@/components/CustomerOrderModal';
 import { StoreHeader } from '@/components/StoreHeader';
 import { CustomerLoginModal } from '@/components/CustomerLoginModal';
+import { CustomerProfileModal } from '@/components/CustomerProfileModal';
 import { useAdmin } from '@/context/AdminContext';
 import { X } from 'lucide-react';
 
@@ -37,6 +38,7 @@ export default function AppClient() {
   const [orderProduct, setOrderProduct] = useState<Product | null>(null);
   const [orderSize, setOrderSize] = useState<string | undefined>();
   const [customerLoginOpen, setCustomerLoginOpen] = useState(false);
+  const [customerProfileOpen, setCustomerProfileOpen] = useState(false);
   const [customBannerUrl, setCustomBannerUrl] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
@@ -142,7 +144,7 @@ export default function AppClient() {
   return (
     <div className="min-h-screen bg-[#F7F5F0] text-[#1F1D1B] font-sans flex flex-col relative selection:bg-[#1F1D1B] selection:text-[#F7F5F0]">
       <TopProgressBar isLoading={loading} />
-      <StoreHeader onOpenLogin={() => setCustomerLoginOpen(true)} />
+      <StoreHeader onOpenLogin={() => setCustomerLoginOpen(true)} onOpenProfile={() => setCustomerProfileOpen(true)} />
 
       {toastMessage && (
         <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 px-4 py-2.5 bg-[#1F1D1B] text-[#F7F5F0] text-xs font-sans font-semibold tracking-wider shadow-2xl rounded-full border border-[#C2B280]/40 flex items-center gap-2">
@@ -233,6 +235,7 @@ export default function AppClient() {
       <QuickViewModal product={quickViewProduct} onClose={() => setQuickViewProduct(null)} onOrder={(item, size) => { setQuickViewProduct(null); setOrderSize(size); setOrderProduct(item); }} />
       <CustomerOrderModal product={orderProduct} initialSize={orderSize} onClose={() => setOrderProduct(null)} />
       {customerLoginOpen && <CustomerLoginModal onClose={() => setCustomerLoginOpen(false)} />}
+      {customerProfileOpen && <CustomerProfileModal onClose={() => setCustomerProfileOpen(false)} />}
 
       {adminLoginOpen && !isAdmin && <AdminLogin onCancel={() => setAdminLoginOpen(false)} />}
 
