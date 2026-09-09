@@ -27,7 +27,7 @@ export function StoreHeader({ onOpenLogin }: { onOpenLogin?: () => void }) {
     <header className="sticky top-0 z-40 border-b border-[#DDD9D2] bg-[#FCFBF9] text-[#242220] shadow-[0_2px_12px_rgba(31,29,27,0.06)]">
       <div className="relative mx-auto flex h-[72px] w-full max-w-[1920px] items-center justify-between px-5 sm:h-20 sm:px-10 lg:px-16">
         <a href="#top" className="absolute left-1/2 flex h-11 w-20 -translate-x-1/2 items-center justify-center overflow-hidden sm:h-14 sm:w-24" aria-label="Above Apprl home"><img src="/images/logo.png" alt="Above Apprl mountain logo" className="h-full w-full object-contain" /></a>
-        <nav className="ml-auto flex h-full items-center gap-6 sm:gap-8 lg:gap-10" aria-label="Store navigation">
+        <nav className="ml-auto flex h-full w-full items-center justify-end gap-3 sm:w-1/2 sm:gap-5 lg:gap-8" aria-label="Store navigation">
           <a href="#top" className="hidden text-[11px] font-semibold uppercase tracking-[.25em] transition-colors hover:text-[#8C806D] sm:block">Home</a>
           <a href="#collection" onClick={scrollToCollection} className="text-[11px] font-semibold uppercase tracking-[.25em] text-[#77716A] transition-colors hover:text-[#242220]">Shop</a>
           <span className="hidden h-7 w-px bg-[#D8D3CC] sm:block" />
