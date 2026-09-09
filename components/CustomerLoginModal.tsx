@@ -17,10 +17,15 @@ export function CustomerLoginModal({ onClose }: CustomerLoginModalProps) {
 
   const submit = async (event: React.FormEvent) => {
     event.preventDefault(); setLoading(true); setError(''); setMessage('');
-    const result = mode === 'sign-in' ? await supabase.auth.signInWithPassword({ email, password }) : await supabase.auth.signUp({ email, password, options: { emailRedirectTo: window.location.origin } });
-    if (result.error) setError(result.error.message);
-    else if (result.data.session) onClose();
-    else { setMode('sign-in'); setMessage('Confirmation email sent. Open the link in your email, then return here and sign in.'); }
+    if (mode === 'sign-in') {
+      const result = await supabase.auth.signInWithPassword({ email, password });
+      if (result.error) setError(result.error.message); else if (result.data.session) onClose();
+    } else {
+      const response = await fetch('/api/auth/register', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email, password }) });
+      const data = await response.json() as { error?: string };
+      if (!response.ok) setError(data.error ?? 'Unable to create your account.');
+      else { setMode('sign-in'); setMessage('Confirmation email sent by Above Apprl. Open the link in your email, then return here and sign in.'); }
+    }
     setLoading(false);
   };
 
