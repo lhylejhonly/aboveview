@@ -13,6 +13,9 @@ interface CustomerProfile { full_name: string; contact_number: string; destinati
 
 const emptyProfile: CustomerProfile = { full_name: '', contact_number: '', destination: '', address: '', delivery_notes: '' };
 
+const isMissingCustomerProfilesTable = (error: { code?: string; message?: string } | null) =>
+  error?.code === 'PGRST205' || error?.message?.includes("public.customer_profiles") === true;
+
 export function CustomerOrderModal({ product, initialSize, onClose }: CustomerOrderModalProps) {
   const [authMode, setAuthMode] = useState<AuthMode>('sign-in');
   const [email, setEmail] = useState('');
@@ -37,8 +40,10 @@ export function CustomerOrderModal({ product, initialSize, onClose }: CustomerOr
       setUserId(session?.user.id ?? null);
       if (session?.user) {
         setEmail(session.user.email ?? '');
-        const { data } = await supabase.from('customer_profiles').select('full_name, contact_number, destination, address, delivery_notes').eq('id', session.user.id).maybeSingle();
-        if (data) setProfile({ ...emptyProfile, ...data });
+        const { data, error: profileError } = await supabase.from('customer_profiles').select('full_name, contact_number, destination, address, delivery_notes').eq('id', session.user.id).maybeSingle();
+        // Profiles are optional for checkout. An older/deployed Supabase project may
+        // not have this table yet, but it should not prevent placing an order.
+        if (!profileError && data) setProfile({ ...emptyProfile, ...data });
       }
       setAuthLoading(false);
     };
@@ -68,7 +73,7 @@ export function CustomerOrderModal({ product, initialSize, onClose }: CustomerOr
   const handleOrder = async (event: React.FormEvent) => {
     event.preventDefault(); if (!userId) return; setSubmitting(true); setError(''); setMessage('');
     const { error: profileError } = await supabase.from('customer_profiles').upsert({ id: userId, ...profile, updated_at: new Date().toISOString() });
-    if (profileError) { setError(profileError.message); setSubmitting(false); return; }
+    if (profileError && !isMissingCustomerProfilesTable(profileError)) { setError(profileError.message); setSubmitting(false); return; }
     const { data, error: orderError } = await supabase.from('orders').insert({ user_id: userId, product_id: product.id, product_name: product.name, product_code: product.code, size, quantity, unit_price: product.price, ...profile }).select('order_number').single();
     if (orderError) setError(orderError.message);
     else {
