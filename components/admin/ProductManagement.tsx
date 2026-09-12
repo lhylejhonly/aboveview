@@ -122,6 +122,7 @@ function ProductEditor({
               required
               className={input}
               value={form.name}
+              onFocus={(e) => e.currentTarget.select()}
               onChange={(e) => set("name", e.target.value)}
             />
           </label>
@@ -131,6 +132,7 @@ function ProductEditor({
               required
               className={input}
               value={form.code}
+              onFocus={(e) => e.currentTarget.select()}
               onChange={(e) => set("code", e.target.value)}
             />
           </label>
@@ -142,6 +144,7 @@ function ProductEditor({
               step="0.01"
               className={input}
               value={form.price}
+              onFocus={(e) => e.currentTarget.select()}
               onChange={(e) => set("price", Number(e.target.value))}
             />
           </label>
@@ -152,6 +155,7 @@ function ProductEditor({
               type="number"
               className={input}
               value={form.stockCount}
+              onFocus={(e) => e.currentTarget.select()}
               onChange={(e) => set("stockCount", Number(e.target.value))}
             />
           </label>
@@ -247,6 +251,7 @@ function ProductEditor({
               className={input}
               placeholder="Premium cotton, 240 GSM"
               value={form.fabricDetails}
+              onFocus={(e) => e.currentTarget.select()}
               onChange={(e) => set("fabricDetails", e.target.value)}
             />
           </label>
@@ -256,6 +261,7 @@ function ProductEditor({
               className={input}
               placeholder="Regular fit, oversized"
               value={form.fitType}
+              onFocus={(e) => e.currentTarget.select()}
               onChange={(e) => set("fitType", e.target.value)}
             />
           </label>
@@ -312,6 +318,7 @@ function ProductEditor({
               rows={3}
               className={input}
               value={form.description}
+              onFocus={(e) => e.currentTarget.select()}
               onChange={(e) => set("description", e.target.value)}
             />
           </label>
@@ -615,6 +622,7 @@ export function ProductManagement() {
           <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#8d918f]" />
           <input
             value={query}
+            onFocus={(e) => e.currentTarget.select()}
             onChange={(e) => setFilter(setQuery, e.target.value)}
             placeholder="Search products…"
             className="w-full rounded-lg border border-[#deded8] py-2.5 pl-10 pr-3 text-sm outline-none focus:border-[#74784f]"
