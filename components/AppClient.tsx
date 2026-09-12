@@ -14,7 +14,6 @@ import { StylistDrawer } from '@/components/StylistDrawer';
 import { WallpaperGeneratorStudio } from '@/components/WallpaperGeneratorStudio';
 import { QuickViewModal } from '@/components/QuickViewModal';
 import { TopProgressBar } from '@/components/TopProgressBar';
-import { AdminLogin } from '@/components/AdminLogin';
 import { CustomerOrderModal } from '@/components/CustomerOrderModal';
 import { StoreHeader } from '@/components/StoreHeader';
 import { CustomerLoginModal } from '@/components/CustomerLoginModal';
@@ -25,7 +24,6 @@ import { X } from 'lucide-react';
 export default function AppClient() {
   const { isAdmin, products: adminProducts, categories, loading, error } = useAdmin();
   const router = useRouter();
-  const [adminLoginOpen, setAdminLoginOpen] = useState(false);
   const [activeCategory, setActiveCategory] = useState<Category | ''>('');
   const [searchQuery, setSearchQuery] = useState('');
   const [sortBy, setSortBy] = useState('featured');
@@ -65,33 +63,8 @@ export default function AppClient() {
   }, [viewMode]);
 
   useEffect(() => {
-    if (isAdmin) { setAdminLoginOpen(false); router.push('/admin/dashboard'); }
+    if (isAdmin) router.push('/admin/dashboard');
   }, [isAdmin, router]);
-
-  // Secret shortcut: Ctrl + Shift + A opens admin login
-  useEffect(() => {
-    const handler = (e: KeyboardEvent) => {
-      if (e.ctrlKey && e.shiftKey && e.key === 'A') {
-        isAdmin ? router.push('/admin/dashboard') : setAdminLoginOpen(true);
-      }
-    };
-    window.addEventListener('keydown', handler);
-    return () => window.removeEventListener('keydown', handler);
-  }, [isAdmin, router]);
-
-  // Secret mobile trigger: tap logo 3 times within 1.5s
-  const tapCount = React.useRef(0);
-  const tapTimer = React.useRef<ReturnType<typeof setTimeout> | null>(null);
-  const handleLogoTap = () => {
-    tapCount.current += 1;
-    if (tapTimer.current) clearTimeout(tapTimer.current);
-    tapTimer.current = setTimeout(() => { tapCount.current = 0; }, 1500);
-    if (tapCount.current >= 3) {
-      tapCount.current = 0;
-      if (tapTimer.current) clearTimeout(tapTimer.current);
-      isAdmin ? router.push('/admin/dashboard') : setAdminLoginOpen(true);
-    }
-  };
 
   const showToast = (msg: string) => {
     setToastMessage(msg);
@@ -175,7 +148,6 @@ export default function AppClient() {
         onOpenStylist={() => setStylistOpen(true)}
         onOpenTikTokShop={() => window.open("https://vt.tiktok.com/ZSPNJxSdD/?", "_blank", "noopener,noreferrer")}
         onOpenWallpaperStudio={() => setWallpaperStudioOpen(true)}
-        onLogoTap={handleLogoTap}
       />
 
       <FilterBar
@@ -237,7 +209,6 @@ export default function AppClient() {
       {customerLoginOpen && <CustomerLoginModal onClose={() => setCustomerLoginOpen(false)} />}
       {customerProfileOpen && <CustomerProfileModal onClose={() => setCustomerProfileOpen(false)} />}
 
-      {adminLoginOpen && !isAdmin && <AdminLogin onCancel={() => setAdminLoginOpen(false)} />}
 
       <BackToTop />
     </div>

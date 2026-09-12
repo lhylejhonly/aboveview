@@ -13,10 +13,9 @@ interface BrandHeaderProps {
   onOpenStylist?: () => void;
   onOpenTikTokShop?: () => void;
   onOpenWallpaperStudio?: () => void;
-  onLogoTap?: () => void;
 }
 
-export const BrandHeader: React.FC<BrandHeaderProps> = ({ onLogoTap }) => {
+export const BrandHeader: React.FC<BrandHeaderProps> = () => {
   const [animationKey, setAnimationKey] = useState(0);
 
   return (
@@ -59,7 +58,6 @@ export const BrandHeader: React.FC<BrandHeaderProps> = ({ onLogoTap }) => {
           key={`title-${animationKey}`}
           initial={{ opacity: 0, scale: 0.96 }} animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1], delay: 0.15 }}
-          onClick={onLogoTap}
           className="font-climate relative mb-4 w-full select-none text-[clamp(2.5rem,7vw,7rem)] uppercase leading-none tracking-tight sm:mb-6 lg:mb-8"
         >
           ABOVE APPRL
