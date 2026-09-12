@@ -2,11 +2,11 @@
 
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { useState } from 'react';
 import {
   ChevronRight,
   LayoutDashboard,
   Menu,
+  Bell,
   Package,
   Settings,
   Tag,
@@ -14,9 +14,11 @@ import {
   LogOut,
 } from 'lucide-react';
 import { useAdmin } from '@/context/AdminContext';
+import { useEffect, useRef, useState } from 'react';
 
 const navigation = [
   { href: '/admin/dashboard', label: 'Dashboard', icon: LayoutDashboard },
+  { href: '/admin/orders', label: 'Orders', icon: Package },
   { href: '/admin/products', label: 'Products', icon: Package },
   { href: '/admin/categories', label: 'Categories', icon: Tag },
   { href: '/admin/settings', label: 'Settings', icon: Settings },
@@ -88,13 +90,55 @@ export function AdminLayout({ children, title, description, action }: { children
         <main className="min-w-0 flex-1 lg:ml-64">
           <header className="flex min-h-20 items-center justify-between border-b border-[#deded8] bg-[#f8f7f3] px-5 py-4 sm:px-8">
             <div className="flex items-center gap-3"><button aria-label="Open navigation" onClick={() => setOpen(true)} className="rounded-md p-2 text-[#51565b] hover:bg-[#e9e9e3] lg:hidden"><Menu className="h-5 w-5" /></button><div><h1 className="text-xl font-semibold tracking-tight sm:text-2xl">{title}</h1>{description && <p className="mt-1 text-sm text-[#777b80]">{description}</p>}</div></div>
-            {action}
+            <div className="flex items-center gap-3"><OrderNotifications />{action}</div>
           </header>
           <div className="mx-auto max-w-[1500px] p-5 sm:p-8">{children}</div>
         </main>
       </div>
     </div>
   );
+}
+
+function OrderNotifications() {
+  const [count, setCount] = useState(0);
+  const [open, setOpen] = useState(false);
+  const latestOrder = useRef<string | null>(null);
+
+  useEffect(() => {
+    let mounted = true;
+    const checkOrders = async () => {
+      try {
+        const response = await fetch('/api/admin/orders?status=pending', { cache: 'no-store' });
+        if (!response.ok) return;
+        const data = await response.json();
+        if (!mounted) return;
+        const orders = Array.isArray(data.orders) ? data.orders : [];
+        const newest = orders[0];
+        if (latestOrder.current && newest && latestOrder.current !== newest.id) {
+          setCount(value => value + 1);
+          if (typeof window !== 'undefined' && 'Notification' in window && Notification.permission === 'granted') {
+            new Notification('New Above Apprl order', { body: `${newest.order_number} is waiting for review.` });
+          }
+        }
+        if (newest) latestOrder.current = newest.id;
+      } catch { /* The dashboard remains usable if notifications are unavailable. */ }
+    };
+    void checkOrders();
+    const timer = window.setInterval(checkOrders, 15000);
+    return () => { mounted = false; window.clearInterval(timer); };
+  }, []);
+
+  const enableNotifications = async () => {
+    if (typeof window !== 'undefined' && 'Notification' in window && Notification.permission === 'default') await Notification.requestPermission();
+  };
+
+  return <div className="relative">
+    <button aria-label="Order notifications" onClick={() => { setOpen(value => !value); setCount(0); void enableNotifications(); }} className="relative rounded-full border border-[#deded8] bg-white p-2.5 text-[#626741] shadow-sm transition hover:border-[#74784f] hover:bg-[#f3f4ed]">
+      <Bell className="h-4 w-4" strokeWidth={1.8} />
+      {count > 0 && <span className="absolute -right-1 -top-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-[#b56b4d] px-1 text-[9px] font-bold text-white">{count > 9 ? '9+' : count}</span>}
+    </button>
+    {open && <div className="absolute right-0 top-12 z-30 w-64 rounded-xl border border-[#deded8] bg-white p-4 text-xs shadow-xl"><p className="font-semibold text-[#24272b]">Order notifications</p><p className="mt-1 leading-5 text-[#777b80]">New pending orders will appear here and trigger a browser notification.</p><Link href="/admin/orders" className="mt-3 block rounded-lg bg-[#20242b] px-3 py-2 text-center font-semibold text-white hover:bg-[#74784f]">View orders</Link></div>}
+  </div>;
 }
 
 export function AdminAuthGate({ children }: { children: React.ReactNode }) {
