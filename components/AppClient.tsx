@@ -22,7 +22,7 @@ import { useAdmin } from '@/context/AdminContext';
 import { X } from 'lucide-react';
 
 export default function AppClient() {
-  const { isAdmin, products: adminProducts, categories, loading, error } = useAdmin();
+  const { isAdmin, products: adminProducts, categories, loading, error, refresh } = useAdmin();
   const router = useRouter();
   const [activeCategory, setActiveCategory] = useState<Category | ''>('');
   const [searchQuery, setSearchQuery] = useState('');
@@ -167,7 +167,8 @@ export default function AppClient() {
         ) : error ? (
           <div className="mx-auto my-16 max-w-lg rounded-xl border border-[#e2c8bd] bg-[#fff8f5] p-8 text-center">
             <p className="font-sans text-sm font-semibold text-[#8d4937]">The catalog could not be loaded.</p>
-            <p className="mt-2 font-sans text-xs leading-5 text-[#936e62]">Please verify the Supabase environment variables and database policies, then refresh this page.</p>
+            <p className="mt-2 break-words font-mono text-[11px] leading-5 text-[#936e62]">{error}</p>
+            <button onClick={() => void refresh()} className="mt-5 rounded-lg bg-[#2d2926] px-4 py-2 text-[10px] font-bold uppercase tracking-widest text-white hover:bg-[#5a5a40]">Retry loading catalog</button>
           </div>
         ) : (
           <AnimatePresence mode="wait">
