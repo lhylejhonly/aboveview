@@ -7,7 +7,7 @@ export async function fetchProducts(): Promise<Product[]> {
     .from('products')
     .select('*')
     .order('created_at', { ascending: false });
-  if (error) throw error;
+  if (error) throw new Error(`Products: ${error.message}`);
   return (data ?? []).map(dbToProduct);
 }
 
@@ -17,7 +17,7 @@ export async function fetchProductById(id: string): Promise<Product | null> {
     .select('*')
     .eq('id', id)
     .maybeSingle();
-  if (error) throw error;
+  if (error) throw new Error(`Product: ${error.message}`);
   return data ? dbToProduct(data) : null;
 }
 
@@ -48,7 +48,7 @@ export async function fetchCategories(): Promise<CategoryMeta[]> {
     .from('categories')
     .select('*')
     .order('label', { ascending: true });
-  if (error) throw error;
+  if (error) throw new Error(`Categories: ${error.message}`);
   return data ?? [];
 }
 
