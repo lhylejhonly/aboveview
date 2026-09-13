@@ -37,10 +37,12 @@ export function CustomerOrderModal({ product, initialSize, onClose }: CustomerOr
     setMessage(''); setError(''); setSubmittedOrder(null); setAuthLoading(true);
     const loadCustomer = async () => {
       const { data: { session } } = await supabase.auth.getSession();
-      setUserId(session?.user.id ?? null);
-      if (session?.user) {
-        setEmail(session.user.email ?? '');
-        const { data, error: profileError } = await supabase.from('customer_profiles').select('full_name, contact_number, destination, address, delivery_notes').eq('id', session.user.id).maybeSingle();
+      const confirmedSession = session?.user?.email_confirmed_at ? session : null;
+      if (session && !confirmedSession) await supabase.auth.signOut();
+      setUserId(confirmedSession?.user.id ?? null);
+      if (confirmedSession?.user) {
+        setEmail(confirmedSession.user.email ?? '');
+        const { data, error: profileError } = await supabase.from('customer_profiles').select('full_name, contact_number, destination, address, delivery_notes').eq('id', confirmedSession.user.id).maybeSingle();
         // Profiles are optional for checkout. An older/deployed Supabase project may
         // not have this table yet, but it should not prevent placing an order.
         if (!profileError && data) setProfile({ ...emptyProfile, ...data });
@@ -58,7 +60,11 @@ export function CustomerOrderModal({ product, initialSize, onClose }: CustomerOr
     event.preventDefault(); setSubmitting(true); setError(''); setMessage('');
     if (authMode === 'sign-in') {
       const result = await supabase.auth.signInWithPassword({ email, password });
-      if (result.error) setError(result.error.message); else if (result.data.session) { setUserId(result.data.session.user.id); setMessage('Signed in. Complete your delivery details below.'); }
+      if (result.error) setError(result.error.message);
+      else if (result.data.session && !result.data.user.email_confirmed_at) {
+        await supabase.auth.signOut();
+        setError('Please confirm your email address before signing in.');
+      } else if (result.data.session) { setUserId(result.data.session.user.id); setMessage('Signed in. Complete your delivery details below.'); }
     } else {
       try {
         const response = await fetch('/api/auth/register', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email, password }), signal: AbortSignal.timeout(15000) });

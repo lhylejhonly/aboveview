@@ -19,7 +19,11 @@ export function CustomerLoginModal({ onClose }: CustomerLoginModalProps) {
     event.preventDefault(); setLoading(true); setError(''); setMessage('');
     if (mode === 'sign-in') {
       const result = await supabase.auth.signInWithPassword({ email, password });
-      if (result.error) setError(result.error.message); else if (result.data.session) onClose();
+      if (result.error) setError(result.error.message);
+      else if (result.data.session && !result.data.user.email_confirmed_at) {
+        await supabase.auth.signOut();
+        setError('Please confirm your email address before signing in.');
+      } else if (result.data.session) onClose();
     } else {
       try {
         const response = await fetch('/api/auth/register', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email, password }), signal: AbortSignal.timeout(15000) });
