@@ -88,11 +88,11 @@ export function AdminLayout({ children, title, description, action }: { children
           <div className="relative h-full"><AdminSidebar onNavigate={() => setOpen(false)} /><button aria-label="Close navigation" onClick={() => setOpen(false)} className="absolute right-3 top-5 rounded-md p-2 text-[#a4a6a4] hover:bg-[#2c3138]"><X className="h-5 w-5" /></button></div>
         </div>
         <main className="min-w-0 flex-1 lg:ml-64">
-          <header className="flex min-h-20 items-center justify-between border-b border-[#deded8] bg-[#f8f7f3] px-5 py-4 sm:px-8">
-            <div className="flex items-center gap-3"><button aria-label="Open navigation" onClick={() => setOpen(true)} className="rounded-md p-2 text-[#51565b] hover:bg-[#e9e9e3] lg:hidden"><Menu className="h-5 w-5" /></button><div><h1 className="text-xl font-semibold tracking-tight sm:text-2xl">{title}</h1>{description && <p className="mt-1 text-sm text-[#777b80]">{description}</p>}</div></div>
-            <div className="flex items-center gap-3"><OrderNotifications />{action}</div>
+          <header className="flex min-h-20 items-center justify-between gap-3 border-b border-[#deded8] bg-[#f8f7f3] px-4 py-4 sm:px-8">
+            <div className="flex min-w-0 items-center gap-2 sm:gap-3"><button aria-label="Open navigation" onClick={() => setOpen(true)} className="rounded-md p-2 text-[#51565b] hover:bg-[#e9e9e3] lg:hidden"><Menu className="h-5 w-5" /></button><div className="min-w-0"><h1 className="truncate text-xl font-semibold tracking-tight sm:text-2xl">{title}</h1>{description && <p className="mt-1 hidden truncate text-sm text-[#777b80] sm:block">{description}</p>}</div></div>
+            <div className="flex shrink-0 items-center gap-2 sm:gap-3"><OrderNotifications />{action}</div>
           </header>
-          <div className="mx-auto max-w-[1500px] p-5 sm:p-8">{children}</div>
+          <div className="mx-auto max-w-[1500px] p-4 sm:p-8">{children}</div>
         </main>
       </div>
     </div>

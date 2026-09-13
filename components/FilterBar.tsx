@@ -89,7 +89,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
         <div className="flex items-center gap-2">
           <button
             onClick={() => setIsCategoryDropdownOpen(!isCategoryDropdownOpen)}
-            className={`inline-flex items-center gap-2 text-xs font-sans uppercase tracking-[0.14em] py-2 px-5 sm:px-6 border rounded-full transition-all font-bold shadow-xs active:scale-95 ${
+            className={`inline-flex max-w-[calc(100vw-2rem)] items-center gap-2 text-xs font-sans uppercase tracking-[0.14em] py-2 px-4 sm:px-6 border rounded-full transition-all font-bold shadow-xs active:scale-95 ${
               isCategoryDropdownOpen
                 ? 'bg-[#1F1D1B] text-[#F7F5F0] border-[#1F1D1B]'
                 : 'bg-[#EFECE6]/90 text-[#1F1D1B] border-[#E2DDD5] hover:border-[#1F1D1B]'
@@ -115,7 +115,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 exit={{ opacity: 0, y: -10, scale: 0.97 }}
                 transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
-                className="absolute top-full mt-2 z-50 w-72 sm:w-84 md:w-96 max-h-[70vh] overflow-y-auto bg-[#F7F5F0] border border-[#E2DDD5] rounded-2xl shadow-2xl p-2.5 flex flex-col text-left"
+                className="absolute left-1/2 top-full z-50 mt-2 w-[min(20rem,calc(100vw-2rem))] max-h-[70vh] -translate-x-1/2 overflow-y-auto bg-[#F7F5F0] border border-[#E2DDD5] rounded-2xl shadow-2xl p-2.5 flex flex-col text-left"
               >
                 <div className="px-3 py-2 border-b border-[#E2DDD5] flex items-center justify-between mb-1">
                   <span className="text-[10px] font-sans font-bold uppercase tracking-widest text-[#8E8B82]">
@@ -153,12 +153,12 @@ export const FilterBar: React.FC<FilterBarProps> = ({
       </div>
 
       {/* 3. Controls: Search and Sort */}
-      <div className="flex flex-wrap items-center justify-between gap-3 pt-3 max-w-6xl mx-auto">
+      <div className="flex flex-col items-stretch justify-between gap-3 pt-3 max-w-6xl mx-auto sm:flex-row sm:items-center">
         <div className="text-[11px] font-sans text-[#5A5A40] uppercase tracking-wider font-semibold">
           COLLECTION ({activeCategoryLabel})
         </div>
-        <div className="flex flex-wrap items-center gap-2.5">
-          <form onSubmit={handleSearchSubmit} className="relative flex-1 sm:w-48">
+        <div className="flex w-full flex-wrap items-center gap-2.5 sm:w-auto sm:justify-end">
+          <form onSubmit={handleSearchSubmit} className="relative min-w-0 flex-1 sm:w-48 sm:flex-none">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[#8E8B82]" />
             <input
               type="text"

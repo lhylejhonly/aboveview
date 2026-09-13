@@ -115,7 +115,7 @@ export default function AppClient() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F7F5F0] text-[#1F1D1B] font-sans flex flex-col relative selection:bg-[#1F1D1B] selection:text-[#F7F5F0]">
+    <div className="min-h-screen overflow-x-hidden bg-[#F7F5F0] text-[#1F1D1B] font-sans flex flex-col relative selection:bg-[#1F1D1B] selection:text-[#F7F5F0]">
       <TopProgressBar isLoading={loading} />
       <StoreHeader onOpenLogin={() => setCustomerLoginOpen(true)} onOpenProfile={() => setCustomerProfileOpen(true)} />
 
@@ -159,7 +159,7 @@ export default function AppClient() {
         onOpenWallpaperStudio={() => setWallpaperStudioOpen(true)}
       />
 
-      <main id="product-grid-section" className="flex-1 max-w-7xl w-full mx-auto px-2 sm:px-8 py-2">
+      <main id="product-grid-section" className="flex-1 w-full max-w-7xl mx-auto px-3 py-2 sm:px-8">
         {loading ? (
           <div className={`grid gap-3 sm:gap-5 ${viewMode === 'large' ? 'grid-cols-1 md:grid-cols-2 max-w-5xl mx-auto' : 'grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5'}`}>
             {Array.from({ length: 6 }).map((_, i) => <ProductSkeletonCard key={i} viewMode={viewMode === 'large' ? 'large' : 'grid'} />)}
