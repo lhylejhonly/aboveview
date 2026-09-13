@@ -51,8 +51,8 @@ export function AdminProvider({ children }: { children: ReactNode }) {
       const [dbProducts, dbCategories] = await Promise.all([fetchProducts(), fetchCategories()]);
       setProducts(dbProducts);
       setCategories(dbCategories);
-    } catch {
-      setError('Unable to load products and categories.');
+    } catch (reason) {
+      setError(reason instanceof Error ? reason.message : 'Unable to load products and categories.');
     } finally {
       setLoading(false);
     }
@@ -65,8 +65,8 @@ export function AdminProvider({ children }: { children: ReactNode }) {
         const [dbProducts, dbCategories] = await Promise.all([fetchProducts(), fetchCategories()]);
         setProducts(dbProducts);
         setCategories(dbCategories);
-      } catch {
-        setError('Unable to load products and categories.');
+      } catch (reason) {
+        setError(reason instanceof Error ? reason.message : 'Unable to load products and categories.');
       } finally {
         setLoading(false);
       }
