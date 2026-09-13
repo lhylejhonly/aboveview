@@ -152,13 +152,13 @@ export const FilterBar: React.FC<FilterBarProps> = ({
 
       </div>
 
-      {/* 3. Controls: Search and Sort */}
+      {/* 3. Controls: Sort */}
       <div className="flex flex-col items-stretch justify-between gap-3 pt-3 max-w-6xl mx-auto sm:flex-row sm:items-center">
         <div className="text-[11px] font-sans text-[#5A5A40] uppercase tracking-wider font-semibold">
           COLLECTION ({activeCategoryLabel})
         </div>
         <div className="flex w-full flex-wrap items-center gap-2.5 sm:w-auto sm:justify-end">
-          <form onSubmit={handleSearchSubmit} className="relative min-w-0 flex-1 sm:w-48 sm:flex-none">
+          <form onSubmit={handleSearchSubmit} className="hidden">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[#8E8B82]" />
             <input
               type="text"
