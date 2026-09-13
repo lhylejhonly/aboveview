@@ -17,7 +17,10 @@ export async function POST(request: Request) {
 
   let createdUserId: string | undefined;
   try {
-    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? new URL(request.url).origin;
+    // Use the actual host receiving the registration request. This prevents
+    // confirmation emails from redirecting production users to localhost when
+    // a stale NEXT_PUBLIC_SITE_URL value exists in deployment settings.
+    const siteUrl = new URL(request.url).origin;
     const supabase = getSupabaseAdmin();
     const { data, error } = await supabase.auth.admin.generateLink({ type: 'signup', email, password, options: { redirectTo: siteUrl } });
     if (error || !data.properties?.action_link) return NextResponse.json({ error: error?.message ?? 'Unable to create the account.' }, { status: 400 });
