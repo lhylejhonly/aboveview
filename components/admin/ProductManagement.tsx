@@ -89,9 +89,11 @@ function ProductEditor({
       if (product) await updateProduct(payload);
       else await addProduct(payload);
       onClose();
-    } catch {
+    } catch (reason) {
       setSaveError(
-        "Unable to save this product or upload its images. Check Supabase Storage and try again.",
+        reason instanceof Error
+          ? reason.message
+          : "Unable to save this product or upload its images.",
       );
     } finally {
       setSaving(false);

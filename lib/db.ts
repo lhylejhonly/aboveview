@@ -23,19 +23,28 @@ export async function fetchProductById(id: string): Promise<Product | null> {
 
 export async function insertProduct(product: Product): Promise<void> {
   const response = await fetch('/api/admin/catalog', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'insert-product', value: product }) });
-  if (!response.ok) throw new Error('Unable to save product.');
+  if (!response.ok) {
+    const body = await response.json().catch(() => null);
+    throw new Error(body?.error || 'Unable to save product.');
+  }
 }
 
 export async function uploadProductImage(file: File): Promise<string> {
   const form = new FormData(); form.append('file', file);
   const response = await fetch('/api/admin/upload', { method: 'POST', body: form });
-  if (!response.ok) throw new Error('Unable to upload image.');
+  if (!response.ok) {
+    const body = await response.json().catch(() => null);
+    throw new Error(body?.error || 'Unable to upload image.');
+  }
   return (await response.json()).url;
 }
 
 export async function upsertProduct(product: Product): Promise<void> {
   const response = await fetch('/api/admin/catalog', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ action: 'upsert-product', value: product }) });
-  if (!response.ok) throw new Error('Unable to update product.');
+  if (!response.ok) {
+    const body = await response.json().catch(() => null);
+    throw new Error(body?.error || 'Unable to update product.');
+  }
 }
 
 export async function removeProduct(id: string): Promise<void> {

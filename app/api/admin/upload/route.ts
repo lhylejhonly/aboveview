@@ -14,5 +14,7 @@ export async function POST(request: NextRequest) {
     const upload = await supabase.storage.from('products').upload(path, Buffer.from(await file.arrayBuffer()), { cacheControl: '3600', contentType: file.type, upsert: false });
     if (upload.error) throw upload.error;
     return NextResponse.json({ url: supabase.storage.from('products').getPublicUrl(path).data.publicUrl });
-  } catch { return NextResponse.json({ error: 'Image upload failed.' }, { status: 500 }); }
+  } catch (reason) {
+    return NextResponse.json({ error: reason instanceof Error ? reason.message : 'Image upload failed.' }, { status: 500 });
+  }
 }

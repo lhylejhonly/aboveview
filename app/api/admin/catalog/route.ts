@@ -19,5 +19,7 @@ export async function POST(request: NextRequest) {
     else return NextResponse.json({ error: 'Unknown catalog action.' }, { status: 400 });
     if (result.error) throw result.error;
     return NextResponse.json({ ok: true });
-  } catch { return NextResponse.json({ error: 'Catalog operation failed.' }, { status: 500 }); }
+  } catch (reason) {
+    return NextResponse.json({ error: reason instanceof Error ? reason.message : 'Catalog operation failed.' }, { status: 500 });
+  }
 }
