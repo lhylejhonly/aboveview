@@ -18,7 +18,19 @@ export function CustomerLoginModal({ onClose }: CustomerLoginModalProps) {
   const submit = async (event: React.FormEvent) => {
     event.preventDefault(); setLoading(true); setError(''); setMessage('');
     const result = await supabase.auth.signInWithPassword({ email, password });
-    if (result.error) setError(result.error.message);
+    if (result.error) {
+      if (/invalid login credentials|user not found/i.test(result.error.message)) {
+        const signup = await supabase.auth.signUp({ email, password, options: { emailRedirectTo: window.location.origin } });
+        if (!signup.error && signup.data.user && !signup.data.session) {
+          setMessage('Confirmation email sent. Confirm your email, then return here to sign in.');
+        } else if (!signup.error && signup.data.session && !signup.data.user.email_confirmed_at) {
+          await supabase.auth.signOut();
+          setMessage('Confirmation email sent. Confirm your email, then return here to sign in.');
+        } else {
+          setError(result.error.message);
+        }
+      } else setError(result.error.message);
+    }
     else if (result.data.session && !result.data.user.email_confirmed_at) {
       await supabase.auth.signOut();
       setError('Please confirm your email address before signing in.');

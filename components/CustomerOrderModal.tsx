@@ -56,7 +56,15 @@ export function CustomerOrderModal({ product, initialSize, onClose }: CustomerOr
     event.preventDefault(); setSubmitting(true); setError(''); setMessage('');
     if (authMode === 'sign-in') {
       const result = await supabase.auth.signInWithPassword({ email, password });
-      if (result.error) setError(result.error.message);
+      if (result.error) {
+        if (/invalid login credentials|user not found/i.test(result.error.message)) {
+          const signup = await supabase.auth.signUp({ email, password, options: { emailRedirectTo: window.location.origin } });
+          if (!signup.error && signup.data.user) {
+            if (signup.data.session) await supabase.auth.signOut();
+            setMessage('Confirmation email sent. Confirm your email, then return here to sign in.');
+          } else setError(result.error.message);
+        } else setError(result.error.message);
+      }
       else if (result.data.session && !result.data.user.email_confirmed_at) { await supabase.auth.signOut(); setError('Please confirm your email address before signing in.'); }
       else if (result.data.session) { setUserId(result.data.session.user.id); setMessage('Signed in. Complete your delivery details below.'); }
     } else {
