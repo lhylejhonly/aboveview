@@ -1,6 +1,6 @@
 'use client';
 import React, { useState, useEffect, useRef } from 'react';
-import { ShoppingBag, Eye } from 'lucide-react';
+import { ShoppingBag, Eye, RotateCw } from 'lucide-react';
 import { motion, useMotionValue, useSpring, useTransform } from 'motion/react';
 import { Product } from '@/types';
 import { formatPrice } from '@/lib/currency';
@@ -69,6 +69,15 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, forceFlipped 
           </div>
           {product.isComingSoon && <div className="absolute inset-0 z-10 flex items-center justify-center bg-[#2D2926]/25 pointer-events-none"><span className="px-3.5 py-1.5 bg-[#F7F5F0]/95 text-[#2D2926] text-[9px] font-sans font-bold uppercase tracking-widest shadow-lg rounded-md">COMING SOON</span></div>}
           {!product.isComingSoon && <div className="absolute inset-0 z-10 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-350 ease-out pointer-events-none"><span className="px-3.5 py-1.5 bg-[#1F1D1B]/90 text-[#F7F5F0] text-[9px] font-sans font-bold uppercase tracking-widest flex items-center gap-1.5 shadow-lg rounded-md backdrop-blur-xs transform translate-y-2 group-hover:translate-y-0 transition-transform duration-350 ease-out"><Eye className="w-3 h-3 text-[#C2B280]" /><span>QUICK VIEW</span></span></div>}
+          <button
+            type="button"
+            onClick={(e) => { e.stopPropagation(); setIsFlipped(current => !current); }}
+            className="absolute bottom-3 left-3 z-20 inline-flex items-center gap-1.5 rounded-md border border-[#F7F5F0]/70 bg-[#1F1D1B]/85 px-2.5 py-1.5 text-[8px] font-bold uppercase tracking-wider text-[#F7F5F0] shadow-lg backdrop-blur-sm transition-colors hover:bg-[#5A5A40]"
+            aria-label={`Show ${showBack ? 'front' : 'back'} design for ${product.name}`}
+          >
+            <RotateCw className="h-3 w-3 text-[#C2B280]" />
+            <span>{showBack ? 'FRONT' : 'BACK'}</span>
+          </button>
         </div>
         <div className="p-3.5 sm:p-5 flex flex-col justify-between gap-4 min-w-0 w-full flex-1">
           <div>
