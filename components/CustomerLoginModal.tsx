@@ -23,7 +23,7 @@ export function CustomerLoginModal({ onClose }: CustomerLoginModalProps) {
         const signup = await supabase.auth.signUp({ email, password, options: { emailRedirectTo: window.location.origin } });
         if (!signup.error && signup.data.user && !signup.data.session) {
           setMessage('Confirmation email sent. Confirm your email, then return here to sign in.');
-        } else if (!signup.error && signup.data.session && !signup.data.user.email_confirmed_at) {
+        } else if (!signup.error && signup.data.session && !signup.data.user?.email_confirmed_at) {
           await supabase.auth.signOut();
           setMessage('Confirmation email sent. Confirm your email, then return here to sign in.');
         } else {
