@@ -58,11 +58,12 @@ export function CustomerOrderModal({ product, initialSize, onClose }: CustomerOr
       const result = await supabase.auth.signInWithPassword({ email, password });
       if (result.error) {
         if (/invalid login credentials|user not found/i.test(result.error.message)) {
-          const signup = await supabase.auth.signUp({ email, password, options: { emailRedirectTo: window.location.origin } });
-          if (!signup.error && signup.data.user) {
-            if (signup.data.session) await supabase.auth.signOut();
-            setMessage('Confirmation email sent. Confirm your email, then return here to sign in.');
-          } else setError(result.error.message);
+          try {
+            const response = await fetch('/api/auth/register', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email, password }), signal: AbortSignal.timeout(15000) });
+            const data = await response.json() as { error?: string };
+            if (response.ok) setMessage('Confirmation email sent. Confirm your email, then return here to sign in.');
+            else setError(data.error ?? result.error.message);
+          } catch { setError('Unable to send the confirmation email. Please try again.'); }
         } else setError(result.error.message);
       }
       else if (result.data.session && !result.data.user.email_confirmed_at) { await supabase.auth.signOut(); setError('Please confirm your email address before signing in.'); }
