@@ -15,6 +15,11 @@ export async function POST(request: NextRequest) {
     if (upload.error) throw upload.error;
     return NextResponse.json({ url: supabase.storage.from('products').getPublicUrl(path).data.publicUrl });
   } catch (reason) {
-    return NextResponse.json({ error: reason instanceof Error ? reason.message : 'Image upload failed.' }, { status: 500 });
+    const message = reason instanceof Error
+      ? reason.message
+      : reason && typeof reason === 'object' && 'message' in reason
+        ? String(reason.message)
+        : 'Image upload failed.';
+    return NextResponse.json({ error: message }, { status: 500 });
   }
 }
