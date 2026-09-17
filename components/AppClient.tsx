@@ -99,6 +99,7 @@ export default function AppClient() {
       if (sortBy === 'price-high') return b.price - a.price;
       if (sortBy === 'gsm') return b.gsm - a.gsm;
       if (sortBy === 'rating') return b.rating - a.rating;
+      if (!!a.isComingSoon !== !!b.isComingSoon) return a.isComingSoon ? 1 : -1;
       return (b.isBestseller ? 1 : 0) - (a.isBestseller ? 1 : 0);
     });
   }, [activeCategory, searchQuery, sortBy, adminProducts]);
