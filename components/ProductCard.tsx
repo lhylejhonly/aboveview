@@ -72,7 +72,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, forceFlipped 
           <button
             type="button"
             onClick={(e) => { e.stopPropagation(); setIsFlipped(current => !current); }}
-            className="absolute bottom-3 left-3 z-20 inline-flex items-center gap-1.5 rounded-md border border-[#F7F5F0]/70 bg-[#1F1D1B]/85 px-2.5 py-1.5 text-[8px] font-bold uppercase tracking-wider text-[#F7F5F0] shadow-lg backdrop-blur-sm transition-colors hover:bg-[#5A5A40]"
+            className="absolute bottom-3 left-3 z-20 hidden items-center gap-1.5 rounded-md border border-[#F7F5F0]/70 bg-[#1F1D1B]/85 px-2.5 py-1.5 text-[8px] font-bold uppercase tracking-wider text-[#F7F5F0] shadow-lg backdrop-blur-sm transition-colors hover:bg-[#5A5A40] md:inline-flex"
             aria-label={`Show ${showBack ? 'front' : 'back'} design for ${product.name}`}
           >
             <RotateCw className="h-3 w-3 text-[#C2B280]" />
