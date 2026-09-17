@@ -246,12 +246,15 @@ export const FilterBar: React.FC<FilterBarProps> = ({
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-[#D6CFC7]/60 font-light">
-                  {[['XS','27"','21"','9.25"'],['S','28"','22"','9"'],['M','29"','23"','9.5"'],['L','30"','24"','10.25"'],['XL','31"','25"','10.5"'],['2XL','32"','26"','10.75"']].map(([size, ...vals]) => (
-                    <tr key={size}>
-                      <td className="py-2 px-3 font-medium">{size}</td>
-                      {vals.map((v, i) => <td key={i} className="py-2 px-3">{v}</td>)}
+                  {[['XS','27"','21"','9.25"'],['S','28"','22"','9"'],['M','29"','23"','9.5"'],['L','30"','24"','10.25"'],['XL','31"','25"','10.5"'],['2XL','32"','26"','10.75"']].map(([size, ...vals]) => {
+                    const unavailable = ['L', 'XL', '2XL'].includes(size);
+                    return (
+                    <tr key={size} className={unavailable ? 'text-[#9A938B]' : ''}>
+                      <td className={`py-2 px-3 font-medium ${unavailable ? 'line-through' : ''}`}>{size}</td>
+                      {vals.map((v, i) => <td key={i} className={`py-2 px-3 ${unavailable ? 'line-through' : ''}`}>{v}</td>)}
                     </tr>
-                  ))}
+                    );
+                  })}
                 </tbody>
               </table>
             </div>
