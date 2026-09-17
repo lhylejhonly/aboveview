@@ -16,6 +16,7 @@ const emptyProduct = (): Omit<Product, 'id'> => ({
   description: '', frontImage: '', backImage: '', fabricDetails: '',
   gsm: 0, fitType: '', colors: [], sizes: [], tags: [],
   tiktokShopUrl: '', stockCount: 0, rating: 5.0, reviewCount: 0,
+  isComingSoon: false,
 });
 
 function ProductForm({ initial, onSave, onCancel }: {
@@ -79,6 +80,10 @@ function ProductForm({ initial, onSave, onCancel }: {
         <div className="flex items-center gap-3">
           <input type="checkbox" id="isBestseller" checked={!!form.isBestseller} onChange={e => set('isBestseller', e.target.checked)} />
           <label htmlFor="isBestseller" className={labelCls + ' mb-0'}>Mark as Bestseller</label>
+        </div>
+        <div className="flex items-center gap-3">
+          <input type="checkbox" id="isComingSoon" checked={!!form.isComingSoon} onChange={e => set('isComingSoon', e.target.checked)} />
+          <label htmlFor="isComingSoon" className={labelCls + ' mb-0'}>Mark as Coming Soon</label>
         </div>
       </div>
       <div className="flex gap-2 pt-2">
@@ -189,6 +194,7 @@ export function AdminPanel({ onClose }: { onClose: () => void }) {
                         <div className="flex flex-col gap-1">
                           {product.isBestseller && <span className="px-1.5 py-0.5 bg-[#5A5A40] text-[#F7F5F0] text-[9px] uppercase tracking-wider w-fit">Bestseller</span>}
                           {product.isNew && <span className="px-1.5 py-0.5 bg-[#B85D3D] text-[#F7F5F0] text-[9px] uppercase tracking-wider w-fit">New</span>}
+                          {product.isComingSoon && <span className="px-1.5 py-0.5 bg-[#8E8B82] text-[#F7F5F0] text-[9px] uppercase tracking-wider w-fit">Coming Soon</span>}
                           {product.stockCount === 0 && <span className="px-1.5 py-0.5 bg-red-100 text-red-700 text-[9px] uppercase tracking-wider w-fit">Out of Stock</span>}
                         </div>
                       </td>

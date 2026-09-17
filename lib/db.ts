@@ -93,6 +93,7 @@ function productToDb(p: Product) {
     review_count: p.reviewCount,
     is_new: p.isNew ?? false,
     is_bestseller: p.isBestseller ?? false,
+    is_coming_soon: p.isComingSoon ?? false,
   };
 }
 
@@ -122,6 +123,7 @@ function dbToProduct(row: any): Product {
     reviewCount: row.review_count,
     isNew: row.is_new,
     isBestseller: row.is_bestseller,
+    isComingSoon: row.is_coming_soon ?? false,
     createdAt: row.created_at ?? undefined,
     updatedAt: row.updated_at ?? undefined,
   };

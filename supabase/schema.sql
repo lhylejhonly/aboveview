@@ -33,9 +33,12 @@ create table if not exists public.products (
   review_count integer not null default 0,
   is_new boolean not null default false,
   is_bestseller boolean not null default false,
+  is_coming_soon boolean not null default false,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
 );
+
+alter table public.products add column if not exists is_coming_soon boolean not null default false;
 
 create index if not exists products_category_idx on public.products(category);
 create index if not exists products_created_at_idx on public.products(created_at desc);

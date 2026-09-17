@@ -45,6 +45,7 @@ export interface Product {
   reviewCount: number;
   isNew?: boolean;
   isBestseller?: boolean;
+  isComingSoon?: boolean;
   createdAt?: string;
   updatedAt?: string;
 }

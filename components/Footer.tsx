@@ -69,7 +69,7 @@ export const Footer: React.FC<FooterProps> = ({
         </a>
 
         <a
-          href="https://www.instagram.com/by_lhyle?igsi=bzZzNWt5MXoxdzV6&utm_source=ig_contact_invite"
+          href="https://www.instagram.com/by_lhyle"
           target="_blank"
           rel="noopener noreferrer"
           className="text-[#2D2926] hover:text-[#5A5A40] transition-colors p-1"
@@ -89,7 +89,7 @@ export const Footer: React.FC<FooterProps> = ({
         </a>
 
         <a
-          href="https://tiktok.com"
+          href="https://www.tiktok.com/@aboveapprl?_r=1&_t=ZS-99njbFPrjN7"
           target="_blank"
           rel="noopener noreferrer"
           className="text-[#2D2926] hover:text-[#5A5A40] transition-colors p-1"

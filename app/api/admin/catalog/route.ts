@@ -3,7 +3,7 @@ import { ADMIN_SESSION_COOKIE, isValidAdminSession } from '@/lib/admin-auth';
 import { getSupabaseAdmin } from '@/lib/supabase-admin';
 
 function productToDb(p: any) {
-  return { id: p.id, name: p.name, code: p.code, category: p.category, price: p.price, original_price: p.originalPrice ?? null, currency: p.currency, description: p.description, front_image: p.frontImage, back_image: p.backImage, front_feature_highlight: p.frontFeatureHighlight ?? null, back_feature_highlight: p.backFeatureHighlight ?? null, fabric_details: p.fabricDetails, gsm: p.gsm, fit_type: p.fitType, colors: p.colors, sizes: p.sizes, tags: p.tags, tiktok_shop_url: p.tiktokShopUrl, stock_count: p.stockCount, rating: p.rating, review_count: p.reviewCount, is_new: p.isNew ?? false, is_bestseller: p.isBestseller ?? false };
+  return { id: p.id, name: p.name, code: p.code, category: p.category, price: p.price, original_price: p.originalPrice ?? null, currency: p.currency, description: p.description, front_image: p.frontImage, back_image: p.backImage, front_feature_highlight: p.frontFeatureHighlight ?? null, back_feature_highlight: p.backFeatureHighlight ?? null, fabric_details: p.fabricDetails, gsm: p.gsm, fit_type: p.fitType, colors: p.colors, sizes: p.sizes, tags: p.tags, tiktok_shop_url: p.tiktokShopUrl, stock_count: p.stockCount, rating: p.rating, review_count: p.reviewCount, is_new: p.isNew ?? false, is_bestseller: p.isBestseller ?? false, is_coming_soon: p.isComingSoon ?? false };
 }
 
 export async function POST(request: NextRequest) {

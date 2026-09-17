@@ -109,6 +109,13 @@ export default function AppClient() {
     return filteredProducts.slice(start, start + ITEMS_PER_PAGE);
   }, [filteredProducts, currentPage]);
 
+  const activeCollectionComingSoon = useMemo(() => {
+    const collectionProducts = adminProducts.filter(product => product.category === activeCategory);
+    return collectionProducts.length > 0 && collectionProducts.every(product => product.isComingSoon);
+  }, [activeCategory, adminProducts]);
+
+  const activeCollectionLabel = categories.find(category => category.id === activeCategory)?.label;
+
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
     document.getElementById('product-grid-section')?.scrollIntoView({ behavior: 'smooth' });
@@ -158,6 +165,14 @@ export default function AppClient() {
         itemCount={filteredProducts.length} allFlipped={allFlipped} onToggleFlipAll={handleToggleFlipAll}
         onOpenWallpaperStudio={() => setWallpaperStudioOpen(true)}
       />
+
+      {activeCollectionComingSoon && (
+        <div className="mx-3 mb-5 border border-[#D6CFC7] bg-[#E5E0DA] px-5 py-5 text-center sm:mx-8 sm:px-8">
+          <p className="font-sans text-[10px] font-black uppercase tracking-[0.24em] text-[#8E8B82]">Upcoming Collection</p>
+          <h2 className="mt-2 font-cinzel text-lg font-bold uppercase tracking-wide text-[#2D2926]">{activeCollectionLabel}</h2>
+          <p className="mt-2 font-sans text-xs text-[#5A5A40]">This collection is coming soon. Preview the designs now and check back when they launch.</p>
+        </div>
+      )}
 
       <main id="product-grid-section" className="flex-1 w-full max-w-7xl mx-auto px-3 py-2 sm:px-8">
         {loading ? (
