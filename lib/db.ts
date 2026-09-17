@@ -31,7 +31,7 @@ export async function insertProduct(product: Product): Promise<void> {
 
 export async function uploadProductImage(file: File): Promise<string> {
   const form = new FormData(); form.append('file', file);
-  const response = await fetch('/api/admin/upload', { method: 'POST', body: form });
+  const response = await fetch('/api/admin/upload', { method: 'POST', body: form, credentials: 'include' });
   if (!response.ok) {
     const body = await response.json().catch(() => null);
     throw new Error(body?.error || 'Unable to upload image.');
