@@ -25,6 +25,7 @@ const emptyProduct = (category: string): Omit<Product, "id"> => ({
   stockCount: 0,
   rating: 5,
   reviewCount: 0,
+  isComingSoon: false,
 });
 const input =
   "mt-2 w-full rounded-lg border border-[#d9dad4] bg-[#fbfbf8] px-3 py-2.5 text-sm outline-none focus:border-[#74784f]";
@@ -188,6 +189,15 @@ function ProductEditor({
               <option value="active">Active</option>
               <option value="out">Out of stock</option>
             </select>
+          </label>
+          <label className="flex items-center gap-3 self-end rounded-lg border border-[#d9dad4] bg-[#fbfbf8] px-3 py-3 text-sm font-semibold">
+            <input
+              type="checkbox"
+              checked={!!form.isComingSoon}
+              onChange={(e) => set("isComingSoon", e.target.checked)}
+              className="h-4 w-4 accent-[#74784f]"
+            />
+            <span>Mark as Coming Soon</span>
           </label>
           <label className="text-xs font-semibold">
             Available colors
