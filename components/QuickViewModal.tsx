@@ -115,8 +115,16 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({ product, onClose
                 initial={{ opacity: 0.8, scale: 0.98 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.25 }}
-                className="w-full h-full object-cover object-center"
+                className={`w-full h-full object-cover object-center ${product.isComingSoon ? 'blur-[10px] scale-105' : ''}`}
               />
+
+              {product.isComingSoon && (
+                <div className="absolute inset-0 z-10 flex items-center justify-center bg-[#2D2926]/20 pointer-events-none">
+                  <span className="px-3.5 py-1.5 bg-[#F4F1EE]/95 text-[#2D2926] text-[9px] font-sans font-bold uppercase tracking-widest shadow-lg">
+                    COMING SOON
+                  </span>
+                </div>
+              )}
 
               {/* Side Nav Arrows */}
               <button
