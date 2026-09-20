@@ -24,8 +24,12 @@ export function CustomerLoginModal({ onClose }: CustomerLoginModalProps) {
           const response = await fetch('/api/auth/register', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email, password }), signal: AbortSignal.timeout(15000) });
           const data = await response.json() as { error?: string };
           if (response.ok) setMessage('Confirmation email sent. Confirm your email, then return here to sign in.');
-          else setError(data.error ?? result.error.message);
+          else if (/already registered|already been registered/i.test(data.error ?? '')) {
+            setError('This email is already registered. Use the same password you used when creating the account, then sign in again.');
+          } else setError(data.error ?? result.error.message);
         } catch { setError('Unable to send the confirmation email. Please try again.'); }
+      } else if (/email not confirmed/i.test(result.error.message)) {
+        setError('Please confirm your email first. You can resend the confirmation email below.');
       } else setError(result.error.message);
     }
     else if (result.data.session && !result.data.user.email_confirmed_at) {
