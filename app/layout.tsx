@@ -3,8 +3,12 @@ import './globals.css';
 import { AdminProvider } from '@/context/AdminContext';
 
 export const metadata: Metadata = {
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://aboveapprl.com'),
   title: 'Above Apprl — Keep Rising',
   description: 'Earth-tone luxury heavyweight apparel by Lyle.',
+  keywords: ['Above Apprl', 'heavyweight apparel', 'streetwear Philippines', 'raw athleisure'],
+  openGraph: { title: 'Above Apprl — Keep Rising', description: 'Earth-tone heavyweight apparel designed for the everyday ascent.', type: 'website', siteName: 'Above Apprl' },
+  twitter: { card: 'summary_large_image', title: 'Above Apprl — Keep Rising', description: 'Earth-tone heavyweight apparel designed for the everyday ascent.' },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

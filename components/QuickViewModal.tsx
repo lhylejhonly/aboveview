@@ -49,6 +49,8 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({ product, onClose
 
   if (!product) return null;
 
+  const unavailable = !!product.isComingSoon || product.stockCount <= 0;
+
   const currentImage = versionImage(activeSide === 'front' ? product.frontImage : product.backImage, product.updatedAt);
 
   return (
@@ -178,8 +180,8 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({ product, onClose
                       ({product.reviewCount} reviews)
                     </span>
                   </div>
-                  <span className={`text-xs font-sans px-2 py-0.5 border font-medium ${product.isComingSoon ? 'text-[#8E8B82] bg-[#F0EDE8] border-[#D6CFC7]' : 'text-emerald-700 bg-emerald-50 border-emerald-200'}`}>
-                    {product.isComingSoon ? 'Coming Soon' : `In Stock (${product.stockCount} available)`}
+                  <span className={`text-xs font-sans px-2 py-0.5 border font-medium ${unavailable ? 'text-[#8E8B82] bg-[#F0EDE8] border-[#D6CFC7]' : 'text-emerald-700 bg-emerald-50 border-emerald-200'}`}>
+                    {product.isComingSoon ? 'Coming Soon' : product.stockCount <= 0 ? 'Out of Stock' : `In Stock (${product.stockCount} available)`}
                   </span>
                 </div>
               </div>
@@ -241,12 +243,12 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({ product, onClose
             {/* Action Buttons */}
             <div className="pt-6 mt-6 border-t border-[#D6CFC7] flex flex-col gap-2">
               <button
-                onClick={() => { if (!product.isComingSoon) onOrder?.(product, selectedSize); }}
-                disabled={product.isComingSoon}
-                className={`w-full py-3.5 px-4 text-[#F4F1EE] font-sans text-xs font-black uppercase tracking-widest transition-colors flex items-center justify-center gap-2 shadow-md group ${product.isComingSoon ? 'bg-[#8E8B82] cursor-not-allowed' : 'bg-[#2D2926] hover:bg-[#5A5A40]'}`}
+                onClick={() => { if (!unavailable) onOrder?.(product, selectedSize); }}
+                disabled={unavailable}
+                className={`w-full py-3.5 px-4 text-[#F4F1EE] font-sans text-xs font-black uppercase tracking-widest transition-colors flex items-center justify-center gap-2 shadow-md group ${unavailable ? 'bg-[#8E8B82] cursor-not-allowed' : 'bg-[#2D2926] hover:bg-[#5A5A40]'}`}
               >
                 <ShoppingBag className="w-4 h-4" />
-                <span>{product.isComingSoon ? 'COMING SOON' : 'ORDER NOW'}</span>
+                <span>{product.isComingSoon ? 'COMING SOON' : product.stockCount <= 0 ? 'OUT OF STOCK' : 'ORDER NOW'}</span>
               </button>
 
               <div className="flex items-center justify-between text-[11px] text-[#8E8B82] pt-1">
