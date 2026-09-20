@@ -1,7 +1,8 @@
 'use client';
 
 import Link from 'next/link';
-import { AlertTriangle, ArrowUpRight, BarChart3, Box, CheckCircle2, CircleDollarSign, Layers3, Package, Tag, ShoppingBag } from 'lucide-react';
+import { AlertTriangle, ArrowUpRight, BarChart3, Box, CheckCircle2, CircleDollarSign, Layers3, Package, Tag, ShoppingBag, Clock3, MessageCircle } from 'lucide-react';
+import { useEffect, useState } from 'react';
 import { useAdmin } from '@/context/AdminContext';
 import { formatPrice } from '@/lib/currency';
 
@@ -11,6 +12,18 @@ function QuickStat({ label, value, icon: Icon, dark = false }: { label: string; 
 
 export function AdminDashboard() {
   const { products, categories } = useAdmin();
+  const [orderMetrics, setOrderMetrics] = useState({ total: 0, pending: 0, revenue: 0 });
+  const [reviewCount, setReviewCount] = useState(0);
+  useEffect(() => {
+    let active = true;
+    Promise.all([fetch('/api/admin/orders', { cache: 'no-store' }).then(response => response.ok ? response.json() : { orders: [] }), fetch('/api/admin/reviews', { cache: 'no-store' }).then(response => response.ok ? response.json() : { reviews: [] })]).then(([orderData, reviewData]) => {
+      if (!active) return;
+      const orders = Array.isArray(orderData.orders) ? orderData.orders : [];
+      setOrderMetrics({ total: orders.length, pending: orders.filter((order: { status: string }) => order.status === 'pending').length, revenue: orders.reduce((sum: number, order: { unit_price: number; quantity: number }) => sum + Number(order.unit_price) * order.quantity, 0) });
+      setReviewCount(Array.isArray(reviewData.reviews) ? reviewData.reviews.length : 0);
+    }).catch(() => {});
+    return () => { active = false; };
+  }, []);
   const active = products.filter(p => p.stockCount > 0).length;
   const outOfStock = products.filter(p => p.stockCount === 0).length;
   const lowStock = products.filter(p => p.stockCount > 0 && p.stockCount <= 5).length;
@@ -22,7 +35,7 @@ export function AdminDashboard() {
   const recentProducts = products.slice(0, 6);
 
   return <div className="space-y-5">
-    <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-6"><QuickStat label="Total products" value={products.length} icon={Package} /><QuickStat label="Active products" value={active} icon={CheckCircle2} dark /><QuickStat label="Inventory units" value={totalUnits.toLocaleString()} icon={Box} /><QuickStat label="Categories" value={categories.length} icon={Tag} /><QuickStat label="Low stock" value={lowStock} icon={AlertTriangle} /><QuickStat label="Inventory value" value={formatPrice(inventoryValue)} icon={CircleDollarSign} /></div>
+    <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-5"><QuickStat label="Total products" value={products.length} icon={Package} /><QuickStat label="Active products" value={active} icon={CheckCircle2} dark /><QuickStat label="Inventory units" value={totalUnits.toLocaleString()} icon={Box} /><QuickStat label="Categories" value={categories.length} icon={Tag} /><QuickStat label="Low stock" value={lowStock} icon={AlertTriangle} /><QuickStat label="Inventory value" value={formatPrice(inventoryValue)} icon={CircleDollarSign} /><QuickStat label="Orders" value={orderMetrics.total} icon={ShoppingBag} /><QuickStat label="Pending orders" value={orderMetrics.pending} icon={Clock3} /><QuickStat label="Order value" value={formatPrice(orderMetrics.revenue)} icon={CircleDollarSign} /><QuickStat label="Reviews" value={reviewCount} icon={MessageCircle} /></div>
 
     <div className="grid gap-5 xl:grid-cols-[1.45fr_0.85fr]">
       <section className="rounded-2xl border border-[#e0e1dc] bg-white p-5 sm:p-6"><div className="flex items-start justify-between"><div><h2 className="text-lg font-semibold">Statistics</h2><p className="mt-1 text-xs text-[#85898a]">Products distributed across your collections</p></div><div className="flex items-center gap-3 text-[11px] text-[#85898a]"><span className="flex items-center gap-1.5"><i className="h-2 w-2 rounded-full bg-[#20242b]" /> Products</span><span className="flex items-center gap-1.5"><i className="h-2 w-2 rounded-full bg-[#c7c9c3]" /> Inventory units</span></div></div><div className="mt-8 flex h-52 items-end gap-2 border-b border-[#e7e8e2] px-2 sm:gap-4">{categoryStats.slice(0, 8).map(c => <div key={c.id} className="flex h-full flex-1 items-end gap-1.5"><div className="group relative flex h-full flex-1 items-end"><div className="w-full rounded-t-md bg-[#20242b] transition-all hover:bg-[#74784f]" style={{ height: `${Math.max(c.count ? 12 : 3, c.count / maxCategoryCount * 100)}%` }}><span className="absolute -top-6 left-1/2 hidden -translate-x-1/2 rounded bg-[#20242b] px-2 py-1 text-[10px] text-white group-hover:block">{c.count}</span></div></div><div className="hidden h-full flex-1 items-end sm:flex"><div className="w-full rounded-t-md bg-[#c7c9c3]" style={{ height: `${Math.max(c.count ? 9 : 3, Math.min(100, (products.filter(p => p.category === c.id).reduce((s, p) => s + p.stockCount, 0) / Math.max(1, totalUnits)) * 100 * 2))}%` }} /></div></div>)}</div><div className="mt-3 flex gap-2 overflow-hidden px-2">{categoryStats.slice(0, 8).map(c => <span key={c.id} className="min-w-0 flex-1 truncate text-center text-[9px] text-[#85898a]">{c.label.replace('UA ', '').replace('ua ', '')}</span>)}</div></section>
