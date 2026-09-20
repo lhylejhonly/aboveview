@@ -33,11 +33,12 @@ for each row execute function public.refresh_product_review_summary();
 
 create or replace function public.validate_customer_order_product()
 returns trigger language plpgsql security definer set search_path = public as $$
-declare product_available boolean;
+declare product_available boolean; available_stock integer;
 begin
-  select (not is_coming_soon and stock_count > 0) into product_available
-  from public.products where id = new.product_id;
-  if product_available is not true then raise exception 'This product is not available for ordering.'; end if;
+  select (not is_coming_soon), stock_count into product_available, available_stock
+  from public.products where id = new.product_id for update;
+  if product_available is not true or available_stock is null then raise exception 'This product is not available for ordering.'; end if;
+  if new.quantity > available_stock then raise exception 'The requested quantity is not available.'; end if;
   return new;
 end;
 $$;
@@ -45,3 +46,33 @@ $$;
 drop trigger if exists orders_validate_product on public.orders;
 create trigger orders_validate_product before insert on public.orders
 for each row execute function public.validate_customer_order_product();
+
+create or replace function public.reserve_order_stock()
+returns trigger language plpgsql security definer set search_path = public as $$
+begin
+  if new.status <> 'cancelled' then
+    update public.products set stock_count = stock_count - new.quantity where id = new.product_id;
+  end if;
+  return new;
+end;
+$$;
+
+create or replace function public.restore_cancelled_order_stock()
+returns trigger language plpgsql security definer set search_path = public as $$
+begin
+  if old.status <> 'cancelled' and new.status = 'cancelled' then
+    update public.products set stock_count = stock_count + old.quantity where id = old.product_id;
+  elsif old.status = 'cancelled' and new.status <> 'cancelled' then
+    update public.products set stock_count = greatest(0, stock_count - new.quantity) where id = new.product_id;
+  end if;
+  return new;
+end;
+$$;
+
+drop trigger if exists orders_reserve_stock on public.orders;
+create trigger orders_reserve_stock after insert on public.orders
+for each row execute function public.reserve_order_stock();
+
+drop trigger if exists orders_restore_cancelled_stock on public.orders;
+create trigger orders_restore_cancelled_stock after update of status on public.orders
+for each row execute function public.restore_cancelled_order_stock();
