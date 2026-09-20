@@ -1,10 +1,13 @@
 import { NextResponse } from 'next/server';
 import nodemailer from 'nodemailer';
 import { getSupabaseAdmin } from '@/lib/supabase-admin';
+import { consumeRateLimit, requestIp } from '@/lib/rate-limit';
 
 const escapeHtml = (value: string) => value.replace(/[&<>'"]/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' })[char] ?? char);
 
 export async function POST(request: Request) {
+  const limit = consumeRateLimit(`register:${requestIp(request)}`, 5, 10 * 60 * 1000);
+  if (!limit.allowed) return NextResponse.json({ error: 'Too many registration attempts. Please try again later.' }, { status: 429, headers: { 'Retry-After': String(limit.retryAfter) } });
   const { email, password } = await request.json() as { email?: string; password?: string };
   const cleanEnv = (value: string | undefined, key: string) => value?.trim().replace(new RegExp(`^${key}=`, 'i'), '').replace(/^['"]|['"]$/g, '').trim();
   const smtpHost = cleanEnv(process.env.SMTP_HOST, 'SMTP_HOST');
