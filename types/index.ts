@@ -50,4 +50,14 @@ export interface Product {
   updatedAt?: string;
 }
 
+export interface ProductReview {
+  id: string;
+  productId: string;
+  userId: string;
+  displayName: string;
+  rating: number;
+  comment: string;
+  createdAt: string;
+}
+
 export type ViewMode = 'grid' | 'large' | 'compact';

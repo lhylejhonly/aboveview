@@ -4,17 +4,19 @@ import { motion, AnimatePresence } from 'motion/react';
 import { X, ShoppingBag, Star, ShieldCheck, Sparkles, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Product } from '@/types';
 import { formatPrice } from '@/lib/currency';
+import { ProductReviews } from '@/components/ProductReviews';
 
 interface QuickViewModalProps {
   product: Product | null;
   onClose: () => void;
   onOrder?: (product: Product, size: string) => void;
+  onOpenLogin?: () => void;
 }
 
 const versionImage = (url: string, version?: string) =>
   version ? `${url}${url.includes('?') ? '&' : '?'}v=${encodeURIComponent(version)}` : url;
 
-export const QuickViewModal: React.FC<QuickViewModalProps> = ({ product, onClose, onOrder }) => {
+export const QuickViewModal: React.FC<QuickViewModalProps> = ({ product, onClose, onOrder, onOpenLogin }) => {
   const [activeSide, setActiveSide] = useState<'front' | 'back'>('front');
   const [selectedSize, setSelectedSize] = useState<string>(product?.sizes[0] || 'M');
   const [copiedLink, setCopiedLink] = useState(false);
@@ -236,6 +238,8 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({ product, onClose
                   ))}
                 </div>
               </div>
+
+              <ProductReviews productId={product.id} onOpenLogin={onOpenLogin} />
             </div>
 
             {/* Action Buttons */}

@@ -221,7 +221,7 @@ export default function AppClient() {
 
       <StylistDrawer isOpen={stylistOpen} onClose={() => setStylistOpen(false)} />
       <WallpaperGeneratorStudio isOpen={wallpaperStudioOpen} onClose={() => setWallpaperStudioOpen(false)} onApplyBannerToStore={(url) => { setCustomBannerUrl(url); showToast('Applied custom AI banner to Store Hero!'); }} />
-      <QuickViewModal product={quickViewProduct} onClose={() => setQuickViewProduct(null)} onOrder={(item, size) => { setQuickViewProduct(null); setOrderSize(size); setOrderProduct(item); }} />
+      <QuickViewModal product={quickViewProduct} onClose={() => setQuickViewProduct(null)} onOpenLogin={() => setCustomerLoginOpen(true)} onOrder={(item, size) => { setQuickViewProduct(null); setOrderSize(size); setOrderProduct(item); }} />
       <CustomerOrderModal product={orderProduct} initialSize={orderSize} onClose={() => setOrderProduct(null)} />
       {customerLoginOpen && <CustomerLoginModal onClose={() => setCustomerLoginOpen(false)} />}
       {customerProfileOpen && <CustomerProfileModal onClose={() => setCustomerProfileOpen(false)} />}
