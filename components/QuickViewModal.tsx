@@ -10,13 +10,14 @@ interface QuickViewModalProps {
   product: Product | null;
   onClose: () => void;
   onOrder?: (product: Product, size: string) => void;
+  onAddToCart?: (product: Product, size: string) => void;
   onOpenLogin?: () => void;
 }
 
 const versionImage = (url: string, version?: string) =>
   version ? `${url}${url.includes('?') ? '&' : '?'}v=${encodeURIComponent(version)}` : url;
 
-export const QuickViewModal: React.FC<QuickViewModalProps> = ({ product, onClose, onOrder, onOpenLogin }) => {
+export const QuickViewModal: React.FC<QuickViewModalProps> = ({ product, onClose, onOrder, onOpenLogin, onAddToCart }) => {
   const [activeSide, setActiveSide] = useState<'front' | 'back'>('front');
   const [selectedSize, setSelectedSize] = useState<string>(product?.sizes[0] || 'M');
   const [liveReviewStats, setLiveReviewStats] = useState<{ rating: number; count: number } | null>(null);
@@ -247,6 +248,7 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({ product, onClose
 
             {/* Action Buttons */}
             <div className="pt-6 mt-6 border-t border-[#D6CFC7] flex flex-col gap-2">
+              {!unavailable && <button onClick={() => onAddToCart?.(product, selectedSize)} className="w-full border border-[#2D2926] py-3.5 px-4 text-[#2D2926] font-sans text-xs font-black uppercase tracking-widest transition-colors hover:bg-[#EEEAE4]">ADD TO CART</button>}
               <button
                 onClick={() => { if (!unavailable) onOrder?.(product, selectedSize); }}
                 disabled={unavailable}

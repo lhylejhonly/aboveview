@@ -3,7 +3,7 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'motion/react';
-import { Category, ViewMode, Product } from '@/types';
+import { CartItem, Category, ViewMode, Product } from '@/types';
 import { BrandHeader } from '@/components/BrandHeader';
 import { FilterBar } from '@/components/FilterBar';
 import { ProductCard } from '@/components/ProductCard';
@@ -17,6 +17,7 @@ import { TopProgressBar } from '@/components/TopProgressBar';
 import { CustomerOrderModal } from '@/components/CustomerOrderModal';
 import { StoreHeader } from '@/components/StoreHeader';
 import { CustomerLoginModal } from '@/components/CustomerLoginModal';
+import { CartDrawer } from '@/components/CartDrawer';
 import { CustomerProfileModal } from '@/components/CustomerProfileModal';
 import { useAdmin } from '@/context/AdminContext';
 import { X } from 'lucide-react';
@@ -40,6 +41,9 @@ export default function AppClient() {
   const [customBannerUrl, setCustomBannerUrl] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
+  const [cartItems, setCartItems] = useState<CartItem[]>([]);
+  const [cartOpen, setCartOpen] = useState(false);
+  const [cartHydrated, setCartHydrated] = useState(false);
   const ITEMS_PER_PAGE = 6;
 
   useEffect(() => {
@@ -63,6 +67,12 @@ export default function AppClient() {
   }, [viewMode]);
 
   useEffect(() => {
+    try { const saved = localStorage.getItem('above_cart'); if (saved) setCartItems(JSON.parse(saved) as CartItem[]); } catch {} finally { setCartHydrated(true); }
+  }, []);
+
+  useEffect(() => { if (cartHydrated) try { localStorage.setItem('above_cart', JSON.stringify(cartItems)); } catch {} }, [cartHydrated, cartItems]);
+
+  useEffect(() => {
     if (isAdmin) router.push('/admin/dashboard');
   }, [isAdmin, router]);
 
@@ -82,6 +92,13 @@ export default function AppClient() {
     setSoundEnabled(next);
     showToast(next ? 'Card Flip Sound Effects Enabled' : 'Sound Effects Muted');
   };
+
+  const addToCart = (product: Product, size: string) => {
+    setCartItems(current => { const existing = current.find(item => item.product.id === product.id && item.size === size); if (existing) return current.map(item => item === existing ? { ...item, quantity: Math.min(product.stockCount, item.quantity + 1) } : item); return [...current, { product, size, quantity: 1 }]; });
+    setQuickViewProduct(null); setCartOpen(true); showToast('Added to cart');
+  };
+
+  const updateCartQuantity = (productId: string, size: string, quantity: number) => setCartItems(current => quantity <= 0 ? current.filter(item => !(item.product.id === productId && item.size === size)) : current.map(item => item.product.id === productId && item.size === size ? { ...item, quantity } : item));
 
   const filteredProducts = useMemo(() => {
     return adminProducts.filter((product) => {
@@ -125,7 +142,7 @@ export default function AppClient() {
   return (
     <div className="min-h-screen overflow-x-hidden bg-[#F7F5F0] text-[#1F1D1B] font-sans flex flex-col relative selection:bg-[#1F1D1B] selection:text-[#F7F5F0]">
       <TopProgressBar isLoading={loading} />
-      <StoreHeader onOpenLogin={() => setCustomerLoginOpen(true)} onOpenProfile={() => setCustomerProfileOpen(true)} />
+      <StoreHeader onOpenLogin={() => setCustomerLoginOpen(true)} onOpenProfile={() => setCustomerProfileOpen(true)} onOpenCart={() => setCartOpen(true)} cartCount={cartItems.reduce((sum, item) => sum + item.quantity, 0)} />
 
       {toastMessage && (
         <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 px-4 py-2.5 bg-[#1F1D1B] text-[#F7F5F0] text-xs font-sans font-semibold tracking-wider shadow-2xl rounded-full border border-[#C2B280]/40 flex items-center gap-2">
@@ -221,8 +238,9 @@ export default function AppClient() {
 
       <StylistDrawer isOpen={stylistOpen} onClose={() => setStylistOpen(false)} />
       <WallpaperGeneratorStudio isOpen={wallpaperStudioOpen} onClose={() => setWallpaperStudioOpen(false)} onApplyBannerToStore={(url) => { setCustomBannerUrl(url); showToast('Applied custom AI banner to Store Hero!'); }} />
-      <QuickViewModal product={quickViewProduct} onClose={() => setQuickViewProduct(null)} onOpenLogin={() => setCustomerLoginOpen(true)} onOrder={(item, size) => { setQuickViewProduct(null); setOrderSize(size); setOrderProduct(item); }} />
+      <QuickViewModal product={quickViewProduct} onClose={() => setQuickViewProduct(null)} onOpenLogin={() => setCustomerLoginOpen(true)} onAddToCart={addToCart} onOrder={(item, size) => { setQuickViewProduct(null); setOrderSize(size); setOrderProduct(item); }} />
       <CustomerOrderModal product={orderProduct} initialSize={orderSize} onClose={() => setOrderProduct(null)} />
+      {cartOpen && <CartDrawer items={cartItems} onClose={() => setCartOpen(false)} onRemove={(productId, size) => updateCartQuantity(productId, size, 0)} onQuantityChange={updateCartQuantity} onClear={() => setCartItems([])} onCheckout={item => { setCartOpen(false); setOrderSize(item.size); setOrderProduct(item.product); }} />}
       {customerLoginOpen && <CustomerLoginModal onClose={() => setCustomerLoginOpen(false)} />}
       {customerProfileOpen && <CustomerProfileModal onClose={() => setCustomerProfileOpen(false)} />}
 

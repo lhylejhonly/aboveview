@@ -60,4 +60,10 @@ export interface ProductReview {
   createdAt: string;
 }
 
+export interface CartItem {
+  product: Product;
+  size: string;
+  quantity: number;
+}
+
 export type ViewMode = 'grid' | 'large' | 'compact';
