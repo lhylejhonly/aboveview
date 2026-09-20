@@ -8,17 +8,20 @@ import {
   Menu,
   Bell,
   Package,
+  MessageCircle,
   Settings,
   Tag,
   X,
   LogOut,
 } from 'lucide-react';
 import { useAdmin } from '@/context/AdminContext';
+import { supabase } from '@/lib/supabase';
 import { useEffect, useRef, useState } from 'react';
 
 const navigation = [
   { href: '/admin/dashboard', label: 'Dashboard', icon: LayoutDashboard },
   { href: '/admin/orders', label: 'Orders', icon: Package },
+  { href: '/admin/reviews', label: 'Reviews', icon: MessageCircle },
   { href: '/admin/products', label: 'Products', icon: Package },
   { href: '/admin/categories', label: 'Categories', icon: Tag },
   { href: '/admin/settings', label: 'Settings', icon: Settings },
@@ -102,7 +105,7 @@ export function AdminLayout({ children, title, description, action }: { children
 function OrderNotifications() {
   const [count, setCount] = useState(0);
   const [open, setOpen] = useState(false);
-  const [toast, setToast] = useState<{ title: string; body: string } | null>(null);
+  const [toast, setToast] = useState<{ title: string; body: string; link: string; linkLabel: string } | null>(null);
   const orderSnapshot = useRef<Record<string, string> | null>(null);
 
   useEffect(() => {
@@ -119,9 +122,9 @@ function OrderNotifications() {
           const newOrder = orders.find((order: { id: string }) => !orderSnapshot.current?.[order.id]);
           const changedOrder = orders.find((order: { id: string; status: string }) => orderSnapshot.current?.[order.id] && orderSnapshot.current[order.id] !== order.status);
           const update = newOrder
-            ? { title: 'New order received', body: `${newOrder.order_number} is waiting for review.` }
+            ? { title: 'New order received', body: `${newOrder.order_number} is waiting for review.`, link: '/admin/orders', linkLabel: 'Open Orders' }
             : changedOrder
-              ? { title: 'Order updated', body: `${changedOrder.order_number} is now ${changedOrder.status}.` }
+              ? { title: 'Order updated', body: `${changedOrder.order_number} is now ${changedOrder.status}.`, link: '/admin/orders', linkLabel: 'Open Orders' }
               : null;
           if (update) {
             setCount(value => value + 1);
@@ -137,7 +140,12 @@ function OrderNotifications() {
     };
     void checkOrders();
     const timer = window.setInterval(checkOrders, 15000);
-    return () => { mounted = false; window.clearInterval(timer); };
+    const reviewChannel = supabase.channel('admin-review-notifications').on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'product_reviews' }, () => {
+      const update = { title: 'New customer review', body: 'A customer just submitted a rating and comment.', link: '/admin/reviews', linkLabel: 'Open Reviews' };
+      setCount(value => value + 1); setToast(update); window.setTimeout(() => setToast(null), 6000);
+      if (typeof window !== 'undefined' && 'Notification' in window && Notification.permission === 'granted') new Notification(update.title, { body: update.body });
+    }).subscribe();
+    return () => { mounted = false; window.clearInterval(timer); void supabase.removeChannel(reviewChannel); };
   }, []);
 
   const enableNotifications = async () => {
@@ -145,11 +153,11 @@ function OrderNotifications() {
   };
 
   return <div className="relative">
-    <button aria-label="Order notifications" onClick={() => { setOpen(value => !value); setCount(0); void enableNotifications(); }} className="relative rounded-full border border-[#deded8] bg-white p-2.5 text-[#626741] shadow-sm transition hover:border-[#74784f] hover:bg-[#f3f4ed]">
+    <button aria-label="Store notifications" onClick={() => { setOpen(value => !value); setCount(0); void enableNotifications(); }} className="relative rounded-full border border-[#deded8] bg-white p-2.5 text-[#626741] shadow-sm transition hover:border-[#74784f] hover:bg-[#f3f4ed]">
       <Bell className="h-4 w-4" strokeWidth={1.8} />
       {count > 0 && <span className="absolute -right-1 -top-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-[#b56b4d] px-1 text-[9px] font-bold text-white">{count > 9 ? '9+' : count}</span>}
     </button>
-    {open && <div className="absolute right-0 top-12 z-30 w-64 rounded-xl border border-[#deded8] bg-white p-4 text-xs shadow-xl"><p className="font-semibold text-[#24272b]">Order notifications</p><p className="mt-1 leading-5 text-[#777b80]">New pending orders will appear here and trigger a browser notification.</p><Link href="/admin/orders" className="mt-3 block rounded-lg bg-[#20242b] px-3 py-2 text-center font-semibold text-white hover:bg-[#74784f]">View orders</Link></div>}
+    {open && <div className="absolute right-0 top-12 z-30 w-64 rounded-xl border border-[#deded8] bg-white p-4 text-xs shadow-xl"><p className="font-semibold text-[#24272b]">Store notifications</p><p className="mt-1 leading-5 text-[#777b80]">New orders and customer reviews will appear here and trigger a browser notification.</p><div className="mt-3 grid grid-cols-2 gap-2"><Link href="/admin/orders" className="rounded-lg bg-[#20242b] px-2 py-2 text-center font-semibold text-white hover:bg-[#74784f]">Orders</Link><Link href="/admin/reviews" className="rounded-lg border border-[#dfe0da] px-2 py-2 text-center font-semibold text-[#626741] hover:bg-[#f2f3ed]">Reviews</Link></div></div>}
     {toast && <div role="status" className="fixed right-5 top-24 z-[70] w-[min(22rem,calc(100vw-2.5rem))] rounded-xl border border-[#d8dccb] bg-white p-4 shadow-2xl"><p className="text-sm font-semibold text-[#24272b]">{toast.title}</p><p className="mt-1 text-xs leading-5 text-[#777b80]">{toast.body}</p><Link href="/admin/orders" onClick={() => setToast(null)} className="mt-3 inline-block text-xs font-bold text-[#626741] hover:text-[#20242b]">Open Orders →</Link></div>}
   </div>;
 }

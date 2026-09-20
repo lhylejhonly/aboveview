@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { MessageCircle, Send, Star } from 'lucide-react';
+import { MessageCircle, Send, Star, Trash2 } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import { ProductReview } from '@/types';
 
@@ -89,6 +89,14 @@ export function ProductReviews({ productId, onOpenLogin }: ProductReviewsProps) 
     setSubmitting(false);
   };
 
+  const deleteReview = async (reviewId: string) => {
+    if (!userId || !window.confirm('Delete your review?')) return;
+    setError(''); setMessage('');
+    const { error: deleteError } = await supabase.from('product_reviews').delete().eq('id', reviewId).eq('user_id', userId);
+    if (deleteError) setError('Unable to delete your review.');
+    else { setReviews(current => current.filter(review => review.id !== reviewId)); setMessage('Your review was deleted.'); }
+  };
+
   return (
     <section className="border-t border-[#D6CFC7] pt-5" aria-label="Customer reviews">
       <div className="flex items-center justify-between gap-3">
@@ -114,7 +122,7 @@ export function ProductReviews({ productId, onOpenLogin }: ProductReviewsProps) 
       {error && <p className="mt-2 text-[10px] text-[#9A4D3A]">{error}</p>}
       {message && <p className="mt-2 text-[10px] text-[#4D633E]">{message}</p>}
       <div className="mt-4 space-y-3">
-        {loading ? <p className="text-[11px] text-[#8E8B82]">Loading reviews...</p> : reviews.length === 0 ? <p className="text-[11px] text-[#8E8B82]">Be the first customer to leave a review.</p> : reviews.slice(0, 5).map(review => <article key={review.id} className="border-b border-[#E5E0DA] pb-3 last:border-0"><div className="flex items-center justify-between gap-3"><span className="text-[11px] font-semibold text-[#2D2926]">{review.displayName}</span><time className="text-[10px] text-[#8E8B82]">{new Date(review.createdAt).toLocaleDateString()}</time></div><div className="mt-1 flex gap-0.5">{[1, 2, 3, 4, 5].map(star => <Star key={star} className={`h-3 w-3 ${star <= review.rating ? 'fill-[#B85D3D] text-[#B85D3D]' : 'text-[#D6CFC7]'}`} />)}</div><p className="mt-1 text-xs leading-relaxed text-[#4A443F]">{review.comment}</p></article>)}
+        {loading ? <p className="text-[11px] text-[#8E8B82]">Loading reviews...</p> : reviews.length === 0 ? <p className="text-[11px] text-[#8E8B82]">Be the first customer to leave a review.</p> : reviews.slice(0, 5).map(review => <article key={review.id} className="border-b border-[#E5E0DA] pb-3 last:border-0"><div className="flex items-center justify-between gap-3"><span className="text-[11px] font-semibold text-[#2D2926]">{review.displayName}</span><div className="flex items-center gap-2"><time className="text-[10px] text-[#8E8B82]">{new Date(review.createdAt).toLocaleDateString()}</time>{review.userId === userId && <button type="button" onClick={() => void deleteReview(review.id)} className="text-[#9A4D3A] hover:text-[#7A3025]" title="Delete your review" aria-label="Delete your review"><Trash2 className="h-3 w-3" /></button>}</div></div><div className="mt-1 flex gap-0.5">{[1, 2, 3, 4, 5].map(star => <Star key={star} className={`h-3 w-3 ${star <= review.rating ? 'fill-[#B85D3D] text-[#B85D3D]' : 'text-[#D6CFC7]'}`} />)}</div><p className="mt-1 text-xs leading-relaxed text-[#4A443F]">{review.comment}</p></article>)}
       </div>
     </section>
   );
