@@ -1,7 +1,7 @@
 'use client';
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { X, ShoppingBag, Star, ShieldCheck, Sparkles, ChevronLeft, ChevronRight } from 'lucide-react';
+import { X, ShoppingBag, Star, ShieldCheck, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Product } from '@/types';
 import { formatPrice } from '@/lib/currency';
 import { ProductReviews } from '@/components/ProductReviews';
@@ -153,10 +153,6 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({ product, onClose
               <div>
                 <div className="flex items-center justify-between text-[10px] font-mono tracking-widest text-[#8E8B82] uppercase mb-1">
                   <span>CODE: {product.code}</span>
-                  <span className="flex items-center gap-1 text-[#5A5A40]">
-                    <Sparkles className="w-3 h-3" />
-                    <span>RAW ATHLEISURE</span>
-                  </span>
                 </div>
                 <h2 className="font-sans text-lg sm:text-xl font-bold tracking-wider uppercase text-[#2D2926]">
                   {product.name}
