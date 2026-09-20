@@ -121,6 +121,7 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({ product, onClose
                 key={`${product.id}-${activeSide}`}
                 src={currentImage}
                 alt={product.name}
+                decoding="async"
                 referrerPolicy="no-referrer"
                 initial={{ opacity: 0.8, scale: 0.98 }}
                 animate={{ opacity: 1, scale: 1 }}
