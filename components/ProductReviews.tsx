@@ -8,6 +8,7 @@ import { ProductReview } from '@/types';
 interface ProductReviewsProps {
   productId: string;
   onOpenLogin?: () => void;
+  onStatsChange?: (stats: { rating: number; count: number }) => void;
 }
 
 type ReviewRow = {
@@ -30,7 +31,7 @@ const toReview = (row: ReviewRow): ProductReview => ({
   createdAt: row.created_at,
 });
 
-export function ProductReviews({ productId, onOpenLogin }: ProductReviewsProps) {
+export function ProductReviews({ productId, onOpenLogin, onStatsChange }: ProductReviewsProps) {
   const [reviews, setReviews] = useState<ProductReview[]>([]);
   const [rating, setRating] = useState(5);
   const [comment, setComment] = useState('');
@@ -71,6 +72,8 @@ export function ProductReviews({ productId, onOpenLogin }: ProductReviewsProps) 
   }, [loadReviews, productId]);
 
   const average = useMemo(() => reviews.length ? reviews.reduce((sum, review) => sum + review.rating, 0) / reviews.length : 0, [reviews]);
+
+  useEffect(() => { onStatsChange?.({ rating: average, count: reviews.length }); }, [average, onStatsChange, reviews.length]);
 
   const submitReview = async (event: React.FormEvent) => {
     event.preventDefault();

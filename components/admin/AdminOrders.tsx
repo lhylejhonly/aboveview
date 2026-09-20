@@ -1,7 +1,7 @@
 'use client';
 
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { ChevronDown, Clock3, Eye, PackageCheck, RefreshCw, Search, ShoppingBag, X } from 'lucide-react';
+import { ChevronDown, Clock3, Download, Eye, PackageCheck, RefreshCw, Search, ShoppingBag, X } from 'lucide-react';
 import { formatPrice } from '@/lib/currency';
 
 type Order = {
@@ -79,7 +79,7 @@ export function AdminOrders() {
     <section className="overflow-hidden rounded-2xl border border-[#deded8] bg-white shadow-[0_12px_35px_rgba(32,36,43,0.05)]">
       <div className="flex flex-col gap-4 border-b border-[#e8e9e4] p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6">
         <div><h2 className="text-lg font-semibold">Order management</h2><p className="mt-1 text-xs text-[#85898a]">Track every Above Apprl order from checkout to delivery.</p></div>
-        <button onClick={() => void loadOrders()} className="flex items-center justify-center gap-2 rounded-lg border border-[#dfe0da] px-3 py-2 text-xs font-semibold text-[#626741] hover:bg-[#f2f3ed]"><RefreshCw className="h-3.5 w-3.5" /> Refresh</button>
+        <div className="flex gap-2"><button onClick={() => downloadCsv('orders.csv', orders)} className="flex items-center justify-center gap-2 rounded-lg border border-[#dfe0da] px-3 py-2 text-xs font-semibold text-[#626741] hover:bg-[#f2f3ed]"><Download className="h-3.5 w-3.5" /> Export</button><button onClick={() => void loadOrders()} className="flex items-center justify-center gap-2 rounded-lg border border-[#dfe0da] px-3 py-2 text-xs font-semibold text-[#626741] hover:bg-[#f2f3ed]"><RefreshCw className="h-3.5 w-3.5" /> Refresh</button></div>
       </div>
 
       <div className="flex flex-col gap-3 border-b border-[#edede8] bg-[#fbfbf8] p-4 sm:flex-row">
@@ -111,3 +111,12 @@ function OrderDetails({ order, onClose }: { order: Order; onClose: () => void })
 function Detail({ label, value }: { label: string; value: string }) { return <div><p className="text-[10px] font-bold uppercase tracking-widest text-[#85898a]">{label}</p><p className="mt-1 whitespace-pre-wrap text-sm text-[#292c30]">{value}</p></div>; }
 function Summary({ label, value, icon: Icon, accent = false }: { label: string; value: string | number; icon: React.ElementType; accent?: boolean }) { return <div className={`rounded-2xl border p-5 shadow-[0_8px_25px_rgba(32,36,43,0.04)] ${accent ? 'border-[#74784f] bg-[#74784f] text-white' : 'border-[#e0e1dc] bg-white text-[#24272b]'}`}><div className="flex items-center gap-3"><div className={`rounded-xl p-2.5 ${accent ? 'bg-white/15' : 'bg-[#f1f2ed]'}`}><Icon className={`h-4 w-4 ${accent ? 'text-white' : 'text-[#74784f]'}`} /></div><span className={`text-xs ${accent ? 'text-white/70' : 'text-[#85898a]'}`}>{label}</span></div><p className="mt-4 text-2xl font-semibold tracking-tight">{value}</p></div>; }
 function statusClass(status: string) { if (status === 'pending') return 'bg-[#fff0db] text-[#a66327]'; if (status === 'cancelled') return 'bg-[#f5e2dc] text-[#a5523b]'; if (status === 'delivered') return 'bg-[#e7eadb] text-[#58603c]'; return 'bg-[#e8edf4] text-[#52657a]'; }
+
+function downloadCsv(filename: string, rows: Record<string, unknown>[]) {
+  if (!rows.length) return;
+  const columns = Object.keys(rows[0]).filter(key => typeof rows[0][key] !== 'object');
+  const escape = (value: unknown) => `"${String(value ?? '').replace(/"/g, '""')}"`;
+  const csv = [columns.join(','), ...rows.map(row => columns.map(column => escape(row[column])).join(','))].join('\n');
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob); const link = document.createElement('a'); link.href = url; link.download = filename; link.click(); URL.revokeObjectURL(url);
+}

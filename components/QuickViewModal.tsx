@@ -19,12 +19,14 @@ const versionImage = (url: string, version?: string) =>
 export const QuickViewModal: React.FC<QuickViewModalProps> = ({ product, onClose, onOrder, onOpenLogin }) => {
   const [activeSide, setActiveSide] = useState<'front' | 'back'>('front');
   const [selectedSize, setSelectedSize] = useState<string>(product?.sizes[0] || 'M');
+  const [liveReviewStats, setLiveReviewStats] = useState<{ rating: number; count: number } | null>(null);
   const [copiedLink, setCopiedLink] = useState(false);
 
   useEffect(() => {
     if (product) {
       setActiveSide('front');
       setSelectedSize(product.sizes[0] || 'M');
+      setLiveReviewStats(null);
       
       // Prevent background body scroll when modal is open
       document.body.style.overflow = 'hidden';
@@ -74,6 +76,9 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({ product, onClose
           transition={{ type: 'spring', damping: 25, stiffness: 300 }}
           className="relative w-full max-w-4xl bg-[#F4F1EE] border border-[#D6CFC7] shadow-2xl overflow-hidden z-10 max-h-[90vh] flex flex-col md:flex-row my-auto"
           id={`quickview-modal-${product.id}`}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby={`quickview-title-${product.id}`}
         >
           {/* Close Button */}
           <button
@@ -156,7 +161,7 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({ product, onClose
                 <div className="flex items-center justify-between text-[10px] font-mono tracking-widest text-[#8E8B82] uppercase mb-1">
                   <span>CODE: {product.code}</span>
                 </div>
-                <h2 className="font-sans text-lg sm:text-xl font-bold tracking-wider uppercase text-[#2D2926]">
+                <h2 id={`quickview-title-${product.id}`} className="font-sans text-lg sm:text-xl font-bold tracking-wider uppercase text-[#2D2926]">
                   {product.name}
                 </h2>
 
@@ -174,10 +179,10 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({ product, onClose
                       />
                     ))}
                     <span className="text-xs font-sans font-bold text-[#2D2926] ml-1">
-                      {product.rating}
+                      {liveReviewStats?.count ? liveReviewStats.rating.toFixed(1) : product.rating}
                     </span>
                     <span className="text-xs font-sans text-[#8E8B82]">
-                      ({product.reviewCount} reviews)
+                      ({liveReviewStats?.count ?? product.reviewCount} reviews)
                     </span>
                   </div>
                   <span className={`text-xs font-sans px-2 py-0.5 border font-medium ${unavailable ? 'text-[#8E8B82] bg-[#F0EDE8] border-[#D6CFC7]' : 'text-emerald-700 bg-emerald-50 border-emerald-200'}`}>
@@ -237,7 +242,7 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({ product, onClose
                 </div>
               </div>
 
-              {!product.isComingSoon && <ProductReviews productId={product.id} onOpenLogin={onOpenLogin} />}
+              {!product.isComingSoon && <ProductReviews productId={product.id} onOpenLogin={onOpenLogin} onStatsChange={setLiveReviewStats} />}
             </div>
 
             {/* Action Buttons */}
