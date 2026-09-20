@@ -59,6 +59,13 @@ export default function AppClient() {
   }, [categories]);
 
   useEffect(() => {
+    const requestedProduct = new URLSearchParams(window.location.search).get('product');
+    if (!requestedProduct) return;
+    const product = adminProducts.find(item => item.id === requestedProduct);
+    if (product) { setQuickViewProduct(product); window.history.replaceState({}, '', window.location.pathname); }
+  }, [adminProducts]);
+
+  useEffect(() => {
     try {
       const saved = localStorage.getItem('raw_view_mode_preference');
       if (saved === 'grid' || saved === 'large') setViewMode(saved);
