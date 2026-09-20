@@ -2,12 +2,14 @@
 import React, { useState } from 'react';
 import { Facebook, Instagram, Youtube } from 'lucide-react';
 import { BRAND_NAME } from '@/data/products';
+import { StoreInfoTopic } from '@/data/storeInfo';
 
 interface FooterProps {
   currentPage?: number;
   totalPages?: number;
   onPageChange?: (page: number) => void;
   onOpenTikTokShop?: () => void;
+  onOpenInfo?: (topic: StoreInfoTopic) => void;
 }
 
 const TikTokIcon = ({ className = "w-5 h-5" }: { className?: string }) => (
@@ -20,6 +22,7 @@ export const Footer: React.FC<FooterProps> = ({
   currentPage = 1,
   totalPages = 5,
   onPageChange,
+  onOpenInfo,
 }) => {
   const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
 
@@ -111,21 +114,21 @@ export const Footer: React.FC<FooterProps> = ({
 
         {/* Policy Links */}
         <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 font-sans text-xs sm:text-sm font-light text-[#5A5A40] tracking-wide">
-          <a href="#contact" className="hover:text-[#2D2926] transition-colors">
+          <button onClick={() => onOpenInfo?.('contact')} className="hover:text-[#2D2926] transition-colors">
             · Contact Information
-          </a>
-          <a href="#refund" className="hover:text-[#2D2926] transition-colors">
+          </button>
+          <button onClick={() => onOpenInfo?.('refund')} className="hover:text-[#2D2926] transition-colors">
             · Refund Policy
-          </a>
-          <a href="#terms" className="hover:text-[#2D2926] transition-colors">
+          </button>
+          <button onClick={() => onOpenInfo?.('terms')} className="hover:text-[#2D2926] transition-colors">
             · Terms of Service
-          </a>
-          <a href="#privacy" className="hover:text-[#2D2926] transition-colors">
+          </button>
+          <button onClick={() => onOpenInfo?.('privacy')} className="hover:text-[#2D2926] transition-colors">
             · Privacy Policy
-          </a>
-          <a href="#shipping" className="hover:text-[#2D2926] transition-colors">
+          </button>
+          <button onClick={() => onOpenInfo?.('shipping')} className="hover:text-[#2D2926] transition-colors">
             · Shipping Policy
-          </a>
+          </button>
         </div>
       </div>
 

@@ -18,6 +18,8 @@ import { CustomerOrderModal } from '@/components/CustomerOrderModal';
 import { StoreHeader } from '@/components/StoreHeader';
 import { CustomerLoginModal } from '@/components/CustomerLoginModal';
 import { CartDrawer } from '@/components/CartDrawer';
+import { StoreInfoModal } from '@/components/StoreInfoModal';
+import { StoreInfoTopic } from '@/data/storeInfo';
 import { CustomerProfileModal } from '@/components/CustomerProfileModal';
 import { useAdmin } from '@/context/AdminContext';
 import { X } from 'lucide-react';
@@ -43,6 +45,7 @@ export default function AppClient() {
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [cartOpen, setCartOpen] = useState(false);
+  const [storeInfoTopic, setStoreInfoTopic] = useState<StoreInfoTopic | null>(null);
   const [cartHydrated, setCartHydrated] = useState(false);
   const ITEMS_PER_PAGE = 6;
 
@@ -234,13 +237,14 @@ export default function AppClient() {
         )}
       </main>
 
-      <Footer currentPage={currentPage} totalPages={totalPages} onPageChange={handlePageChange} />
+      <Footer currentPage={currentPage} totalPages={totalPages} onPageChange={handlePageChange} onOpenInfo={setStoreInfoTopic} />
 
       <StylistDrawer isOpen={stylistOpen} onClose={() => setStylistOpen(false)} />
       <WallpaperGeneratorStudio isOpen={wallpaperStudioOpen} onClose={() => setWallpaperStudioOpen(false)} onApplyBannerToStore={(url) => { setCustomBannerUrl(url); showToast('Applied custom AI banner to Store Hero!'); }} />
       <QuickViewModal product={quickViewProduct} onClose={() => setQuickViewProduct(null)} onOpenLogin={() => setCustomerLoginOpen(true)} onAddToCart={addToCart} onOrder={(item, size) => { setQuickViewProduct(null); setOrderSize(size); setOrderProduct(item); }} />
       <CustomerOrderModal product={orderProduct} initialSize={orderSize} onClose={() => setOrderProduct(null)} />
       {cartOpen && <CartDrawer items={cartItems} onClose={() => setCartOpen(false)} onRemove={(productId, size) => updateCartQuantity(productId, size, 0)} onQuantityChange={updateCartQuantity} onClear={() => setCartItems([])} onCheckout={item => { setCartOpen(false); setOrderSize(item.size); setOrderProduct(item.product); }} />}
+      <StoreInfoModal topic={storeInfoTopic} onClose={() => setStoreInfoTopic(null)} />
       {customerLoginOpen && <CustomerLoginModal onClose={() => setCustomerLoginOpen(false)} />}
       {customerProfileOpen && <CustomerProfileModal onClose={() => setCustomerProfileOpen(false)} />}
 
