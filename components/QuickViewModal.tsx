@@ -239,7 +239,7 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({ product, onClose
                 </div>
               </div>
 
-              <ProductReviews productId={product.id} onOpenLogin={onOpenLogin} />
+              {!product.isComingSoon && <ProductReviews productId={product.id} onOpenLogin={onOpenLogin} />}
             </div>
 
             {/* Action Buttons */}
