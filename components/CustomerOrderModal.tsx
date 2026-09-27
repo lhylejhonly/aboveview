@@ -84,11 +84,18 @@ export function CustomerOrderModal({ product, initialSize, onClose }: CustomerOr
     event.preventDefault(); if (!userId) return; setSubmitting(true); setError(''); setMessage('');
     const { error: profileError } = await supabase.from('customer_profiles').upsert({ id: userId, ...profile, updated_at: new Date().toISOString() });
     if (profileError && !isMissingCustomerProfilesTable(profileError)) { setError(profileError.message); setSubmitting(false); return; }
-    const { data, error: orderError } = await supabase.from('orders').insert({ user_id: userId, product_id: product.id, product_name: product.name, product_code: product.code, size, quantity, unit_price: product.price, ...profile }).select('order_number').single();
+    const { data, error: orderError } = await supabase.from('orders').insert({ user_id: userId, product_id: product.id, product_name: product.name, product_code: product.code, size, quantity, unit_price: product.price, ...profile }).select('id, order_number').single();
     if (orderError) setError(orderError.message);
     else {
-      try { await fetch('/api/orders/notify', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ orderNumber: data.order_number, customerEmail: email, customerName: profile.full_name, contactNumber: profile.contact_number, destination: profile.destination, address: profile.address, deliveryNotes: profile.delivery_notes, productName: product.name, productCode: product.code, size, quantity, total: formatPrice(product.price * quantity) }) }); } catch { /* The saved order remains valid if email delivery is temporarily unavailable. */ }
-      setSubmittedOrder(data.order_number);
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) { setError('Your session has expired. Please sign in again.'); setSubmitting(false); return; }
+      try {
+        const paymentResponse = await fetch('/api/payments/paymongo/checkout', { method: 'POST', headers: { Authorization: `Bearer ${session.access_token}`, 'Content-Type': 'application/json' }, body: JSON.stringify({ orderId: data.id }) });
+        const paymentData = await paymentResponse.json() as { checkoutUrl?: string; error?: string };
+        if (!paymentResponse.ok || !paymentData.checkoutUrl) { setError(paymentData.error ?? 'Unable to start payment.'); setSubmitting(false); return; }
+        try { await fetch('/api/orders/notify', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ orderNumber: data.order_number, customerEmail: email, customerName: profile.full_name, contactNumber: profile.contact_number, destination: profile.destination, address: profile.address, deliveryNotes: profile.delivery_notes, productName: product.name, productCode: product.code, size, quantity, total: formatPrice(product.price * quantity) }) }); } catch { /* The saved order remains valid if email delivery is temporarily unavailable. */ }
+        window.location.href = paymentData.checkoutUrl;
+      } catch { setError('Unable to connect to PayMongo. Please try again.'); }
     }
     setSubmitting(false);
   };
