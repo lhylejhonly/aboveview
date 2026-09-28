@@ -110,9 +110,6 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({ product, onClose
                   COMING SOON
                 </span>
               )}
-              <span className="px-2 py-0.5 bg-[#F4F1EE]/90 text-[#2D2926] font-mono text-[9px] font-medium tracking-wider border border-[#D6CFC7]">
-                {product.gsm} GSM
-              </span>
             </div>
 
             {/* Main Image View */}

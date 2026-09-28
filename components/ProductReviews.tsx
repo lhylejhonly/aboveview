@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { MessageCircle, Send, Star, Trash2 } from 'lucide-react';
+import { ChevronDown, MessageCircle, Send, Star, Trash2 } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 import { ProductReview } from '@/types';
 
@@ -40,6 +40,7 @@ export function ProductReviews({ productId, onOpenLogin, onStatsChange }: Produc
   const [submitting, setSubmitting] = useState(false);
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
+  const [expanded, setExpanded] = useState(false);
 
   const loadReviews = useCallback(async () => {
     setLoading(true);
@@ -103,16 +104,26 @@ export function ProductReviews({ productId, onOpenLogin, onStatsChange }: Produc
   return (
     <section className="border-t border-[#D6CFC7] pt-5" aria-label="Customer reviews">
       <div className="flex items-center justify-between gap-3">
+        <button
+          type="button"
+          onClick={() => setExpanded(current => !current)}
+          className="group flex min-w-0 items-center gap-3 text-left"
+          aria-expanded={expanded}
+          aria-controls={`reviews-panel-${productId}`}
+        >
         <div>
-          <h3 className="flex items-center gap-2 text-xs font-bold uppercase tracking-wider text-[#2D2926]"><MessageCircle className="h-4 w-4 text-[#8C806D]" /> Customer reviews</h3>
+          <h3 className="text-xs font-bold uppercase tracking-wider text-[#2D2926]">Customer reviews</h3>
           <div className="mt-1 flex items-center gap-2 text-[11px] text-[#8E8B82]">
             <span className="flex items-center gap-0.5">{[1, 2, 3, 4, 5].map(star => <Star key={star} className={`h-3 w-3 ${star <= Math.round(average) ? 'fill-[#B85D3D] text-[#B85D3D]' : 'text-[#D6CFC7]'}`} />)}</span>
             <span>{reviews.length ? `${average.toFixed(1)} · ${reviews.length} review${reviews.length === 1 ? '' : 's'}` : 'No reviews yet'}</span>
           </div>
         </div>
+        <ChevronDown className={`h-4 w-4 shrink-0 text-[#8E8B82] transition-transform duration-200 group-hover:text-[#2D2926] ${expanded ? 'rotate-180' : ''}`} />
+        </button>
         {!userId && <button type="button" onClick={onOpenLogin} className="text-[10px] font-bold uppercase tracking-wider text-[#8C806D] hover:text-[#2D2926]">Sign in to review</button>}
       </div>
 
+      <div id={`reviews-panel-${productId}`} hidden={!expanded}>
       {userId && <form onSubmit={submitReview} className="mt-4 rounded border border-[#D6CFC7] bg-[#F9F7F3] p-3">
         <div className="flex items-center justify-between gap-3">
           <span className="text-[10px] font-bold uppercase tracking-wider text-[#6F6963]">Your rating</span>
@@ -126,6 +137,7 @@ export function ProductReviews({ productId, onOpenLogin, onStatsChange }: Produc
       {message && <p className="mt-2 text-[10px] text-[#4D633E]">{message}</p>}
       <div className="mt-4 space-y-3">
         {loading ? <p className="text-[11px] text-[#8E8B82]">Loading reviews...</p> : reviews.length === 0 ? <p className="text-[11px] text-[#8E8B82]">Be the first customer to leave a review.</p> : reviews.slice(0, 5).map(review => <article key={review.id} className="border-b border-[#E5E0DA] pb-3 last:border-0"><div className="flex items-center justify-between gap-3"><span className="text-[11px] font-semibold text-[#2D2926]">{review.displayName}</span><div className="flex items-center gap-2"><time className="text-[10px] text-[#8E8B82]">{new Date(review.createdAt).toLocaleDateString()}</time>{review.userId === userId && <button type="button" onClick={() => void deleteReview(review.id)} className="text-[#9A4D3A] hover:text-[#7A3025]" title="Delete your review" aria-label="Delete your review"><Trash2 className="h-3 w-3" /></button>}</div></div><div className="mt-1 flex gap-0.5">{[1, 2, 3, 4, 5].map(star => <Star key={star} className={`h-3 w-3 ${star <= review.rating ? 'fill-[#B85D3D] text-[#B85D3D]' : 'text-[#D6CFC7]'}`} />)}</div><p className="mt-1 text-xs leading-relaxed text-[#4A443F]">{review.comment}</p></article>)}
+      </div>
       </div>
     </section>
   );
