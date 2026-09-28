@@ -1,11 +1,14 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
+import { motion } from 'motion/react';
 import { ShoppingBag, ShoppingCart, UserRound } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
 
 export function StoreHeader({ onOpenLogin, onOpenProfile, onOpenCart, cartCount = 0 }: { onOpenLogin?: () => void; onOpenProfile?: () => void; onOpenCart?: () => void; cartCount?: number }) {
   const [email, setEmail] = useState<string | null>(null);
+  const [cartBump, setCartBump] = useState(false);
+  const previousCartCount = useRef<number | null>(null);
 
   useEffect(() => {
     let mounted = true;
@@ -18,6 +21,19 @@ export function StoreHeader({ onOpenLogin, onOpenProfile, onOpenCart, cartCount 
     return () => { mounted = false; subscription.unsubscribe(); };
   }, []);
 
+  useEffect(() => {
+    if (previousCartCount.current === null) {
+      previousCartCount.current = cartCount;
+      return;
+    }
+    if (previousCartCount.current !== cartCount) {
+      previousCartCount.current = cartCount;
+      setCartBump(true);
+      const timer = window.setTimeout(() => setCartBump(false), 500);
+      return () => window.clearTimeout(timer);
+    }
+  }, [cartCount]);
+
   const scrollToCollection = (event: React.MouseEvent<HTMLElement>) => {
     event.preventDefault();
     document.getElementById('product-grid-section')?.scrollIntoView({ behavior: 'smooth' });
@@ -29,7 +45,7 @@ export function StoreHeader({ onOpenLogin, onOpenProfile, onOpenCart, cartCount 
         <a href="#top" className="absolute left-1/2 flex h-16 w-28 -translate-x-1/2 items-center justify-center overflow-visible sm:h-20 sm:w-36" aria-label="Above Apprl home"><img src="/images/logo.png" alt="Above Apprl mountain logo" className="h-full w-full object-contain" /></a>
         <nav className="ml-auto flex min-w-0 items-center justify-end gap-0.5 sm:h-full sm:gap-4 md:gap-6 lg:gap-8" aria-label="Store actions">
           <button onClick={scrollToCollection} className="p-1.5 transition-colors hover:text-[#8C806D]" title="View shopping collection" aria-label="View shopping collection"><ShoppingBag className="h-5 w-5 stroke-[1.45]" /></button>
-          <button onClick={onOpenCart} className="relative p-1.5 transition-colors hover:text-[#8C806D]" title="Open cart" aria-label={`Open cart${cartCount ? `, ${cartCount} item${cartCount === 1 ? '' : 's'}` : ''}`}><ShoppingCart className="h-5 w-5 stroke-[1.45]" />{cartCount > 0 && <span className="absolute -right-1 -top-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-[#B85D3D] px-1 text-[9px] font-bold text-white">{cartCount > 9 ? '9+' : cartCount}</span>}</button>
+          <motion.button onClick={onOpenCart} animate={cartBump ? { scale: [1, 1.16, 1] } : { scale: 1 }} transition={{ duration: 0.35, ease: 'easeOut' }} className="relative p-1.5 transition-colors hover:text-[#8C806D]" title="Open cart" aria-label={`Open cart${cartCount ? `, ${cartCount} item${cartCount === 1 ? '' : 's'}` : ''}`}><ShoppingCart className="h-5 w-5 stroke-[1.45]" />{cartCount > 0 && <motion.span animate={cartBump ? { scale: [1, 1.35, 1] } : { scale: 1 }} transition={{ duration: 0.35 }} className="absolute -right-1 -top-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-[#B85D3D] px-1 text-[9px] font-bold text-white">{cartCount > 9 ? '9+' : cartCount}</motion.span>}</motion.button>
           {email ? <div className="flex min-w-0 items-center gap-1.5 sm:gap-2.5"><div className="hidden text-right leading-tight lg:block"><p className="text-[8px] font-bold uppercase tracking-[.18em] text-[#8C806D]">Member access</p><p className="mt-1 max-w-[150px] truncate text-[10px] text-[#77716A]">{email}</p></div><button onClick={onOpenProfile} className="relative flex min-h-9 shrink-0 items-center gap-1.5 border border-[#D9D3CA] px-2 text-[#242220] transition-colors hover:border-[#8C806D] hover:text-[#8C806D] sm:min-h-10 sm:px-2.5" title="Open customer profile" aria-label="Open customer profile"><UserRound className="h-5 w-5 stroke-[1.45]" /><span className="hidden text-[9px] font-bold uppercase tracking-wider sm:inline">Profile</span></button></div> : <button onClick={onOpenLogin} className="flex min-h-9 shrink-0 items-center gap-2 border border-[#2D2926] bg-[#2D2926] px-2 text-[#FCFBF9] transition-colors hover:bg-[#5A5A40] sm:min-h-10 sm:px-3" title="Sign in or create account" aria-label="Sign in or create account"><UserRound className="h-4 w-4 shrink-0 stroke-[1.45]" /><span className="hidden text-[9px] font-bold uppercase tracking-[.14em] sm:inline">Sign in to order</span></button>}
         </nav>
       </div>

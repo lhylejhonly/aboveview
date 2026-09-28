@@ -155,10 +155,10 @@ export default function AppClient() {
       <StoreHeader onOpenLogin={() => setCustomerLoginOpen(true)} onOpenProfile={() => setCustomerProfileOpen(true)} onOpenCart={() => setCartOpen(true)} cartCount={cartItems.reduce((sum, item) => sum + item.quantity, 0)} />
 
       {toastMessage && (
-        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 px-4 py-2.5 bg-[#1F1D1B] text-[#F7F5F0] text-xs font-sans font-semibold tracking-wider shadow-2xl rounded-full border border-[#C2B280]/40 flex items-center gap-2">
+        <motion.div initial={{ opacity: 0, y: 12, scale: 0.94 }} animate={{ opacity: 1, y: 0, scale: 1 }} className="fixed bottom-6 left-1/2 z-50 flex -translate-x-1/2 items-center gap-2 rounded-full border border-[#C2B280]/40 bg-[#1F1D1B] px-4 py-2.5 text-xs font-sans font-semibold tracking-wider text-[#F7F5F0] shadow-2xl">
           <span className="w-2 h-2 rounded-full bg-[#C2B280]" />
           <span>{toastMessage}</span>
-        </div>
+        </motion.div>
       )}
 
       {customBannerUrl && (
