@@ -1,0 +1,3 @@
+import Link from 'next/link';
+
+export default function MayaPaymentFailedPage() { return <main className="flex min-h-screen items-center justify-center bg-[#f6f3ee] px-5 text-center"><div className="max-w-md"><p className="text-xs font-bold uppercase tracking-[.2em] text-[#b85d3d]">Payment failed</p><h1 className="mt-4 text-3xl font-semibold text-[#2d2927]">Payment was not completed.</h1><p className="mt-3 text-sm leading-6 text-[#6f6963]">No payment was confirmed. You can return to the store and try again.</p><Link href="/" className="mt-7 inline-flex rounded-lg bg-[#2d2927] px-5 py-3 text-xs font-bold uppercase tracking-wider text-white">Return to store</Link></div></main>; }

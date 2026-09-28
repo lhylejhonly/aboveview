@@ -20,7 +20,6 @@ type Order = {
   status: string;
   payment_status?: string;
   payment_provider?: string | null;
-  payment_reference?: string | null;
   created_at: string;
 };
 
@@ -104,7 +103,7 @@ function OrderDetails({ order, onClose }: { order: Order; onClose: () => void })
       <div className="flex items-start justify-between border-b border-[#e4e5df] p-5 sm:p-6"><div><p className="text-[10px] font-bold uppercase tracking-[0.24em] text-[#74784f]">Customer and order details</p><h2 className="mt-2 text-xl font-semibold">{order.order_number}</h2></div><button onClick={onClose} aria-label="Close details" className="rounded-full p-2 text-[#6d706c] hover:bg-[#edeee8]"><X className="h-5 w-5" /></button></div>
       <div className="border-b border-[#e4e5df] bg-[#f2f3ed] px-5 py-4 sm:px-6"><p className="text-[10px] font-bold uppercase tracking-[.16em] text-[#626741]">J&amp;T shipment fields</p><div className="mt-3 grid gap-3 sm:grid-cols-2"><CopyField label="Receiver name" value={order.full_name} /><CopyField label="Mobile number" value={order.contact_number} /><CopyField label="Address / city" value={`${order.address}, ${order.destination}`} /><CopyField label="COD amount" value={formatPrice(Number(order.unit_price) * order.quantity)} /></div></div><div className="grid gap-6 p-5 sm:grid-cols-2 sm:p-6">
         <div className="space-y-4"><h3 className="text-sm font-semibold">Customer</h3><Detail label="Full name" value={order.full_name} /><Detail label="Contact number" value={order.contact_number} /><Detail label="Destination / city" value={order.destination} /><Detail label="Complete address" value={order.address} /><Detail label="Delivery notes" value={order.delivery_notes || 'None'} /></div>
-        <div className="space-y-4"><h3 className="text-sm font-semibold">Order</h3><Detail label="Product" value={order.product_name} /><Detail label="Product code" value={order.product_code} /><Detail label="Size" value={order.size} /><Detail label="Quantity" value={String(order.quantity)} /><Detail label="Total" value={formatPrice(Number(order.unit_price) * order.quantity)} /><Detail label="Order status" value={order.status} /><Detail label="Payment status" value={order.payment_status ?? 'unpaid'} /></div>
+        <div className="space-y-4"><h3 className="text-sm font-semibold">Order</h3><Detail label="Product" value={order.product_name} /><Detail label="Product code" value={order.product_code} /><Detail label="Size" value={order.size} /><Detail label="Quantity" value={String(order.quantity)} /><Detail label="Total" value={formatPrice(Number(order.unit_price) * order.quantity)} /><Detail label="Status" value={order.status} /><Detail label="Payment status" value={order.payment_status ?? 'unpaid'} /></div>
       </div>
       <div className="flex justify-end border-t border-[#e4e5df] p-5 sm:p-6"><button onClick={onClose} className="rounded-lg bg-[#2d2927] px-5 py-2.5 text-xs font-bold text-white hover:bg-[#46403c]">Close</button></div>
     </div>
