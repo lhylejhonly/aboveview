@@ -7,7 +7,7 @@ export async function POST(request: NextRequest) {
   try {
     const form = await request.formData();
     const file = form.get('file');
-    if (!(file instanceof File) || file.size > 10 * 1024 * 1024) return NextResponse.json({ error: 'Invalid or oversized file.' }, { status: 400 });
+    if (!(file instanceof File)) return NextResponse.json({ error: 'Invalid file.' }, { status: 400 });
     if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type)) return NextResponse.json({ error: 'Unsupported image type.' }, { status: 400 });
     const path = `${Date.now()}-${file.name.replace(/[^a-z0-9.-]/gi, '-').toLowerCase()}`;
     const supabase = getSupabaseAdmin();
