@@ -1,4 +1,4 @@
--- Payment state for Maya Checkout. Safe to run more than once.
+-- Payment state for hosted checkout providers. Safe to run more than once.
 alter table public.orders add column if not exists payment_status text not null default 'unpaid';
 alter table public.orders add column if not exists payment_provider text;
 alter table public.orders add column if not exists payment_reference text;

@@ -1,6 +1,6 @@
 'use client';
 import React, { useState } from 'react';
-import { Search, SlidersHorizontal, Ruler, ChevronDown, ChevronUp, History, X } from 'lucide-react';
+import { Search, SlidersHorizontal, Ruler, ChevronDown, ChevronUp, History, X, WandSparkles } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Category } from '@/types';
 
@@ -26,6 +26,8 @@ export const FilterBar: React.FC<FilterBarProps> = ({
   onSearchChange,
   sortBy,
   onSortChange,
+  itemCount = 0,
+  onOpenWallpaperStudio,
 }) => {
   const [showSizeChart, setShowSizeChart] = useState(false);
   const [isCategoryDropdownOpen, setIsCategoryDropdownOpen] = useState(false);
@@ -152,23 +154,26 @@ export const FilterBar: React.FC<FilterBarProps> = ({
 
       </div>
 
-      {/* 3. Controls: Sort */}
+      {/* 3. Controls: Search and sort */}
       <div className="flex flex-col items-stretch justify-between gap-3 pt-3 max-w-6xl mx-auto sm:flex-row sm:items-center">
         <div className="text-[11px] font-sans text-[#5A5A40] uppercase tracking-wider font-semibold">
-          COLLECTION ({activeCategoryLabel})
+          COLLECTION ({activeCategoryLabel}) · {itemCount} pieces
         </div>
         <div className="flex w-full flex-wrap items-center gap-2.5 sm:w-auto sm:justify-end">
-          <form onSubmit={handleSearchSubmit} className="hidden">
+          <form onSubmit={handleSearchSubmit} className="relative min-w-0 flex-1 sm:w-48 sm:flex-none">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[#8E8B82]" />
             <input
               type="text"
-              placeholder="Search items..."
+              aria-label="Search products"
+              placeholder="Search products..."
               value={searchQuery}
               onChange={e => onSearchChange(e.target.value)}
               onKeyDown={e => { if (e.key === 'Enter' && searchQuery.trim()) saveRecentSearch(searchQuery); }}
               className="w-full pl-8 pr-3 py-1.5 bg-[#EFECE6] border border-[#E2DDD5] rounded-full font-sans text-xs text-[#1F1D1B] placeholder-[#8E8B82] focus:outline-none focus:border-[#1F1D1B] focus:ring-1 focus:ring-[#1F1D1B] transition-all"
             />
           </form>
+
+          {onOpenWallpaperStudio && <button type="button" onClick={onOpenWallpaperStudio} className="inline-flex items-center gap-1.5 rounded-full border border-[#D6CFC7] bg-[#EFECE6] px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider text-[#5A5A40] transition hover:border-[#1F1D1B] hover:text-[#1F1D1B]"><WandSparkles className="h-3.5 w-3.5 text-[#B85D3D]" /> Wallpaper</button>}
 
           <div className="relative inline-flex items-center">
             <SlidersHorizontal className="absolute left-3 w-3.5 h-3.5 text-[#8E8B82] pointer-events-none" />

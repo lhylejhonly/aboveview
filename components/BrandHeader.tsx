@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { motion } from 'motion/react';
-import { RotateCcw } from 'lucide-react';
+import { ArrowDown, RotateCcw, ShoppingBag, Sparkles, WandSparkles } from 'lucide-react';
 import StarBurst from '@/components/StarBurst';
 
 interface BrandHeaderProps {
@@ -15,7 +15,11 @@ interface BrandHeaderProps {
   onOpenWallpaperStudio?: () => void;
 }
 
-export const BrandHeader: React.FC<BrandHeaderProps> = () => {
+export const BrandHeader: React.FC<BrandHeaderProps> = ({
+  onOpenStylist,
+  onOpenTikTokShop,
+  onOpenWallpaperStudio,
+}) => {
   const [animationKey, setAnimationKey] = useState(0);
 
   return (
@@ -73,6 +77,20 @@ export const BrandHeader: React.FC<BrandHeaderProps> = () => {
         </motion.p>
 
         <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.85 }}
+          className="mt-7 flex flex-wrap items-center justify-center gap-2"
+        >
+          <button type="button" onClick={() => document.getElementById('product-grid-section')?.scrollIntoView({ behavior: 'smooth' })} className="inline-flex min-h-11 items-center gap-2 rounded-full bg-[#F7F5F0] px-5 text-[10px] font-black uppercase tracking-[0.16em] text-[#1F1D1B] transition hover:bg-[#D4B483]">
+            <ShoppingBag className="h-3.5 w-3.5" /> Shop collection
+          </button>
+          {onOpenStylist && <button type="button" onClick={onOpenStylist} className="inline-flex min-h-11 items-center gap-2 rounded-full border border-white/30 bg-black/20 px-4 text-[10px] font-bold uppercase tracking-[0.14em] text-white transition hover:border-[#D4B483] hover:text-[#D4B483]"><Sparkles className="h-3.5 w-3.5" /> Personal stylist</button>}
+          {onOpenWallpaperStudio && <button type="button" onClick={onOpenWallpaperStudio} className="inline-flex min-h-11 items-center gap-2 rounded-full border border-white/30 bg-black/20 px-4 text-[10px] font-bold uppercase tracking-[0.14em] text-white transition hover:border-[#D4B483] hover:text-[#D4B483]"><WandSparkles className="h-3.5 w-3.5" /> Create wallpaper</button>}
+          {onOpenTikTokShop && <button type="button" onClick={onOpenTikTokShop} className="inline-flex min-h-11 items-center gap-2 rounded-full border border-white/30 bg-black/20 px-4 text-[10px] font-bold uppercase tracking-[0.14em] text-white transition hover:border-[#D4B483] hover:text-[#D4B483]">TikTok shop</button>}
+        </motion.div>
+
+        <motion.div
           initial={{ scaleX: 0 }} animate={{ scaleX: 1 }}
           transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1], delay: 0.55 }}
           className="mt-2 h-px w-24 bg-gradient-to-r from-transparent via-[#D4B483] to-transparent sm:w-32"
@@ -92,6 +110,7 @@ export const BrandHeader: React.FC<BrandHeaderProps> = () => {
         >
           <motion.div animate={{ y: [0, 6, 0] }} transition={{ repeat: Infinity, duration: 1.6, ease: 'easeInOut' }} className="h-6 w-px bg-gradient-to-b from-[#D4B483]/60 to-transparent" />
           <span className="text-[9px] uppercase tracking-[0.3em] text-white/35">Scroll</span>
+          <ArrowDown className="h-3 w-3 text-[#D4B483]/50" />
         </motion.div>
       </div>
 

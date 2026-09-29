@@ -98,6 +98,22 @@ export function AdminOrders() {
 }
 
 function OrderDetails({ order, onClose }: { order: Order; onClose: () => void }) {
+  const [message, setMessage] = useState('');
+  const [sending, setSending] = useState(false);
+  const [messageState, setMessageState] = useState('');
+  const sendMessage = async (event: React.FormEvent) => {
+    event.preventDefault();
+    if (!message.trim()) return;
+    setSending(true); setMessageState('');
+    try {
+      const response = await fetch('/api/admin/orders/message', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ id: order.id, message }) });
+      const data = await response.json() as { error?: string };
+      if (!response.ok) throw new Error(data.error ?? 'Unable to send message.');
+      setMessage(''); setMessageState('Message sent to customer.');
+    } catch (error) { setMessageState(error instanceof Error ? error.message : 'Unable to send message.'); }
+    finally { setSending(false); }
+  };
+
   return <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#17191dcc] p-4" onMouseDown={event => { if (event.target === event.currentTarget) onClose(); }}>
     <div className="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-2xl bg-[#fbfbf8] shadow-2xl">
       <div className="flex items-start justify-between border-b border-[#e4e5df] p-5 sm:p-6"><div><p className="text-[10px] font-bold uppercase tracking-[0.24em] text-[#74784f]">Customer and order details</p><h2 className="mt-2 text-xl font-semibold">{order.order_number}</h2></div><button onClick={onClose} aria-label="Close details" className="rounded-full p-2 text-[#6d706c] hover:bg-[#edeee8]"><X className="h-5 w-5" /></button></div>
@@ -105,6 +121,7 @@ function OrderDetails({ order, onClose }: { order: Order; onClose: () => void })
         <div className="space-y-4"><h3 className="text-sm font-semibold">Customer</h3><Detail label="Full name" value={order.full_name} /><Detail label="Contact number" value={order.contact_number} /><Detail label="Destination / city" value={order.destination} /><Detail label="Complete address" value={order.address} /><Detail label="Delivery notes" value={order.delivery_notes || 'None'} /></div>
         <div className="space-y-4"><h3 className="text-sm font-semibold">Order</h3><Detail label="Product" value={order.product_name} /><Detail label="Product code" value={order.product_code} /><Detail label="Size" value={order.size} /><Detail label="Quantity" value={String(order.quantity)} /><Detail label="Total" value={formatPrice(Number(order.unit_price) * order.quantity)} /><Detail label="Status" value={order.status} /><Detail label="Payment status" value={order.payment_status ?? 'unpaid'} /></div>
       </div>
+      <form onSubmit={sendMessage} className="border-t border-[#e4e5df] bg-white p-5 sm:p-6"><h3 className="text-sm font-semibold">Message customer</h3><p className="mt-1 text-xs text-[#85898a]">The customer will receive this message by email.</p><textarea value={message} onChange={event => setMessage(event.target.value)} rows={4} maxLength={2000} placeholder="Example: Your order is ready. Please send payment to..." className="mt-4 w-full rounded-lg border border-[#dfe0da] bg-[#fbfbf8] p-3 text-sm outline-none focus:border-[#74784f]" />{messageState && <p className={`mt-2 text-xs ${messageState.includes('sent') ? 'text-[#58603c]' : 'text-[#a5523b]'}`}>{messageState}</p>}<div className="mt-3 flex justify-end"><button disabled={sending || !message.trim()} className="rounded-lg bg-[#74784f] px-4 py-2.5 text-xs font-semibold text-white disabled:cursor-not-allowed disabled:opacity-50">{sending ? 'Sending...' : 'Send message'}</button></div></form>
       <div className="flex justify-end border-t border-[#e4e5df] p-5 sm:p-6"><button onClick={onClose} className="rounded-lg bg-[#2d2927] px-5 py-2.5 text-xs font-bold text-white hover:bg-[#46403c]">Close</button></div>
     </div>
   </div>;
