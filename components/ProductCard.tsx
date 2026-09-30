@@ -1,6 +1,6 @@
 'use client';
 import React, { useState, useEffect, useRef } from 'react';
-import { ShoppingBag, RotateCw } from 'lucide-react';
+import { RotateCw } from 'lucide-react';
 import { motion, useMotionValue, useSpring, useTransform } from 'motion/react';
 import { Product } from '@/types';
 import { formatPrice } from '@/lib/currency';
@@ -55,11 +55,11 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, forceFlipped 
         onMouseLeave={() => { setIsHovered(false); mouseX.set(0.5); mouseY.set(0.5); }}
         style={{ rotateX, rotateY, transformStyle: "preserve-3d" }}
         whileHover={{ scale: 1.01, y: -4, transition: { duration: 0.2, ease: [0.16, 1, 0.3, 1] } }}
-        className="group relative flex flex-col overflow-hidden rounded-[18px] bg-[#FBFAF7] shadow-[0_4px_20px_rgba(0,0,0,0.06)] transition-[transform,box-shadow] duration-200 hover:shadow-[0_14px_32px_rgba(0,0,0,0.11)] w-full h-full transform-gpu"
+        className="group relative flex h-full w-full flex-col overflow-hidden transform-gpu"
         id={`product-card-${product.id}`}
       >
         <motion.div className="absolute inset-0 pointer-events-none z-30 opacity-0 group-hover:opacity-100 transition-opacity duration-200 rounded-[18px]" style={{ background: useTransform([glareX, glareY], ([gx, gy]) => `radial-gradient(circle at ${gx} ${gy}, rgba(255, 255, 255, 0.22) 0%, rgba(255, 255, 255, 0) 65%)`) }} />
-          <div className={`relative w-full aspect-[3/4] overflow-hidden cursor-pointer rounded-t-[18px] bg-gradient-to-br from-[#F0EDE7] via-[#FBFAF7] to-[#E4DED5] ${product.isComingSoon ? 'grayscale-[0.35]' : ''}`} onClick={handleImageClick}>
+          <div className={`relative aspect-[3/4] w-full cursor-pointer overflow-hidden rounded-lg bg-gradient-to-br from-[#F0EDE7] via-[#FBFAF7] to-[#E4DED5] ${product.isComingSoon ? 'grayscale-[0.35]' : ''}`} onClick={handleImageClick}>
           <div className="absolute top-2 sm:top-3 left-2 sm:left-3 right-2 sm:right-3 z-20 flex items-center justify-between pointer-events-none">
             <div>{product.isComingSoon ? <span className="px-2 py-0.5 bg-[#8E8B82] text-[#F7F5F0] font-sans text-[7px] sm:text-[8px] font-bold tracking-widest uppercase rounded-md shadow-xs">COMING SOON</span> : product.isNew ? <span className="px-2 py-0.5 bg-[#1F1D1B] text-[#F7F5F0] font-sans text-[7px] sm:text-[8px] font-bold tracking-widest uppercase rounded-md shadow-xs">NEW</span> : product.isBestseller ? <span className="px-2 py-0.5 bg-[#5A5A40] text-[#F7F5F0] font-sans text-[7px] sm:text-[8px] font-bold tracking-widest uppercase rounded-md shadow-xs">BESTSELLER</span> : null}</div>
           </div>
@@ -80,12 +80,11 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, forceFlipped 
             <span>{showBack ? 'FRONT' : 'BACK'}</span>
           </button>
         </div>
-        <div className="p-3.5 sm:p-5 flex flex-col justify-between gap-4 min-w-0 w-full flex-1">
+        <div className="flex w-full min-w-0 flex-1 flex-col justify-between gap-3 px-2 pt-4 text-center sm:pt-5">
           <div>
-            <h3 onClick={() => onQuickView?.(product)} className="font-sans text-xs sm:text-sm font-extrabold tracking-[0.01em] uppercase text-[#1F1D1B] hover:text-[#B85D3D] transition-colors cursor-pointer line-clamp-2 leading-snug">{product.name}</h3>
-            <p className="mt-2 font-sans text-[10px] sm:text-[11px] leading-relaxed text-[#8E8B82] line-clamp-2">{product.description}</p>
+            <h3 onClick={() => onQuickView?.(product)} className="cursor-pointer font-sans text-xs font-extrabold uppercase leading-snug tracking-[0.01em] text-[#1F1D1B] transition-colors hover:text-[#B85D3D] sm:text-sm">{product.name}</h3>
           </div>
-          <div className="flex items-center justify-between gap-2 sm:gap-3 min-w-0 w-full"><div className="flex flex-col min-w-0"><span className="font-sans text-sm sm:text-base font-extrabold tracking-tight text-[#1F1D1B] truncate leading-tight">{formatPrice(product.price)}</span>{product.originalPrice && <span className="font-sans text-[9px] sm:text-[10px] font-medium text-[#8E8B82] line-through truncate leading-tight mt-1">{formatPrice(product.originalPrice)}</span>}</div>{unavailable ? <span className="text-[8px] sm:text-[9px] font-bold uppercase tracking-wider text-[#8E8B82] text-right">{product.isComingSoon ? 'Not yet available' : 'Out of stock'}</span> : <motion.button onClick={e => { e.stopPropagation(); onOrder?.(product); }} whileHover={{ scale: 1.06 }} whileTap={{ scale: 0.95 }} className="inline-flex items-center justify-center gap-1 sm:gap-1.5 px-2.5 sm:px-3 md:px-3.5 py-2 font-sans text-[8px] sm:text-[9px] md:text-[10px] font-bold tracking-wider text-[#F7F5F0] bg-[#1F1D1B] hover:bg-[#2D2926] hover:shadow-[0_6px_16px_rgba(31,29,27,0.24)] uppercase transition-all duration-200 rounded-lg shrink-0 shadow-[0_3px_10px_rgba(31,29,27,0.16)] whitespace-nowrap" id={`order-btn-${product.id}`} title="Open order form"><ShoppingBag className="w-2.5 h-2.5 sm:w-3 sm:h-3 shrink-0 text-[#C2B280]" /><span>ORDER</span></motion.button>}</div>
+          <div className="flex min-w-0 w-full flex-col items-center pb-4 sm:pb-5"><span className="font-sans text-sm font-extrabold tracking-tight text-[#1F1D1B] sm:text-base">{formatPrice(product.price)}</span>{product.originalPrice && <span className="mt-1 font-sans text-[9px] font-medium leading-tight text-[#8E8B82] line-through sm:text-[10px]">{formatPrice(product.originalPrice)}</span>}{unavailable && <span className="mt-2 text-[8px] font-bold uppercase tracking-wider text-[#8E8B82]">{product.isComingSoon ? 'Not yet available' : 'Out of stock'}</span>}</div>
         </div>
       </motion.div>
     </div>
