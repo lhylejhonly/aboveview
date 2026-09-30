@@ -1,6 +1,6 @@
 'use client';
 import React, { useState, useEffect, useRef } from 'react';
-import { ShoppingBag, Eye, RotateCw } from 'lucide-react';
+import { ShoppingBag, RotateCw } from 'lucide-react';
 import { motion, useMotionValue, useSpring, useTransform } from 'motion/react';
 import { Product } from '@/types';
 import { formatPrice } from '@/lib/currency';
@@ -10,7 +10,7 @@ interface ProductCardProps {
   forceFlipped?: boolean;
   soundEnabled?: boolean;
   onQuickView?: (product: Product) => void;
-  onOrder?: (product: Product) => void;
+  onOrder?: (product: Product, size?: string) => void;
 }
 
 const versionImage = (url: string, version?: string) =>
@@ -69,7 +69,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, forceFlipped 
             <img loading="lazy" decoding="async" key={`${product.id}-${backImage}`} src={backImage} alt={`${product.name} Back`} referrerPolicy="no-referrer" onLoad={() => setImageLoadedBack(true)} className={`absolute inset-0 w-full h-full object-cover object-center transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] ${product.isComingSoon ? 'blur-[4px] scale-105' : ''} ${showBack && imageLoadedBack ? 'opacity-100 group-hover:scale-105' : 'opacity-0 scale-105'}`} />
           </div>
           {unavailable && <div className="absolute inset-0 z-10 flex items-center justify-center bg-[#2D2926]/25 pointer-events-none"><span className="px-3.5 py-1.5 bg-[#F7F5F0]/95 text-[#2D2926] text-[9px] font-sans font-bold uppercase tracking-widest shadow-lg rounded-md">{product.isComingSoon ? 'COMING SOON' : 'OUT OF STOCK'}</span></div>}
-          {!unavailable && <div className="absolute inset-0 z-10 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-350 ease-out pointer-events-none"><span className="px-3.5 py-1.5 bg-[#1F1D1B]/90 text-[#F7F5F0] text-[9px] font-sans font-bold uppercase tracking-widest flex items-center gap-1.5 shadow-lg rounded-md backdrop-blur-xs transform translate-y-2 group-hover:translate-y-0 transition-transform duration-350 ease-out"><Eye className="w-3 h-3 text-[#C2B280]" /><span>QUICK VIEW</span></span></div>}
+          {!unavailable && <div className="absolute inset-x-0 bottom-0 z-20 flex translate-y-2 flex-col items-center bg-white/90 px-3 pb-5 pt-4 opacity-0 backdrop-blur-sm transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100" onClick={e => e.stopPropagation()}><p className="text-sm font-medium text-[#1F1D1B]">Select your size</p><div className="mt-4 flex flex-wrap justify-center gap-x-5 gap-y-2">{(product.sizes.length ? product.sizes : ['S', 'M', 'L', 'XL', 'XXL', 'XXXL']).map(size => <button key={size} type="button" onClick={() => onOrder?.(product, size)} className="min-w-8 text-sm text-[#1F1D1B] transition-colors hover:font-semibold hover:text-[#B85D3D]">{size}</button>)}</div></div>}
           <button
             type="button"
             onClick={(e) => { e.stopPropagation(); setIsHovered(false); setIsFlipped(current => !current); }}

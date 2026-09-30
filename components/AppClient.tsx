@@ -234,7 +234,7 @@ export default function AppClient() {
                     whileInView={{ opacity: 1, y: 0, scale: 1 }} viewport={{ once: true, margin: "-50px" }}
                     transition={{ duration: 0.55, delay: Math.min((index % 4) * 0.05, 0.2), ease: [0.16, 1, 0.3, 1] }}
                     className="w-full h-full flex">
-                    <ProductCard product={product} forceFlipped={allFlipped} soundEnabled={soundEnabled} onQuickView={setQuickViewProduct} onOrder={(item) => { setQuickViewProduct(null); setOrderSize(undefined); setOrderProduct(item); }} />
+                    <ProductCard product={product} forceFlipped={allFlipped} soundEnabled={soundEnabled} onQuickView={setQuickViewProduct} onOrder={(item, size) => { setQuickViewProduct(null); setOrderSize(size); setOrderProduct(item); }} />
                   </motion.div>
                 ))}
               </AnimatePresence>
