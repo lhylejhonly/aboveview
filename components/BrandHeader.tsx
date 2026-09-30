@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { motion } from 'motion/react';
-import { ArrowDown, RotateCcw, ShoppingBag, Sparkles, WandSparkles } from 'lucide-react';
+import { ArrowDown, RotateCcw, ShoppingBag } from 'lucide-react';
 import StarBurst from '@/components/StarBurst';
 
 interface BrandHeaderProps {
@@ -85,9 +85,6 @@ export const BrandHeader: React.FC<BrandHeaderProps> = ({
           <button type="button" onClick={() => document.getElementById('product-grid-section')?.scrollIntoView({ behavior: 'smooth' })} className="inline-flex min-h-11 items-center gap-2 rounded-full bg-[#F7F5F0] px-5 text-[10px] font-black uppercase tracking-[0.16em] text-[#1F1D1B] transition hover:bg-[#D4B483]">
             <ShoppingBag className="h-3.5 w-3.5" /> Shop collection
           </button>
-          {onOpenStylist && <button type="button" onClick={onOpenStylist} className="inline-flex min-h-11 items-center gap-2 rounded-full border border-white/30 bg-black/20 px-4 text-[10px] font-bold uppercase tracking-[0.14em] text-white transition hover:border-[#D4B483] hover:text-[#D4B483]"><Sparkles className="h-3.5 w-3.5" /> Personal stylist</button>}
-          {onOpenWallpaperStudio && <button type="button" onClick={onOpenWallpaperStudio} className="inline-flex min-h-11 items-center gap-2 rounded-full border border-white/30 bg-black/20 px-4 text-[10px] font-bold uppercase tracking-[0.14em] text-white transition hover:border-[#D4B483] hover:text-[#D4B483]"><WandSparkles className="h-3.5 w-3.5" /> Create wallpaper</button>}
-          {onOpenTikTokShop && <button type="button" onClick={onOpenTikTokShop} className="inline-flex min-h-11 items-center gap-2 rounded-full border border-white/30 bg-black/20 px-4 text-[10px] font-bold uppercase tracking-[0.14em] text-white transition hover:border-[#D4B483] hover:text-[#D4B483]">TikTok shop</button>}
         </motion.div>
 
         <motion.div

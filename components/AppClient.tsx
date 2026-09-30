@@ -29,7 +29,7 @@ export default function AppClient() {
   const router = useRouter();
   const [activeCategory, setActiveCategory] = useState<Category | ''>('');
   const [searchQuery, setSearchQuery] = useState('');
-  const [sortBy, setSortBy] = useState('featured');
+  const [sortBy, setSortBy] = useState('');
   const [viewMode, setViewMode] = useState<ViewMode>('grid');
   const [allFlipped, setAllFlipped] = useState(false);
   const [soundEnabled, setSoundEnabled] = useState(true);

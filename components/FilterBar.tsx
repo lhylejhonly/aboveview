@@ -1,6 +1,6 @@
 'use client';
 import React, { useState } from 'react';
-import { Search, SlidersHorizontal, Ruler, ChevronDown, ChevronUp, History, X, WandSparkles } from 'lucide-react';
+import { Search, SlidersHorizontal, Ruler, ChevronDown, ChevronUp, History, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Category } from '@/types';
 
@@ -27,7 +27,6 @@ export const FilterBar: React.FC<FilterBarProps> = ({
   sortBy,
   onSortChange,
   itemCount = 0,
-  onOpenWallpaperStudio,
 }) => {
   const [showSizeChart, setShowSizeChart] = useState(false);
   const [isCategoryDropdownOpen, setIsCategoryDropdownOpen] = useState(false);
@@ -173,8 +172,6 @@ export const FilterBar: React.FC<FilterBarProps> = ({
             />
           </form>
 
-          {onOpenWallpaperStudio && <button type="button" onClick={onOpenWallpaperStudio} className="inline-flex items-center gap-1.5 rounded-full border border-[#D6CFC7] bg-[#EFECE6] px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider text-[#5A5A40] transition hover:border-[#1F1D1B] hover:text-[#1F1D1B]"><WandSparkles className="h-3.5 w-3.5 text-[#B85D3D]" /> Wallpaper</button>}
-
           <div className="relative inline-flex items-center">
             <SlidersHorizontal className="absolute left-3 w-3.5 h-3.5 text-[#8E8B82] pointer-events-none" />
             <select
@@ -182,7 +179,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
               onChange={e => onSortChange(e.target.value)}
               className="pl-8 pr-7 py-1.5 bg-[#EFECE6] border border-[#E2DDD5] rounded-full font-sans text-xs font-semibold text-[#1F1D1B] uppercase appearance-none focus:outline-none focus:border-[#1F1D1B] cursor-pointer"
             >
-              <option value="featured">Featured</option>
+              <option value="">Sort by</option>
               <option value="price-low">Price: Low to High</option>
               <option value="price-high">Price: High to Low</option>
               <option value="gsm">Heavyweight GSM</option>
