@@ -80,11 +80,11 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, forceFlipped 
             <span>{showBack ? 'FRONT' : 'BACK'}</span>
           </button>
         </div>
-        <div className="flex w-full min-w-0 flex-1 flex-col justify-between gap-3 px-2 pt-4 text-center sm:pt-5">
+        <div className="flex w-full min-w-0 flex-1 flex-col justify-between gap-2 px-2 pt-3 text-center sm:pt-4">
           <div>
-            <h3 onClick={() => onQuickView?.(product)} className="cursor-pointer font-sans text-xs font-extrabold uppercase leading-snug tracking-[0.01em] text-[#1F1D1B] transition-colors hover:text-[#B85D3D] sm:text-sm">{product.name}</h3>
+            <h3 onClick={() => onQuickView?.(product)} className="cursor-pointer font-sans text-base font-medium leading-snug tracking-normal text-[#1F1D1B] transition-colors hover:text-[#B85D3D] sm:text-lg">{product.name}</h3>
           </div>
-          <div className="flex min-w-0 w-full flex-col items-center pb-4 sm:pb-5"><span className="font-sans text-sm font-extrabold tracking-tight text-[#1F1D1B] sm:text-base">{formatPrice(product.price)}</span>{product.originalPrice && <span className="mt-1 font-sans text-[9px] font-medium leading-tight text-[#8E8B82] line-through sm:text-[10px]">{formatPrice(product.originalPrice)}</span>}{unavailable && <span className="mt-2 text-[8px] font-bold uppercase tracking-wider text-[#8E8B82]">{product.isComingSoon ? 'Not yet available' : 'Out of stock'}</span>}</div>
+          <div className="flex min-w-0 w-full flex-col items-center pb-3 sm:pb-4"><span className="font-sans text-sm font-normal tracking-normal text-[#1F1D1B] sm:text-base">{formatPrice(product.price)}</span>{product.originalPrice && <span className="mt-1 font-sans text-[9px] font-medium leading-tight text-[#8E8B82] line-through sm:text-[10px]">{formatPrice(product.originalPrice)}</span>}{unavailable && <span className="mt-2 text-[8px] font-bold uppercase tracking-wider text-[#8E8B82]">{product.isComingSoon ? 'Not yet available' : 'Out of stock'}</span>}</div>
         </div>
       </motion.div>
     </div>
