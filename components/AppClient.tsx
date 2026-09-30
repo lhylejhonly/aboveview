@@ -21,6 +21,7 @@ import { CartDrawer } from '@/components/CartDrawer';
 import { StoreInfoModal } from '@/components/StoreInfoModal';
 import { StoreInfoTopic } from '@/data/storeInfo';
 import { CustomerProfileModal } from '@/components/CustomerProfileModal';
+import { AddedToCartModal } from '@/components/AddedToCartModal';
 import { useAdmin } from '@/context/AdminContext';
 import { X } from 'lucide-react';
 
@@ -45,6 +46,7 @@ export default function AppClient() {
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [cartOpen, setCartOpen] = useState(false);
+  const [addedToCart, setAddedToCart] = useState<{ product: Product; size: string } | null>(null);
   const [storeInfoTopic, setStoreInfoTopic] = useState<StoreInfoTopic | null>(null);
   const [cartHydrated, setCartHydrated] = useState(false);
   const ITEMS_PER_PAGE = 6;
@@ -105,7 +107,7 @@ export default function AppClient() {
 
   const addToCart = (product: Product, size: string) => {
     setCartItems(current => { const existing = current.find(item => item.product.id === product.id && item.size === size); if (existing) return current.map(item => item === existing ? { ...item, quantity: Math.min(product.stockCount, item.quantity + 1) } : item); return [...current, { product, size, quantity: 1 }]; });
-    setQuickViewProduct(null); setCartOpen(true); showToast('Added to cart');
+    setQuickViewProduct(null); setCartOpen(false); setAddedToCart({ product, size });
   };
 
   const updateCartQuantity = (productId: string, size: string, quantity: number) => setCartItems(current => quantity <= 0 ? current.filter(item => !(item.product.id === productId && item.size === size)) : current.map(item => item.product.id === productId && item.size === size ? { ...item, quantity } : item));
@@ -251,6 +253,7 @@ export default function AppClient() {
       <QuickViewModal product={quickViewProduct} onClose={() => setQuickViewProduct(null)} onOpenLogin={() => setCustomerLoginOpen(true)} onAddToCart={addToCart} onOrder={(item, size) => { setQuickViewProduct(null); setOrderSize(size); setOrderProduct(item); }} />
       <CustomerOrderModal product={orderProduct} initialSize={orderSize} onClose={() => setOrderProduct(null)} />
       {cartOpen && <CartDrawer items={cartItems} onClose={() => setCartOpen(false)} onRemove={(productId, size) => updateCartQuantity(productId, size, 0)} onQuantityChange={updateCartQuantity} onClear={() => setCartItems([])} onCheckout={item => { setCartOpen(false); setOrderSize(item.size); setOrderProduct(item.product); }} />}
+      {addedToCart && <AddedToCartModal product={addedToCart.product} size={addedToCart.size} onClose={() => setAddedToCart(null)} onViewCart={() => { setAddedToCart(null); setCartOpen(true); }} onCheckout={() => { setAddedToCart(null); setOrderSize(addedToCart.size); setOrderProduct(addedToCart.product); }} />}
       <StoreInfoModal topic={storeInfoTopic} onClose={() => setStoreInfoTopic(null)} />
       {customerLoginOpen && <CustomerLoginModal onClose={() => setCustomerLoginOpen(false)} />}
       {customerProfileOpen && <CustomerProfileModal onClose={() => setCustomerProfileOpen(false)} />}
