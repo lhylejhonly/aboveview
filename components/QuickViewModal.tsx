@@ -58,7 +58,7 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({ product, onClose
 
   return (
     <AnimatePresence>
-      <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 overflow-y-auto">
+      <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto p-2 sm:p-6">
         {/* Backdrop overlay */}
         <motion.div
           initial={{ opacity: 0 }}
@@ -75,7 +75,7 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({ product, onClose
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.95, y: 15 }}
           transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-          className="relative z-10 my-auto flex max-h-[92vh] w-full max-w-5xl flex-col overflow-hidden rounded-2xl border border-[#D6CFC7]/80 bg-[#FBFAF7] shadow-[0_28px_90px_rgba(20,18,16,0.32)] md:flex-row"
+          className="relative z-10 my-auto flex max-h-[calc(100svh-1rem)] w-full max-w-5xl flex-col overflow-hidden rounded-xl border border-[#D6CFC7]/80 bg-[#FBFAF7] shadow-[0_28px_90px_rgba(20,18,16,0.32)] sm:max-h-[92vh] sm:rounded-2xl md:flex-row"
           id={`quickview-modal-${product.id}`}
           role="dialog"
           aria-modal="true"
@@ -92,7 +92,7 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({ product, onClose
           </button>
 
           {/* Left Column: Image Gallery & View Switcher */}
-          <div className="group relative flex w-full flex-col justify-between border-b border-[#D6CFC7] bg-[#E1DDD6] p-4 sm:p-7 md:w-[54%] md:border-b-0 md:border-r">
+          <div className="group relative flex max-h-[46svh] min-h-[18rem] w-full flex-col justify-between border-b border-[#D6CFC7] bg-[#E1DDD6] p-3 sm:max-h-none sm:p-7 md:w-[54%] md:border-b-0 md:border-r">
             {/* Top Badges */}
             <div className="pointer-events-none absolute left-5 top-5 z-20 flex flex-wrap items-center gap-1.5 sm:left-8 sm:top-7">
               {product.isNew && (
@@ -113,7 +113,7 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({ product, onClose
             </div>
 
             {/* Main Image View */}
-            <div className="relative my-auto flex aspect-[4/5] w-full items-center justify-center overflow-hidden rounded-xl bg-[#D6CFC7]/35 shadow-inner ring-1 ring-[#FBFAF7]/40">
+            <div className="relative my-auto flex aspect-[4/5] max-h-[42svh] w-full items-center justify-center overflow-hidden rounded-lg bg-[#D6CFC7]/35 shadow-inner ring-1 ring-[#FBFAF7]/40 sm:max-h-none sm:rounded-xl">
               <motion.img
                 key={`${product.id}-${activeSide}`}
                 src={currentImage}
@@ -153,7 +153,7 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({ product, onClose
           </div>
 
           {/* Right Column: Details & Specs */}
-          <div className="flex w-full flex-col justify-between overflow-y-auto p-6 sm:p-9 md:w-[46%] md:p-10">
+          <div className="flex w-full flex-col justify-between overflow-y-auto p-5 sm:p-9 md:w-[46%] md:p-10">
             <div className="space-y-6">
               {/* Header: Code & Category */}
               <div>
