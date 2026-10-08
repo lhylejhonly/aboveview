@@ -1,115 +1,810 @@
-'use client';
+"use client";
 
-import React, { useEffect, useState } from 'react';
-import { AnimatePresence, motion } from 'motion/react';
-import { Check, LockKeyhole, LogIn, MapPin, PackageCheck, ShoppingBag, UserPlus, X } from 'lucide-react';
-import { Product } from '@/types';
-import { formatPrice } from '@/lib/currency';
-import { supabase } from '@/lib/supabase';
+import React, { useEffect, useState } from "react";
+import { AnimatePresence, motion } from "motion/react";
+import {
+  Check,
+  LockKeyhole,
+  LogIn,
+  MapPin,
+  PackageCheck,
+  ShoppingBag,
+  TicketPercent,
+  UserPlus,
+  X,
+} from "lucide-react";
+import { Product } from "@/types";
+import { formatPrice } from "@/lib/currency";
+import { supabase } from "@/lib/supabase";
 
-interface CustomerOrderModalProps { product: Product | null; initialSize?: string; onClose: () => void; }
-type AuthMode = 'sign-in' | 'sign-up';
-interface CustomerProfile { full_name: string; contact_number: string; destination: string; address: string; delivery_notes: string; }
+interface CustomerOrderModalProps {
+  product: Product | null;
+  initialSize?: string;
+  onClose: () => void;
+}
+type AuthMode = "sign-in" | "sign-up";
+interface CustomerProfile {
+  full_name: string;
+  contact_number: string;
+  destination: string;
+  address: string;
+  delivery_notes: string;
+}
+interface ShippingDetails {
+  province: string;
+  city_municipality: string;
+  barangay: string;
+  postal_code: string;
+  package_weight_kg: string;
+}
 
-const emptyProfile: CustomerProfile = { full_name: '', contact_number: '', destination: '', address: '', delivery_notes: '' };
-const isMissingCustomerProfilesTable = (error: { code?: string; message?: string } | null) => error?.code === 'PGRST205' || error?.message?.includes('public.customer_profiles') === true;
+const emptyProfile: CustomerProfile = {
+  full_name: "",
+  contact_number: "",
+  destination: "",
+  address: "",
+  delivery_notes: "",
+};
+const emptyShipping: ShippingDetails = {
+  province: "",
+  city_municipality: "",
+  barangay: "",
+  postal_code: "",
+  package_weight_kg: "0.5",
+};
+const isMissingCustomerProfilesTable = (
+  error: { code?: string; message?: string } | null,
+) =>
+  error?.code === "PGRST205" ||
+  error?.message?.includes("public.customer_profiles") === true;
 
-export function CustomerOrderModal({ product, initialSize, onClose }: CustomerOrderModalProps) {
-  const [authMode, setAuthMode] = useState<AuthMode>('sign-in');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+export function CustomerOrderModal({
+  product,
+  initialSize,
+  onClose,
+}: CustomerOrderModalProps) {
+  const [authMode, setAuthMode] = useState<AuthMode>("sign-in");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [profile, setProfile] = useState<CustomerProfile>(emptyProfile);
-  const [size, setSize] = useState(initialSize || product?.sizes[0] || 'M');
+  const [shipping, setShipping] = useState<ShippingDetails>(emptyShipping);
+  const [size, setSize] = useState(initialSize || product?.sizes[0] || "M");
   const [quantity, setQuantity] = useState(1);
   const [userId, setUserId] = useState<string | null>(null);
   const [authLoading, setAuthLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
-  const [message, setMessage] = useState('');
-  const [error, setError] = useState('');
+  const [message, setMessage] = useState("");
+  const [error, setError] = useState("");
   const [submittedOrder, setSubmittedOrder] = useState<string | null>(null);
+  const [voucherCode, setVoucherCode] = useState("");
+  const [voucherApplied, setVoucherApplied] = useState(false);
+  const [voucherMessage, setVoucherMessage] = useState("");
+  const [voucherDiscountPercent, setVoucherDiscountPercent] = useState(0);
 
   useEffect(() => {
     if (!product) return;
-    document.body.style.overflow = 'hidden';
-    setSize(initialSize || product.sizes[0] || 'M');
-    setMessage(''); setError(''); setSubmittedOrder(null); setAuthLoading(true);
+    document.body.style.overflow = "hidden";
+    setSize(initialSize || product.sizes[0] || "M");
+    setShipping(emptyShipping);
+    setMessage("");
+    setError("");
+    setSubmittedOrder(null);
+    setVoucherCode("");
+    setVoucherApplied(false);
+    setVoucherMessage("");
+    setVoucherDiscountPercent(0);
+    setAuthLoading(true);
     const loadCustomer = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      const confirmedSession = session?.user?.email_confirmed_at ? session : null;
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+      const confirmedSession = session?.user?.email_confirmed_at
+        ? session
+        : null;
       if (session && !confirmedSession) await supabase.auth.signOut();
       setUserId(confirmedSession?.user.id ?? null);
       if (confirmedSession?.user) {
-        setEmail(confirmedSession.user.email ?? '');
-        const { data, error: profileError } = await supabase.from('customer_profiles').select('full_name, contact_number, destination, address, delivery_notes').eq('id', confirmedSession.user.id).maybeSingle();
+        setEmail(confirmedSession.user.email ?? "");
+        const { data, error: profileError } = await supabase
+          .from("customer_profiles")
+          .select(
+            "full_name, contact_number, destination, address, delivery_notes",
+          )
+          .eq("id", confirmedSession.user.id)
+          .maybeSingle();
         if (!profileError && data) setProfile({ ...emptyProfile, ...data });
       }
       setAuthLoading(false);
     };
     void loadCustomer();
-    return () => { document.body.style.overflow = 'unset'; };
+    return () => {
+      document.body.style.overflow = "unset";
+    };
   }, [product, initialSize]);
 
   if (!product) return null;
-  const updateProfile = (key: keyof CustomerProfile, value: string) => setProfile(current => ({ ...current, [key]: value }));
+  const updateProfile = (key: keyof CustomerProfile, value: string) =>
+    setProfile((current) => ({ ...current, [key]: value }));
+  const updateShipping = (key: keyof ShippingDetails, value: string) =>
+    setShipping((current) => ({ ...current, [key]: value }));
+  const subtotal = product.price * quantity;
+  const discount = voucherApplied
+    ? Math.round(subtotal * (voucherDiscountPercent / 100) * 100) / 100
+    : 0;
+  const total = subtotal - discount;
+  const applyVoucher = async () => {
+    setVoucherApplied(false);
+    setVoucherMessage("");
+    try {
+      const response = await fetch("/api/vouchers/validate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ code: voucherCode }),
+      });
+      const data = (await response.json()) as { code?: string; discountPercent?: number; error?: string };
+      if (!response.ok || !data.code || !data.discountPercent) throw new Error(data.error ?? "Invalid voucher code.");
+      setVoucherCode(data.code);
+      setVoucherDiscountPercent(data.discountPercent);
+      setVoucherApplied(true);
+      setVoucherMessage(`Voucher applied: ${data.discountPercent}% off`);
+    } catch (error) {
+      setVoucherDiscountPercent(0);
+      setVoucherMessage(error instanceof Error ? error.message : "Unable to validate voucher.");
+    }
+  };
 
   const handleAuth = async (event: React.FormEvent) => {
-    event.preventDefault(); setSubmitting(true); setError(''); setMessage('');
-    if (authMode === 'sign-in') {
-      const result = await supabase.auth.signInWithPassword({ email, password });
+    event.preventDefault();
+    setSubmitting(true);
+    setError("");
+    setMessage("");
+    if (authMode === "sign-in") {
+      const result = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
       if (result.error) {
-        if (/invalid login credentials|user not found/i.test(result.error.message)) {
+        if (
+          /invalid login credentials|user not found/i.test(result.error.message)
+        ) {
           try {
-            const response = await fetch('/api/auth/register', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email, password }), signal: AbortSignal.timeout(15000) });
-            const data = await response.json() as { error?: string };
-            if (response.ok) setMessage('Confirmation email sent. Confirm your email, then return here to sign in.');
-            else if (/already registered|already been registered/i.test(data.error ?? '')) setError('This email is already registered. Use your existing password to sign in.');
+            const response = await fetch("/api/auth/register", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ email, password }),
+              signal: AbortSignal.timeout(15000),
+            });
+            const data = (await response.json()) as { error?: string };
+            if (response.ok)
+              setMessage(
+                "Confirmation email sent. Confirm your email, then return here to sign in.",
+              );
+            else if (
+              /already registered|already been registered/i.test(
+                data.error ?? "",
+              )
+            )
+              setError(
+                "This email is already registered. Use your existing password to sign in.",
+              );
             else setError(data.error ?? result.error.message);
-          } catch { setError('Unable to send the confirmation email. Please try again.'); }
+          } catch {
+            setError(
+              "Unable to send the confirmation email. Please try again.",
+            );
+          }
         } else setError(result.error.message);
+      } else if (result.data.session && !result.data.user.email_confirmed_at) {
+        await supabase.auth.signOut();
+        setError("Please confirm your email address before signing in.");
+      } else if (result.data.session) {
+        setUserId(result.data.session.user.id);
+        setMessage("Signed in. Complete your delivery details below.");
       }
-      else if (result.data.session && !result.data.user.email_confirmed_at) { await supabase.auth.signOut(); setError('Please confirm your email address before signing in.'); }
-      else if (result.data.session) { setUserId(result.data.session.user.id); setMessage('Signed in. Complete your delivery details below.'); }
     } else {
       try {
-        const response = await fetch('/api/auth/register', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email, password }), signal: AbortSignal.timeout(15000) });
-        const data = await response.json() as { error?: string };
-        if (!response.ok) setError(data.error ?? 'Unable to create your account.');
-        else { setMessage('Confirmation email sent by Above Apprl. Open the link in your email, then return here and sign in to continue.'); setAuthMode('sign-in'); }
-      } catch { setError('The registration request timed out. Please check your connection and try again.'); }
+        const response = await fetch("/api/auth/register", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email, password }),
+          signal: AbortSignal.timeout(15000),
+        });
+        const data = (await response.json()) as { error?: string };
+        if (!response.ok)
+          setError(data.error ?? "Unable to create your account.");
+        else {
+          setMessage(
+            "Confirmation email sent by Above Apprl. Open the link in your email, then return here and sign in to continue.",
+          );
+          setAuthMode("sign-in");
+        }
+      } catch {
+        setError(
+          "The registration request timed out. Please check your connection and try again.",
+        );
+      }
     }
     setSubmitting(false);
   };
 
   const handleOrder = async (event: React.FormEvent) => {
-    event.preventDefault(); if (!userId) return; setSubmitting(true); setError(''); setMessage('');
-    const { error: profileError } = await supabase.from('customer_profiles').upsert({ id: userId, ...profile, updated_at: new Date().toISOString() });
-    if (profileError && !isMissingCustomerProfilesTable(profileError)) { setError(profileError.message); setSubmitting(false); return; }
-    const { data, error: orderError } = await supabase.from('orders').insert({ user_id: userId, product_id: product.id, product_name: product.name, product_code: product.code, size, quantity, unit_price: product.price, ...profile }).select('id, order_number').single();
+    event.preventDefault();
+    if (!userId) return;
+    setSubmitting(true);
+    setError("");
+    setMessage("");
+    const deliveryProfile = {
+      ...profile,
+      destination: shipping.city_municipality,
+    };
+    const { error: profileError } = await supabase
+      .from("customer_profiles")
+      .upsert({
+        id: userId,
+        ...deliveryProfile,
+        updated_at: new Date().toISOString(),
+      });
+    if (profileError && !isMissingCustomerProfilesTable(profileError)) {
+      setError(profileError.message);
+      setSubmitting(false);
+      return;
+    }
+    const { data, error: orderError } = await supabase
+      .from("orders")
+      .insert({
+        user_id: userId,
+        product_id: product.id,
+        product_name: product.name,
+        product_code: product.code,
+        size,
+        quantity,
+        unit_price: total / quantity,
+        voucher_code: voucherApplied ? voucherCode.trim().toUpperCase() : null,
+        discount_amount: discount,
+        ...deliveryProfile,
+        ...shipping,
+        package_weight_kg: Number(shipping.package_weight_kg),
+        cod_amount: total,
+      })
+      .select("id, order_number")
+      .single();
     if (orderError) setError(orderError.message);
     else {
-      try { await fetch('/api/orders/notify', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ orderNumber: data.order_number, customerEmail: email, customerName: profile.full_name, contactNumber: profile.contact_number, destination: profile.destination, address: profile.address, deliveryNotes: profile.delivery_notes, productName: product.name, productCode: product.code, size, quantity, total: formatPrice(product.price * quantity) }) }); } catch { /* The saved order remains valid if email delivery is temporarily unavailable. */ }
+      try {
+        await fetch("/api/orders/notify", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            orderNumber: data.order_number,
+            customerEmail: email,
+            customerName: deliveryProfile.full_name,
+            contactNumber: deliveryProfile.contact_number,
+            destination: deliveryProfile.destination,
+            address: deliveryProfile.address,
+            deliveryNotes: deliveryProfile.delivery_notes,
+            productName: product.name,
+            productCode: product.code,
+            size,
+            quantity,
+            total: formatPrice(total),
+          }),
+        });
+      } catch {
+        /* The saved order remains valid if email delivery is temporarily unavailable. */
+      }
       setSubmittedOrder(data.order_number);
     }
     setSubmitting(false);
   };
 
-  const inputClass = 'mt-2 min-h-12 w-full rounded-lg border border-[#D9D3CA] bg-[#FCFBF9] px-3.5 py-3 text-sm text-[#2D2926] outline-none transition-all placeholder:text-[#AAA39A] focus:border-[#8C806D] focus:ring-2 focus:ring-[#D9D0C3]/60';
-  const labelClass = 'block text-[10px] font-bold uppercase tracking-[.14em] text-[#6F6963]';
+  const inputClass =
+    "mt-2 min-h-12 w-full rounded-lg border border-[#D9D3CA] bg-[#FCFBF9] px-3.5 py-3 text-sm text-[#2D2926] outline-none transition-all placeholder:text-[#AAA39A] focus:border-[#8C806D] focus:ring-2 focus:ring-[#D9D0C3]/60";
+  const labelClass =
+    "block text-[10px] font-bold uppercase tracking-[.14em] text-[#6F6963]";
 
-  return <AnimatePresence><div className="fixed inset-0 z-[70] flex items-end justify-center overflow-y-auto bg-[#171513]/75 p-0 backdrop-blur-sm sm:items-center sm:p-5">
-    <motion.div initial={{ opacity: 0, y: 18, scale: .99 }} animate={{ opacity: 1, y: 0, scale: 1 }} exit={{ opacity: 0, y: 18 }} className="relative z-10 flex max-h-[96svh] w-full max-w-5xl flex-col overflow-hidden rounded-t-2xl border border-[#D6CFC7] bg-[#F6F3EE] shadow-2xl sm:max-h-[92svh] sm:rounded-2xl" role="dialog" aria-modal="true" aria-labelledby="customer-order-title">
-      <div className="flex shrink-0 items-center justify-between border-b border-[#DDD7CF] bg-[#FCFBF9] px-5 py-4 sm:px-8 sm:py-5"><div><p className="text-[9px] font-bold uppercase tracking-[.28em] text-[#8C806D]">Above Apprl · Secure checkout</p><h2 id="customer-order-title" className="mt-1 font-sans text-base font-bold uppercase tracking-[.12em] text-[#2D2926] sm:text-lg">{submittedOrder ? 'Order received' : userId ? 'Checkout' : 'Welcome to Above'}</h2></div><button onClick={onClose} className="rounded-full p-2 text-[#6F6963] transition-colors hover:bg-[#EEEAE4] hover:text-[#2D2926]" title="Close order form"><X className="h-5 w-5" /></button></div>
-      <div className="overflow-y-auto">
-        {submittedOrder ? <SuccessState orderNumber={submittedOrder} onClose={onClose} /> : authLoading ? <div className="px-5 py-20 text-center text-sm text-[#6F6963]">Loading your account...</div> : !userId ? <AuthForm authMode={authMode} setAuthMode={setAuthMode} email={email} setEmail={setEmail} password={password} setPassword={setPassword} submitting={submitting} error={error} message={message} setError={setError} handleAuth={handleAuth} inputClass={inputClass} labelClass={labelClass} /> : <form onSubmit={handleOrder} className="grid gap-6 p-5 sm:p-8 lg:grid-cols-[.82fr_1.18fr] lg:gap-8">
-          <aside className="h-fit rounded-2xl border border-[#DDD7CF] bg-[#FCFBF9] p-5 shadow-[0_12px_30px_rgba(45,41,38,.05)] lg:sticky lg:top-4"><div className="flex items-center justify-between"><p className="text-[10px] font-bold uppercase tracking-[.2em] text-[#8C806D]">Your order</p><ShoppingBag className="h-5 w-5 text-[#8C806D]" /></div><div className="mt-5 border-b border-[#E5DFD7] pb-5"><p className="text-lg font-semibold text-[#2D2926]">{product.name}</p><p className="mt-1 text-xs text-[#6F6963]">{product.code}</p></div><div className="mt-5 grid grid-cols-2 gap-3"><label className={labelClass}>Size<select required value={size} onChange={e => setSize(e.target.value)} className="mt-2 min-h-11 w-full rounded-lg border border-[#D9D3CA] bg-[#FCFBF9] px-3 text-sm"><option value="">Select</option>{product.sizes.map(item => <option key={item}>{item}</option>)}</select></label><label className={labelClass}>Quantity<input required min={1} max={product.stockCount || 99} type="number" value={quantity} onChange={e => setQuantity(Math.max(1, Number(e.target.value)))} className="mt-2 min-h-11 w-full rounded-lg border border-[#D9D3CA] bg-[#FCFBF9] px-3 text-sm" /></label></div><div className="mt-6 flex items-center justify-between border-t border-[#E5DFD7] pt-5"><span className="text-xs text-[#6F6963]">Order total</span><strong className="text-2xl text-[#2D2926]">{formatPrice(product.price * quantity)}</strong></div><div className="mt-5 flex items-start gap-2 text-[10px] leading-4 text-[#8E8B82]"><PackageCheck className="mt-0.5 h-4 w-4 shrink-0 text-[#8C806D]" /><span>Manual payment. We will contact you to confirm payment and delivery before fulfillment.</span></div></aside>
-          <div><div className="mb-6 flex items-start justify-between gap-4 border-b border-[#DDD7CF] pb-5"><div><p className="text-[10px] font-bold uppercase tracking-[.2em] text-[#8C806D]">Delivery information</p><p className="mt-2 text-xs text-[#6F6963]">Ordering as <strong className="text-[#2D2926]">{email}</strong></p><p className="mt-1 text-[10px] text-[#8E8B82]">Your saved details are pre-filled for faster checkout.</p></div><button type="button" onClick={async () => { await supabase.auth.signOut(); setUserId(null); }} className="shrink-0 text-[10px] font-bold uppercase tracking-wider text-[#B85D3D]">Sign out</button></div><div className="mb-5 flex items-center gap-3 rounded-xl border border-[#DDD7CF] bg-[#F1EEE8] px-4 py-3 text-xs text-[#6F6963]"><MapPin className="h-4 w-4 text-[#8C806D]" /> Where should we deliver your order?</div><div className="grid gap-4 sm:grid-cols-2"><label className={labelClass}>Full name<input required value={profile.full_name} onChange={e => updateProfile('full_name', e.target.value)} className={inputClass} /></label><label className={labelClass}>Contact number<input required type="tel" value={profile.contact_number} onChange={e => updateProfile('contact_number', e.target.value)} className={inputClass} /></label><label className={labelClass}>Destination / city<input required value={profile.destination} onChange={e => updateProfile('destination', e.target.value)} className={inputClass} /></label><label className={`${labelClass} sm:col-span-2`}>Complete address<textarea required rows={3} value={profile.address} onChange={e => updateProfile('address', e.target.value)} className={inputClass} /></label><label className={`${labelClass} sm:col-span-2`}>Delivery notes <span className="font-normal normal-case tracking-normal">(optional)</span><textarea rows={2} value={profile.delivery_notes} onChange={e => updateProfile('delivery_notes', e.target.value)} className={inputClass} /></label></div>{error && <p className="mt-5 rounded-lg border border-[#E5BDB0] bg-[#FFF5F1] p-3 text-xs text-[#9A4D3A]">{error}</p>}<div className="mt-7 flex flex-col-reverse gap-4 border-t border-[#DDD7CF] pt-5 sm:flex-row sm:items-center sm:justify-between"><div><p className="text-[10px] font-bold uppercase tracking-widest text-[#8E8B82]">Total to pay</p><strong className="text-xl text-[#2D2926]">{formatPrice(product.price * quantity)}</strong></div><button disabled={submitting} className="flex min-h-13 w-full items-center justify-center gap-2 rounded-lg bg-[#2D2926] px-7 text-xs font-bold uppercase tracking-[.17em] text-[#F4F1EE] transition-colors hover:bg-[#5A5A40] disabled:opacity-60 sm:w-auto">{submitting ? 'Submitting...' : 'Place order'}<Check className="h-4 w-4" /></button></div></div>
-        </form>}
+  return (
+    <AnimatePresence>
+      <div className="fixed inset-0 z-[70] flex items-end justify-center overflow-y-auto bg-[#171513]/75 p-0 backdrop-blur-sm sm:items-center sm:p-5">
+        <motion.div
+          initial={{ opacity: 0, y: 18, scale: 0.99 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          exit={{ opacity: 0, y: 18 }}
+          className="relative z-10 flex max-h-[96svh] w-full max-w-5xl flex-col overflow-hidden rounded-t-2xl border border-[#D6CFC7] bg-[#F6F3EE] shadow-2xl sm:max-h-[92svh] sm:rounded-2xl"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="customer-order-title"
+        >
+          <div className="flex shrink-0 items-center justify-between border-b border-[#DDD7CF] bg-[#FCFBF9] px-5 py-4 sm:px-8 sm:py-5">
+            <div>
+              <p className="text-[9px] font-bold uppercase tracking-[.28em] text-[#8C806D]">
+                Above Apprl · Secure checkout
+              </p>
+              <h2
+                id="customer-order-title"
+                className="mt-1 font-sans text-base font-bold uppercase tracking-[.12em] text-[#2D2926] sm:text-lg"
+              >
+                {submittedOrder
+                  ? "Order received"
+                  : userId
+                    ? "Checkout"
+                    : "Welcome to Above"}
+              </h2>
+            </div>
+            <button
+              onClick={onClose}
+              className="rounded-full p-2 text-[#6F6963] transition-colors hover:bg-[#EEEAE4] hover:text-[#2D2926]"
+              title="Close order form"
+            >
+              <X className="h-5 w-5" />
+            </button>
+          </div>
+          <div className="overflow-y-auto">
+            {submittedOrder ? (
+              <SuccessState orderNumber={submittedOrder} onClose={onClose} />
+            ) : authLoading ? (
+              <div className="px-5 py-20 text-center text-sm text-[#6F6963]">
+                Loading your account...
+              </div>
+            ) : !userId ? (
+              <AuthForm
+                authMode={authMode}
+                setAuthMode={setAuthMode}
+                email={email}
+                setEmail={setEmail}
+                password={password}
+                setPassword={setPassword}
+                submitting={submitting}
+                error={error}
+                message={message}
+                setError={setError}
+                handleAuth={handleAuth}
+                inputClass={inputClass}
+                labelClass={labelClass}
+              />
+            ) : (
+              <form
+                onSubmit={handleOrder}
+                className="grid gap-6 p-5 sm:p-8 lg:grid-cols-[.82fr_1.18fr] lg:gap-8"
+              >
+                <aside className="h-fit rounded-2xl border border-[#DDD7CF] bg-[#FCFBF9] p-5 shadow-[0_12px_30px_rgba(45,41,38,.05)] lg:sticky lg:top-4">
+                  <div className="flex items-center justify-between">
+                    <p className="text-[10px] font-bold uppercase tracking-[.2em] text-[#8C806D]">
+                      Your order
+                    </p>
+                    <ShoppingBag className="h-5 w-5 text-[#8C806D]" />
+                  </div>
+                  <div className="mt-5 border-b border-[#E5DFD7] pb-5">
+                    <p className="text-lg font-semibold text-[#2D2926]">
+                      {product.name}
+                    </p>
+                    <p className="mt-1 text-xs text-[#6F6963]">
+                      {product.code}
+                    </p>
+                  </div>
+                  <div className="mt-5 grid grid-cols-2 gap-3">
+                    <label className={labelClass}>
+                      Size
+                      <select
+                        required
+                        value={size}
+                        onChange={(e) => setSize(e.target.value)}
+                        className="mt-2 min-h-11 w-full rounded-lg border border-[#D9D3CA] bg-[#FCFBF9] px-3 text-sm"
+                      >
+                        <option value="">Select</option>
+                        {product.sizes.map((item) => (
+                          <option key={item}>{item}</option>
+                        ))}
+                      </select>
+                    </label>
+                    <label className={labelClass}>
+                      Quantity
+                      <input
+                        required
+                        min={1}
+                        max={product.stockCount || 99}
+                        type="number"
+                        value={quantity}
+                        onChange={(e) =>
+                          setQuantity(Math.max(1, Number(e.target.value)))
+                        }
+                        className="mt-2 min-h-11 w-full rounded-lg border border-[#D9D3CA] bg-[#FCFBF9] px-3 text-sm"
+                      />
+                    </label>
+                  </div>
+                  <div className="mt-6 flex items-center justify-between border-t border-[#E5DFD7] pt-5">
+                    <span className="text-xs text-[#6F6963]">Order total</span>
+                    <div className="text-right">
+                      {voucherApplied && <p className="text-xs text-[#56704B]">-{formatPrice(discount)}</p>}
+                      <strong className="text-2xl text-[#2D2926]">{formatPrice(total)}</strong>
+                    </div>
+                  </div>
+                  <div className="mt-5 border-t border-[#E5DFD7] pt-5">
+                    <label className={labelClass}>
+                      <span className="flex items-center gap-2"><TicketPercent className="h-4 w-4" /> Voucher code</span>
+                      <div className="mt-2 flex gap-2">
+                        <input
+                          value={voucherCode}
+                          onChange={(e) => { setVoucherCode(e.target.value); setVoucherApplied(false); setVoucherMessage(""); }}
+                          placeholder="Enter 10.10"
+                          className="min-h-11 min-w-0 flex-1 rounded-lg border border-[#D9D3CA] bg-[#FCFBF9] px-3 text-sm uppercase outline-none focus:border-[#8C806D]"
+                        />
+                        <button type="button" onClick={() => void applyVoucher()} className="rounded-lg border border-[#2D2926] px-3 text-[10px] font-bold uppercase tracking-wider text-[#2D2926] hover:bg-[#EEEAE4]">Apply</button>
+                      </div>
+                    </label>
+                    {voucherMessage && <p className={`mt-2 text-xs ${voucherApplied ? "text-[#56704B]" : "text-[#9A4D3A]"}`}>{voucherMessage}</p>}
+                  </div>
+                  <div className="mt-5 flex items-start gap-2 text-[10px] leading-4 text-[#8E8B82]">
+                    <PackageCheck className="mt-0.5 h-4 w-4 shrink-0 text-[#8C806D]" />
+                    <span>
+                      Manual payment. We will contact you to confirm payment and
+                      delivery before fulfillment.
+                    </span>
+                  </div>
+                </aside>
+                <div>
+                  <div className="mb-6 flex items-start justify-between gap-4 border-b border-[#DDD7CF] pb-5">
+                    <div>
+                      <p className="text-[10px] font-bold uppercase tracking-[.2em] text-[#8C806D]">
+                        Delivery information
+                      </p>
+                      <p className="mt-2 text-xs text-[#6F6963]">
+                        Ordering as{" "}
+                        <strong className="text-[#2D2926]">{email}</strong>
+                      </p>
+                      <p className="mt-1 text-[10px] text-[#8E8B82]">
+                        Your saved details are pre-filled for faster checkout.
+                      </p>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={async () => {
+                        await supabase.auth.signOut();
+                        setUserId(null);
+                      }}
+                      className="shrink-0 text-[10px] font-bold uppercase tracking-wider text-[#B85D3D]"
+                    >
+                      Sign out
+                    </button>
+                  </div>
+                  <div className="mb-5 flex items-center gap-3 rounded-xl border border-[#DDD7CF] bg-[#F1EEE8] px-4 py-3 text-xs text-[#6F6963]">
+                    <MapPin className="h-4 w-4 text-[#8C806D]" /> Where should
+                    we deliver your order?
+                  </div>
+                  <div className="grid gap-4 sm:grid-cols-2">
+                    <label className={labelClass}>
+                      Full name
+                      <input
+                        required
+                        value={profile.full_name}
+                        onChange={(e) =>
+                          updateProfile("full_name", e.target.value)
+                        }
+                        className={inputClass}
+                      />
+                    </label>
+                    <label className={labelClass}>
+                      Contact number
+                      <input
+                        required
+                        type="tel"
+                        value={profile.contact_number}
+                        onChange={(e) =>
+                          updateProfile("contact_number", e.target.value)
+                        }
+                        className={inputClass}
+                      />
+                    </label>
+                    <label className={labelClass}>
+                      Province
+                      <input
+                        required
+                        value={shipping.province}
+                        onChange={(e) =>
+                          updateShipping("province", e.target.value)
+                        }
+                        className={inputClass}
+                      />
+                    </label>
+                    <label className={labelClass}>
+                      City / Municipality
+                      <input
+                        required
+                        value={shipping.city_municipality}
+                        onChange={(e) =>
+                          updateShipping("city_municipality", e.target.value)
+                        }
+                        className={inputClass}
+                      />
+                    </label>
+                    <label className={labelClass}>
+                      Barangay
+                      <input
+                        required
+                        value={shipping.barangay}
+                        onChange={(e) =>
+                          updateShipping("barangay", e.target.value)
+                        }
+                        className={inputClass}
+                      />
+                    </label>
+                    <label className={labelClass}>
+                      Postal code
+                      <input
+                        required
+                        inputMode="numeric"
+                        value={shipping.postal_code}
+                        onChange={(e) =>
+                          updateShipping("postal_code", e.target.value)
+                        }
+                        className={inputClass}
+                      />
+                    </label>
+                    <label className={labelClass}>
+                      Package weight (kg)
+                      <input
+                        required
+                        type="number"
+                        min="0.01"
+                        step="0.01"
+                        value={shipping.package_weight_kg}
+                        onChange={(e) =>
+                          updateShipping("package_weight_kg", e.target.value)
+                        }
+                        className={inputClass}
+                      />
+                    </label>
+                    <label className={`${labelClass} sm:col-span-2`}>
+                      Complete address
+                      <textarea
+                        required
+                        rows={3}
+                        value={profile.address}
+                        onChange={(e) =>
+                          updateProfile("address", e.target.value)
+                        }
+                        className={inputClass}
+                      />
+                    </label>
+                    <label className={`${labelClass} sm:col-span-2`}>
+                      Delivery notes{" "}
+                      <span className="font-normal normal-case tracking-normal">
+                        (optional)
+                      </span>
+                      <textarea
+                        rows={2}
+                        value={profile.delivery_notes}
+                        onChange={(e) =>
+                          updateProfile("delivery_notes", e.target.value)
+                        }
+                        className={inputClass}
+                      />
+                    </label>
+                  </div>
+                  {error && (
+                    <p className="mt-5 rounded-lg border border-[#E5BDB0] bg-[#FFF5F1] p-3 text-xs text-[#9A4D3A]">
+                      {error}
+                    </p>
+                  )}
+                  <div className="mt-7 flex flex-col-reverse gap-4 border-t border-[#DDD7CF] pt-5 sm:flex-row sm:items-center sm:justify-between">
+                    <div>
+                      <p className="text-[10px] font-bold uppercase tracking-widest text-[#8E8B82]">
+                        Total to pay
+                      </p>
+                      <strong className="text-xl text-[#2D2926]">
+                        {formatPrice(total)}
+                      </strong>
+                    </div>
+                    <button
+                      disabled={submitting}
+                      className="flex min-h-13 w-full items-center justify-center gap-2 rounded-lg bg-[#2D2926] px-7 text-xs font-bold uppercase tracking-[.17em] text-[#F4F1EE] transition-colors hover:bg-[#5A5A40] disabled:opacity-60 sm:w-auto"
+                    >
+                      {submitting ? "Submitting..." : "Place order"}
+                      <Check className="h-4 w-4" />
+                    </button>
+                  </div>
+                </div>
+              </form>
+            )}
+          </div>
+        </motion.div>
       </div>
-    </motion.div>
-  </div></AnimatePresence>;
+    </AnimatePresence>
+  );
 }
 
-function SuccessState({ orderNumber, onClose }: { orderNumber: string; onClose: () => void }) { return <div className="px-5 py-16 text-center sm:px-10"><div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-[#E8EFE4] text-[#56704B]"><Check className="h-8 w-8" /></div><h3 className="mt-6 font-sans text-xl font-bold uppercase tracking-[.1em] text-[#2D2926]">Order placed</h3><p className="mx-auto mt-3 max-w-md text-sm leading-6 text-[#6F6963]">Your order reference is <strong className="text-[#2D2926]">{orderNumber}</strong>.</p><div className="mx-auto mt-6 max-w-md rounded-xl border border-[#D9E3D2] bg-[#F1F6EE] p-4 text-left text-sm leading-6 text-[#52634A]"><strong>Next step:</strong> We will contact you to arrange payment and confirm your delivery details before your order is shipped.</div><button onClick={onClose} className="mt-8 min-h-12 rounded-lg bg-[#2D2926] px-7 py-3 text-xs font-bold uppercase tracking-[.18em] text-[#F4F1EE] transition-colors hover:bg-[#5A5A40]">Okay</button></div>; }
+function SuccessState({
+  orderNumber,
+  onClose,
+}: {
+  orderNumber: string;
+  onClose: () => void;
+}) {
+  return (
+    <div className="px-5 py-16 text-center sm:px-10">
+      <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-[#E8EFE4] text-[#56704B]">
+        <Check className="h-8 w-8" />
+      </div>
+      <h3 className="mt-6 font-sans text-xl font-bold uppercase tracking-[.1em] text-[#2D2926]">
+        Order placed
+      </h3>
+      <p className="mx-auto mt-3 max-w-md text-sm leading-6 text-[#6F6963]">
+        Your order reference is{" "}
+        <strong className="text-[#2D2926]">{orderNumber}</strong>.
+      </p>
+      <div className="mx-auto mt-6 max-w-md rounded-xl border border-[#D9E3D2] bg-[#F1F6EE] p-4 text-left text-sm leading-6 text-[#52634A]">
+        <strong>Next step:</strong> We will contact you to arrange payment and
+        confirm your delivery details before your order is shipped.
+      </div>
+      <button
+        onClick={onClose}
+        className="mt-8 min-h-12 rounded-lg bg-[#2D2926] px-7 py-3 text-xs font-bold uppercase tracking-[.18em] text-[#F4F1EE] transition-colors hover:bg-[#5A5A40]"
+      >
+        Okay
+      </button>
+    </div>
+  );
+}
 
-function AuthForm({ authMode, setAuthMode, email, setEmail, password, setPassword, submitting, error, message, setError, handleAuth, inputClass, labelClass }: { authMode: AuthMode; setAuthMode: (mode: AuthMode) => void; email: string; setEmail: (value: string) => void; password: string; setPassword: (value: string) => void; submitting: boolean; error: string; message: string; setError: (value: string) => void; handleAuth: (event: React.FormEvent) => void; inputClass: string; labelClass: string }) { return <div className="grid min-h-[460px] md:grid-cols-[.85fr_1.15fr]"><div className="relative hidden overflow-hidden bg-[#25211D] p-9 text-[#F8F5EF] md:flex md:flex-col md:justify-between"><div className="absolute inset-0 opacity-30 [background-image:linear-gradient(135deg,transparent_48%,rgba(212,180,131,.4)_49%,transparent_50%),linear-gradient(45deg,transparent_48%,rgba(212,180,131,.18)_49%,transparent_50%)] [background-size:42px_42px]" /><div className="relative"><p className="text-[9px] font-bold uppercase tracking-[.28em] text-[#D4B483]">Private customer access</p><h3 className="mt-8 font-climate text-4xl leading-[.95] tracking-tight">KEEP<br />RISING.</h3><p className="mt-6 max-w-xs text-sm leading-6 text-white/65">Create your customer account and keep your delivery details ready for every Above Apprl order.</p></div><div className="relative space-y-3 text-[10px] font-bold uppercase tracking-[.14em] text-white/65"><div className="flex items-center gap-3"><PackageCheck className="h-4 w-4 text-[#D4B483]" /> Faster repeat checkout</div><div className="flex items-center gap-3"><MapPin className="h-4 w-4 text-[#D4B483]" /> Saved delivery details</div></div></div><form onSubmit={handleAuth} className="px-5 py-8 sm:px-10 sm:py-12"><div className="mx-auto max-w-md"><div className="mb-7 md:hidden"><p className="text-[9px] font-bold uppercase tracking-[.25em] text-[#8C806D]">Customer account</p><h3 className="mt-2 text-2xl font-bold uppercase tracking-[.08em] text-[#2D2926]">Keep rising.</h3></div><div className="mb-7 flex border-b border-[#D9D3CA]"><AuthTab active onClick={() => { setAuthMode('sign-in'); setError(''); }} icon={LogIn}>Sign in</AuthTab><AuthTab active={false} onClick={() => { setAuthMode('sign-up'); setError(''); }} icon={UserPlus}>Create account</AuthTab></div><label className={labelClass}>Email address<input required type="email" autoComplete="email" placeholder="you@example.com" value={email} onChange={e => setEmail(e.target.value)} className={inputClass} /></label><label className={`${labelClass} mt-5`}>Password<input required minLength={6} type="password" autoComplete="current-password" placeholder="Your password" value={password} onChange={e => setPassword(e.target.value)} className={inputClass} /></label>{error && <p role="alert" className="mt-5 rounded-lg border border-[#E5BDB0] bg-[#FFF5F1] p-3.5 text-xs leading-5 text-[#9A4D3A]">{error}</p>}{message && <p role="status" className="mt-5 rounded-lg border border-[#CFDCC8] bg-[#F0F5ED] p-3.5 text-xs leading-5 text-[#4D633E]">{message}</p>}<button disabled={submitting} className="mt-7 flex min-h-13 w-full items-center justify-center gap-2 rounded-lg bg-[#2D2926] px-5 text-xs font-bold uppercase tracking-[.17em] text-[#F4F1EE] transition-colors hover:bg-[#5A5A40] disabled:cursor-wait disabled:opacity-60">{submitting ? 'Please wait...' : 'Sign in and continue'}<LockKeyhole className="h-4 w-4" /></button></div></form></div>; }
-function AuthTab({ active, onClick, icon: Icon, children }: { active: boolean; onClick: () => void; icon: React.ElementType; children: React.ReactNode }) { return <button type="button" onClick={onClick} className={`relative flex min-h-12 items-center justify-center gap-2 text-[10px] font-bold uppercase tracking-[.16em] ${children === 'Create account' ? 'hidden' : ''} ${active ? 'text-[#2D2926] after:absolute after:bottom-[-1px] after:left-0 after:h-0.5 after:w-full after:bg-[#2D2926]' : 'text-[#989188]'}`}><Icon className="h-4 w-4" /> {children}</button>; }
+function AuthForm({
+  authMode,
+  setAuthMode,
+  email,
+  setEmail,
+  password,
+  setPassword,
+  submitting,
+  error,
+  message,
+  setError,
+  handleAuth,
+  inputClass,
+  labelClass,
+}: {
+  authMode: AuthMode;
+  setAuthMode: (mode: AuthMode) => void;
+  email: string;
+  setEmail: (value: string) => void;
+  password: string;
+  setPassword: (value: string) => void;
+  submitting: boolean;
+  error: string;
+  message: string;
+  setError: (value: string) => void;
+  handleAuth: (event: React.FormEvent) => void;
+  inputClass: string;
+  labelClass: string;
+}) {
+  return (
+    <div className="grid min-h-[460px] md:grid-cols-[.85fr_1.15fr]">
+      <div className="relative hidden overflow-hidden bg-[#25211D] p-9 text-[#F8F5EF] md:flex md:flex-col md:justify-between">
+        <div className="absolute inset-0 opacity-30 [background-image:linear-gradient(135deg,transparent_48%,rgba(212,180,131,.4)_49%,transparent_50%),linear-gradient(45deg,transparent_48%,rgba(212,180,131,.18)_49%,transparent_50%)] [background-size:42px_42px]" />
+        <div className="relative">
+          <p className="text-[9px] font-bold uppercase tracking-[.28em] text-[#D4B483]">
+            Private customer access
+          </p>
+          <h3 className="mt-8 font-climate text-4xl leading-[.95] tracking-tight">
+            KEEP
+            <br />
+            RISING.
+          </h3>
+          <p className="mt-6 max-w-xs text-sm leading-6 text-white/65">
+            Create your customer account and keep your delivery details ready
+            for every Above Apprl order.
+          </p>
+        </div>
+        <div className="relative space-y-3 text-[10px] font-bold uppercase tracking-[.14em] text-white/65">
+          <div className="flex items-center gap-3">
+            <PackageCheck className="h-4 w-4 text-[#D4B483]" /> Faster repeat
+            checkout
+          </div>
+          <div className="flex items-center gap-3">
+            <MapPin className="h-4 w-4 text-[#D4B483]" /> Saved delivery details
+          </div>
+        </div>
+      </div>
+      <form onSubmit={handleAuth} className="px-5 py-8 sm:px-10 sm:py-12">
+        <div className="mx-auto max-w-md">
+          <div className="mb-7 md:hidden">
+            <p className="text-[9px] font-bold uppercase tracking-[.25em] text-[#8C806D]">
+              Customer account
+            </p>
+            <h3 className="mt-2 text-2xl font-bold uppercase tracking-[.08em] text-[#2D2926]">
+              Keep rising.
+            </h3>
+          </div>
+          <div className="mb-7 flex border-b border-[#D9D3CA]">
+            <AuthTab
+              active
+              onClick={() => {
+                setAuthMode("sign-in");
+                setError("");
+              }}
+              icon={LogIn}
+            >
+              Sign in
+            </AuthTab>
+            <AuthTab
+              active={false}
+              onClick={() => {
+                setAuthMode("sign-up");
+                setError("");
+              }}
+              icon={UserPlus}
+            >
+              Create account
+            </AuthTab>
+          </div>
+          <label className={labelClass}>
+            Email address
+            <input
+              required
+              type="email"
+              autoComplete="email"
+              placeholder="you@example.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className={inputClass}
+            />
+          </label>
+          <label className={`${labelClass} mt-5`}>
+            Password
+            <input
+              required
+              minLength={6}
+              type="password"
+              autoComplete="current-password"
+              placeholder="Your password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className={inputClass}
+            />
+          </label>
+          {error && (
+            <p
+              role="alert"
+              className="mt-5 rounded-lg border border-[#E5BDB0] bg-[#FFF5F1] p-3.5 text-xs leading-5 text-[#9A4D3A]"
+            >
+              {error}
+            </p>
+          )}
+          {message && (
+            <p
+              role="status"
+              className="mt-5 rounded-lg border border-[#CFDCC8] bg-[#F0F5ED] p-3.5 text-xs leading-5 text-[#4D633E]"
+            >
+              {message}
+            </p>
+          )}
+          <button
+            disabled={submitting}
+            className="mt-7 flex min-h-13 w-full items-center justify-center gap-2 rounded-lg bg-[#2D2926] px-5 text-xs font-bold uppercase tracking-[.17em] text-[#F4F1EE] transition-colors hover:bg-[#5A5A40] disabled:cursor-wait disabled:opacity-60"
+          >
+            {submitting ? "Please wait..." : "Sign in and continue"}
+            <LockKeyhole className="h-4 w-4" />
+          </button>
+        </div>
+      </form>
+    </div>
+  );
+}
+function AuthTab({
+  active,
+  onClick,
+  icon: Icon,
+  children,
+}: {
+  active: boolean;
+  onClick: () => void;
+  icon: React.ElementType;
+  children: React.ReactNode;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={`relative flex min-h-12 items-center justify-center gap-2 text-[10px] font-bold uppercase tracking-[.16em] ${children === "Create account" ? "hidden" : ""} ${active ? "text-[#2D2926] after:absolute after:bottom-[-1px] after:left-0 after:h-0.5 after:w-full after:bg-[#2D2926]" : "text-[#989188]"}`}
+    >
+      <Icon className="h-4 w-4" /> {children}
+    </button>
+  );
+}
