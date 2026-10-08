@@ -6,8 +6,8 @@ import { useEffect, useState } from 'react';
 import { useAdmin } from '@/context/AdminContext';
 import { formatPrice } from '@/lib/currency';
 
-function QuickStat({ label, value, icon: Icon, dark = false }: { label: string; value: string | number; icon: React.ElementType; dark?: boolean }) {
-  return <div className={`rounded-2xl border p-4 ${dark ? 'border-[#20242b] bg-[#20242b] text-white' : 'border-[#e0e1dc] bg-white text-[#24272b]'}`}><div className="flex items-center justify-between"><div className={`flex h-9 w-9 items-center justify-center rounded-full ${dark ? 'bg-white/10' : 'bg-[#f1f2ed]'}`}><Icon className={`h-4 w-4 ${dark ? 'text-white' : 'text-[#74784f]'}`} strokeWidth={1.7} /></div><span className={`text-[10px] ${dark ? 'text-[#aeb2ad]' : 'text-[#929695]'}`}>Live</span></div><p className="mt-4 text-2xl font-semibold tracking-tight">{value}</p><p className={`mt-1 text-[11px] ${dark ? 'text-[#b9bdb8]' : 'text-[#85898a]'}`}>{label}</p></div>;
+function QuickStat({ label, value, icon: Icon }: { label: string; value: string | number; icon: React.ElementType }) {
+  return <div className="min-h-[132px] rounded-xl border border-[#e1e2dc] bg-white p-5 shadow-[0_4px_16px_rgba(32,36,43,0.03)] transition-shadow hover:shadow-[0_8px_24px_rgba(32,36,43,0.06)]"><div className="flex items-start justify-between"><div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[#f1f2ed]"><Icon className="h-[18px] w-[18px] text-[#74784f]" strokeWidth={1.7} /></div><span className="inline-flex items-center gap-1.5 text-[10px] font-medium text-[#8a918b]"><i className="h-1.5 w-1.5 rounded-full bg-[#7d9b63]" />Live</span></div><p className="mt-5 text-2xl font-semibold tracking-tight text-[#24272b]">{value}</p><p className="mt-1 text-xs text-[#85898a]">{label}</p></div>;
 }
 
 export function AdminDashboard() {
@@ -34,8 +34,21 @@ export function AdminDashboard() {
   const attentionProducts = products.filter(p => p.stockCount <= 5).slice(0, 4);
   const recentProducts = products.slice(0, 6);
 
-  return <div className="space-y-5">
-    <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-5"><QuickStat label="Total products" value={products.length} icon={Package} /><QuickStat label="Active products" value={active} icon={CheckCircle2} dark /><QuickStat label="Inventory units" value={totalUnits.toLocaleString()} icon={Box} /><QuickStat label="Categories" value={categories.length} icon={Tag} /><QuickStat label="Low stock" value={lowStock} icon={AlertTriangle} /><QuickStat label="Inventory value" value={formatPrice(inventoryValue)} icon={CircleDollarSign} /><QuickStat label="Orders" value={orderMetrics.total} icon={ShoppingBag} /><QuickStat label="Pending orders" value={orderMetrics.pending} icon={Clock3} /><QuickStat label="Order value" value={formatPrice(orderMetrics.revenue)} icon={CircleDollarSign} /><QuickStat label="Reviews" value={reviewCount} icon={MessageCircle} /></div>
+  const stats = [
+    { label: 'Total products', value: products.length, icon: Package },
+    { label: 'Active products', value: active, icon: CheckCircle2 },
+    { label: 'Inventory units', value: totalUnits.toLocaleString(), icon: Box },
+    { label: 'Categories', value: categories.length, icon: Tag },
+    { label: 'Low stock', value: lowStock, icon: AlertTriangle },
+    { label: 'Inventory value', value: formatPrice(inventoryValue), icon: CircleDollarSign },
+    { label: 'Orders', value: orderMetrics.total, icon: ShoppingBag },
+    { label: 'Pending orders', value: orderMetrics.pending, icon: Clock3 },
+    { label: 'Order value', value: formatPrice(orderMetrics.revenue), icon: CircleDollarSign },
+    { label: 'Reviews', value: reviewCount, icon: MessageCircle },
+  ];
+
+  return <div className="space-y-6">
+    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">{stats.map(stat => <QuickStat key={stat.label} {...stat} />)}</div>
 
     <div className="grid gap-5 xl:grid-cols-[1.45fr_0.85fr]">
       <section className="rounded-2xl border border-[#e0e1dc] bg-white p-5 sm:p-6"><div className="flex items-start justify-between"><div><h2 className="text-lg font-semibold">Statistics</h2><p className="mt-1 text-xs text-[#85898a]">Products distributed across your collections</p></div><div className="flex items-center gap-3 text-[11px] text-[#85898a]"><span className="flex items-center gap-1.5"><i className="h-2 w-2 rounded-full bg-[#20242b]" /> Products</span><span className="flex items-center gap-1.5"><i className="h-2 w-2 rounded-full bg-[#c7c9c3]" /> Inventory units</span></div></div><div className="mt-8 flex h-52 items-end gap-2 border-b border-[#e7e8e2] px-2 sm:gap-4">{categoryStats.slice(0, 8).map(c => <div key={c.id} className="flex h-full flex-1 items-end gap-1.5"><div className="group relative flex h-full flex-1 items-end"><div className="w-full rounded-t-md bg-[#20242b] transition-all hover:bg-[#74784f]" style={{ height: `${Math.max(c.count ? 12 : 3, c.count / maxCategoryCount * 100)}%` }}><span className="absolute -top-6 left-1/2 hidden -translate-x-1/2 rounded bg-[#20242b] px-2 py-1 text-[10px] text-white group-hover:block">{c.count}</span></div></div><div className="hidden h-full flex-1 items-end sm:flex"><div className="w-full rounded-t-md bg-[#c7c9c3]" style={{ height: `${Math.max(c.count ? 9 : 3, Math.min(100, (products.filter(p => p.category === c.id).reduce((s, p) => s + p.stockCount, 0) / Math.max(1, totalUnits)) * 100 * 2))}%` }} /></div></div>)}</div><div className="mt-3 flex gap-2 overflow-hidden px-2">{categoryStats.slice(0, 8).map(c => <span key={c.id} className="min-w-0 flex-1 truncate text-center text-[9px] text-[#85898a]">{c.label.replace('UA ', '').replace('ua ', '')}</span>)}</div></section>
