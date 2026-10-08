@@ -10,6 +10,7 @@ import {
   RefreshCw,
   Search,
   ShoppingBag,
+  Trash2,
   X,
 } from "lucide-react";
 import { formatPrice } from "@/lib/currency";
@@ -125,6 +126,22 @@ export function AdminOrders() {
       );
   };
 
+  const deleteOrder = async (order: Order) => {
+    if (!window.confirm(`Delete order ${order.order_number}? Stock and voucher usage will be restored when applicable.`)) return;
+    const response = await fetch("/api/admin/orders", {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id: order.id }),
+    });
+    if (!response.ok) {
+      const data = await response.json().catch(() => null) as { error?: string } | null;
+      setError(data?.error ?? "Unable to delete order.");
+      return;
+    }
+    setOrders((current) => current.filter((item) => item.id !== order.id));
+    if (selectedOrder?.id === order.id) setSelectedOrder(null);
+  };
+
   return (
     <div className="space-y-5">
       <div className="grid gap-3 sm:grid-cols-3">
@@ -218,6 +235,7 @@ export function AdminOrders() {
                     "Total",
                     "Status",
                     "Placed",
+                    "Actions",
                   ].map((label) => (
                     <th
                       key={label}
@@ -293,6 +311,17 @@ export function AdminOrders() {
                         day: "numeric",
                         year: "numeric",
                       })}
+                    </td>
+                    <td className="px-5 py-4 text-right">
+                      <button
+                        type="button"
+                        onClick={() => void deleteOrder(order)}
+                        title={`Delete ${order.order_number}`}
+                        aria-label={`Delete ${order.order_number}`}
+                        className="rounded-md p-2 text-[#ad6250] hover:bg-[#f7e9e4]"
+                      >
+                        <Trash2 className="h-4 w-4" />
+                      </button>
                     </td>
                   </tr>
                 ))}

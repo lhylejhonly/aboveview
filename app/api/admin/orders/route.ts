@@ -44,6 +44,38 @@ export async function GET(request: NextRequest) {
   });
 }
 
+export async function DELETE(request: NextRequest) {
+  if (!authorized(request))
+    return NextResponse.json({ error: "Unauthorized." }, { status: 401 });
+  try {
+    const { id } = await request.json() as { id?: string };
+    if (!id) return NextResponse.json({ error: "Order is required." }, { status: 400 });
+    const supabase = getSupabaseAdmin();
+    const { data: order, error: findError } = await supabase
+      .from("orders")
+      .select("id, status")
+      .eq("id", id)
+      .maybeSingle();
+    if (findError) throw findError;
+    if (!order) return NextResponse.json({ error: "Order not found." }, { status: 404 });
+
+    // Cancel first so database triggers restore reserved stock and voucher uses.
+    if (order.status !== "cancelled") {
+      const { error: cancelError } = await supabase
+        .from("orders")
+        .update({ status: "cancelled" })
+        .eq("id", id);
+      if (cancelError) throw cancelError;
+    }
+    const { error: deleteError } = await supabase.from("orders").delete().eq("id", id);
+    if (deleteError) throw deleteError;
+    return NextResponse.json({ ok: true });
+  } catch (error) {
+    console.error("Delete order error", error);
+    return NextResponse.json({ error: "Unable to delete order." }, { status: 500 });
+  }
+}
+
 export async function PATCH(request: NextRequest) {
   if (!authorized(request))
     return NextResponse.json({ error: "Unauthorized." }, { status: 401 });
