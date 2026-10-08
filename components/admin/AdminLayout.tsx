@@ -18,10 +18,13 @@ import { useAdmin } from '@/context/AdminContext';
 import { supabase } from '@/lib/supabase';
 import { useEffect, useRef, useState } from 'react';
 
-const navigation = [
+type BadgeKey = 'orders' | 'reviews';
+type NavigationItem = { href: string; label: string; icon: typeof LayoutDashboard; badgeKey?: BadgeKey };
+
+const navigation: NavigationItem[] = [
   { href: '/admin/dashboard', label: 'Dashboard', icon: LayoutDashboard },
-  { href: '/admin/orders', label: 'Orders', icon: Package },
-  { href: '/admin/reviews', label: 'Reviews', icon: MessageCircle },
+  { href: '/admin/orders', label: 'Orders', icon: Package, badgeKey: 'orders' },
+  { href: '/admin/reviews', label: 'Reviews', icon: MessageCircle, badgeKey: 'reviews' },
   { href: '/admin/products', label: 'Products', icon: Package },
   { href: '/admin/categories', label: 'Categories', icon: Tag },
   { href: '/admin/settings', label: 'Settings', icon: Settings },
@@ -31,6 +34,30 @@ export function AdminSidebar({ onNavigate }: { onNavigate?: () => void }) {
   const pathname = usePathname();
   const { logout } = useAdmin();
   const router = useRouter();
+  const [badges, setBadges] = useState({ orders: 0, reviews: 0 });
+
+  useEffect(() => {
+    let mounted = true;
+    const refreshBadges = async () => {
+      try {
+        const [ordersResponse, reviewsResponse] = await Promise.all([
+          fetch('/api/admin/orders', { cache: 'no-store' }),
+          fetch('/api/admin/reviews', { cache: 'no-store' }),
+        ]);
+        const [ordersData, reviewsData] = await Promise.all([ordersResponse.json(), reviewsResponse.json()]);
+        if (!mounted) return;
+        setBadges({
+          orders: Array.isArray(ordersData.orders) ? ordersData.orders.filter((order: { status?: string }) => order.status === 'pending').length : 0,
+          reviews: Array.isArray(reviewsData.reviews) ? reviewsData.reviews.length : 0,
+        });
+      } catch {
+        // Keep the last known counts while the admin workspace is offline.
+      }
+    };
+    void refreshBadges();
+    const timer = window.setInterval(refreshBadges, 15000);
+    return () => { mounted = false; window.clearInterval(timer); };
+  }, []);
 
   const handleLogout = () => {
     void logout();
@@ -49,8 +76,9 @@ export function AdminSidebar({ onNavigate }: { onNavigate?: () => void }) {
 
       <nav className="flex-1 space-y-1 px-3 py-6">
         <p className="px-3 pb-3 text-[10px] font-bold uppercase tracking-[0.2em] text-[#777b80]">Manage</p>
-        {navigation.map(({ href, label, icon: Icon }) => {
+        {navigation.map(({ href, label, icon: Icon, badgeKey }) => {
           const active = pathname === href || (href !== '/admin/dashboard' && pathname.startsWith(`${href}/`));
+          const badge = badgeKey ? badges[badgeKey] : 0;
           return (
             <Link
               key={href}
@@ -64,6 +92,7 @@ export function AdminSidebar({ onNavigate }: { onNavigate?: () => void }) {
             >
               <Icon className={`h-[18px] w-[18px] transition-colors ${active ? 'text-[#fbfaf6]' : 'text-[#858a87] group-hover:text-[#d7d8d1]'}`} strokeWidth={1.7} />
               <span>{label}</span>
+              {badge > 0 && <span className={`ml-auto inline-flex min-w-5 items-center justify-center rounded-full px-1.5 py-0.5 text-[10px] font-bold leading-none ${active ? 'bg-white/20 text-white' : 'bg-[#b56b4d] text-white'}`}>{badge > 99 ? '99+' : badge}</span>}
               {active && <ChevronRight className="ml-auto h-4 w-4" strokeWidth={1.7} />}
             </Link>
           );
