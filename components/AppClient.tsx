@@ -15,6 +15,7 @@ import { WallpaperGeneratorStudio } from '@/components/WallpaperGeneratorStudio'
 import { QuickViewModal } from '@/components/QuickViewModal';
 import { TopProgressBar } from '@/components/TopProgressBar';
 import { CustomerOrderModal } from '@/components/CustomerOrderModal';
+import { getProductSizeStock } from '@/lib/inventory';
 import { StoreHeader } from '@/components/StoreHeader';
 import { CustomerLoginModal } from '@/components/CustomerLoginModal';
 import { CartDrawer } from '@/components/CartDrawer';
@@ -106,7 +107,7 @@ export default function AppClient() {
   };
 
   const addToCart = (product: Product, size: string) => {
-    setCartItems(current => { const existing = current.find(item => item.product.id === product.id && item.size === size); if (existing) return current.map(item => item === existing ? { ...item, quantity: Math.min(product.stockCount, item.quantity + 1) } : item); return [...current, { product, size, quantity: 1 }]; });
+    setCartItems(current => { const sizeStock = getProductSizeStock(product, size); if (sizeStock <= 0) return current; const existing = current.find(item => item.product.id === product.id && item.size === size); if (existing) return current.map(item => item === existing ? { ...item, quantity: Math.min(sizeStock, item.quantity + 1) } : item); return [...current, { product, size, quantity: 1 }]; });
     setQuickViewProduct(null); setCartOpen(false); setAddedToCart({ product, size });
   };
 

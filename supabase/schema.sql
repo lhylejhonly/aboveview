@@ -26,6 +26,7 @@ create table if not exists public.products (
   fit_type text not null default '',
   colors jsonb not null default '[]'::jsonb,
   sizes jsonb not null default '[]'::jsonb,
+  size_stock jsonb not null default '{}'::jsonb,
   tags jsonb not null default '[]'::jsonb,
   tiktok_shop_url text not null default '',
   stock_count integer not null default 0,

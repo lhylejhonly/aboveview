@@ -41,6 +41,7 @@ export interface Product {
   tags: string[];
   tiktokShopUrl: string;
   stockCount: number;
+  sizeStock?: Record<string, number>;
   rating: number;
   reviewCount: number;
   isNew?: boolean;

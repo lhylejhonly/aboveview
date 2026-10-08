@@ -23,6 +23,7 @@ const emptyProduct = (category: string): Omit<Product, "id"> => ({
   tags: [],
   tiktokShopUrl: "",
   stockCount: 0,
+  sizeStock: {},
   rating: 5,
   reviewCount: 0,
   isComingSoon: false,
@@ -61,6 +62,9 @@ function ProductEditor({
   const [backPreview, setBackPreview] = useState(product?.backImage ?? "");
   const set = (key: keyof Omit<Product, "id">, value: unknown) =>
     setForm((prev) => ({ ...prev, [key]: value }));
+  const setSizeStock = (size: string, value: number) =>
+    setForm((prev) => ({ ...prev, sizeStock: { ...(prev.sizeStock ?? {}), [size]: Math.max(0, value) } }));
+  const sizeStockTotal = form.sizes.reduce((sum, size) => sum + Number(form.sizeStock?.[size] ?? 0), 0);
   const save = async (e: React.FormEvent) => {
     e.preventDefault();
     setSaving(true);
@@ -77,6 +81,8 @@ function ProductEditor({
         ...form,
         frontImage,
         backImage,
+        stockCount: Object.keys(form.sizeStock ?? {}).length ? sizeStockTotal : form.stockCount,
+        sizeStock: Object.keys(form.sizeStock ?? {}).length ? Object.fromEntries(form.sizes.map((size) => [size, Math.max(0, Number(form.sizeStock?.[size] ?? 0))])) : undefined,
         colors: form.colors.map((color) => ({
           ...color,
           hex:
@@ -129,6 +135,16 @@ function ProductEditor({
               onChange={(e) => set("name", e.target.value)}
             />
           </label>
+          <div className="sm:col-span-2 rounded-lg border border-[#d9dad4] bg-[#fbfbf8] p-3">
+            <div className="flex items-center justify-between gap-3">
+              <p className="text-xs font-semibold">Stock by size</p>
+              <p className="text-[11px] text-[#85898a]">Configured total: {Object.keys(form.sizeStock ?? {}).length ? sizeStockTotal : form.stockCount}</p>
+            </div>
+            <p className="mt-1 text-[11px] font-normal text-[#85898a]">Set a quantity for each size. Leave this section untouched to use the existing total stock.</p>
+            {form.sizes.length > 0 ? <div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-4">
+              {form.sizes.map((size) => <label key={size} className="text-[11px] font-semibold">{size}<input type="number" min="0" step="1" className={input} value={form.sizeStock?.[size] ?? ""} onChange={(event) => setSizeStock(size, Number(event.target.value) || 0)} placeholder="0" /></label>)}
+            </div> : <p className="mt-3 text-xs text-[#ad6250]">Select sizes first.</p>}
+          </div>
           <label className="text-xs font-semibold">
             SKU / code
             <input

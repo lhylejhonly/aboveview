@@ -16,6 +16,7 @@ import {
 import { Product } from "@/types";
 import { formatPrice } from "@/lib/currency";
 import { supabase } from "@/lib/supabase";
+import { getProductSizeStock } from "@/lib/inventory";
 
 interface CustomerOrderModalProps {
   product: Product | null;
@@ -132,6 +133,7 @@ export function CustomerOrderModal({
     ? Math.round(subtotal * (voucherDiscountPercent / 100) * 100) / 100
     : 0;
   const total = subtotal - discount;
+  const sizeStock = getProductSizeStock(product, size);
   const applyVoucher = async () => {
     setVoucherApplied(false);
     setVoucherMessage("");
@@ -387,12 +389,14 @@ export function CustomerOrderModal({
                       <select
                         required
                         value={size}
-                        onChange={(e) => setSize(e.target.value)}
+                        onChange={(e) => { const nextSize = e.target.value; setSize(nextSize); setQuantity((current) => Math.min(current, getProductSizeStock(product, nextSize) || 1)); }}
                         className="mt-2 min-h-11 w-full rounded-lg border border-[#D9D3CA] bg-[#FCFBF9] px-3 text-sm"
                       >
                         <option value="">Select</option>
                         {product.sizes.map((item) => (
-                          <option key={item}>{item}</option>
+                          <option key={item} disabled={getProductSizeStock(product, item) <= 0}>
+                            {item} ({getProductSizeStock(product, item)} available)
+                          </option>
                         ))}
                       </select>
                     </label>
@@ -401,11 +405,11 @@ export function CustomerOrderModal({
                       <input
                         required
                         min={1}
-                        max={product.stockCount || 99}
+                        max={sizeStock || 99}
                         type="number"
                         value={quantity}
                         onChange={(e) =>
-                          setQuantity(Math.max(1, Number(e.target.value)))
+                          setQuantity(Math.min(sizeStock || 1, Math.max(1, Number(e.target.value))))
                         }
                         className="mt-2 min-h-11 w-full rounded-lg border border-[#D9D3CA] bg-[#FCFBF9] px-3 text-sm"
                       />
@@ -595,10 +599,10 @@ export function CustomerOrderModal({
                       </strong>
                     </div>
                     <button
-                      disabled={submitting}
+                      disabled={submitting || sizeStock <= 0}
                       className="flex min-h-13 w-full items-center justify-center gap-2 rounded-lg bg-[#2D2926] px-7 text-xs font-bold uppercase tracking-[.17em] text-[#F4F1EE] transition-colors hover:bg-[#5A5A40] disabled:opacity-60 sm:w-auto"
                     >
-                      {submitting ? "Submitting..." : "Place order"}
+                      {submitting ? "Submitting..." : sizeStock <= 0 ? "Size unavailable" : "Place order"}
                       <Check className="h-4 w-4" />
                     </button>
                   </div>

@@ -4,6 +4,7 @@ import { RotateCw } from 'lucide-react';
 import { motion, useMotionValue, useSpring, useTransform } from 'motion/react';
 import { Product } from '@/types';
 import { formatPrice } from '@/lib/currency';
+import { getProductSizeStock } from '@/lib/inventory';
 
 interface ProductCardProps {
   product: Product;
@@ -69,7 +70,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, forceFlipped 
             <img loading="lazy" decoding="async" key={`${product.id}-${backImage}`} src={backImage} alt={`${product.name} Back`} referrerPolicy="no-referrer" onLoad={() => setImageLoadedBack(true)} className={`absolute inset-0 w-full h-full object-cover object-center transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] ${product.isComingSoon ? 'blur-[4px] scale-105' : ''} ${showBack && imageLoadedBack ? 'opacity-100 group-hover:scale-105' : 'opacity-0 scale-105'}`} />
           </div>
           {unavailable && <div className="absolute inset-0 z-10 flex items-center justify-center bg-[#2D2926]/25 pointer-events-none"><span className="px-3.5 py-1.5 bg-[#F7F5F0]/95 text-[#2D2926] text-[9px] font-sans font-bold uppercase tracking-widest shadow-lg rounded-md">{product.isComingSoon ? 'COMING SOON' : 'OUT OF STOCK'}</span></div>}
-          {!unavailable && <div className="absolute inset-x-0 bottom-0 z-20 flex translate-y-2 flex-col items-center bg-white/90 px-3 pb-5 pt-4 opacity-0 backdrop-blur-sm transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100" onClick={e => e.stopPropagation()}><p className="text-sm font-medium text-[#1F1D1B]">Select your size</p><div className="mt-4 flex flex-wrap justify-center gap-x-5 gap-y-2">{(product.sizes.length ? product.sizes : ['S', 'M', 'L', 'XL', 'XXL', 'XXXL']).map(size => <button key={size} type="button" onClick={() => onOrder?.(product, size)} className="min-w-8 text-sm text-[#1F1D1B] transition-colors hover:font-semibold hover:text-[#B85D3D]">{size}</button>)}</div></div>}
+          {!unavailable && <div className="absolute inset-x-0 bottom-0 z-20 flex translate-y-2 flex-col items-center bg-white/90 px-3 pb-5 pt-4 opacity-0 backdrop-blur-sm transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100" onClick={e => e.stopPropagation()}><p className="text-sm font-medium text-[#1F1D1B]">Select your size</p><div className="mt-4 flex flex-wrap justify-center gap-x-5 gap-y-2">{(product.sizes.length ? product.sizes : ['S', 'M', 'L', 'XL', 'XXL', 'XXXL']).map(size => { const available = getProductSizeStock(product, size); return <button key={size} type="button" disabled={available <= 0} onClick={() => onOrder?.(product, size)} className={`min-w-8 text-sm transition-colors ${available > 0 ? 'text-[#1F1D1B] hover:font-semibold hover:text-[#B85D3D]' : 'cursor-not-allowed text-[#AAA39A] line-through'}`} title={available > 0 ? `${available} available` : 'Out of stock'}>{size}</button>; })}</div></div>}
           <button
             type="button"
             onClick={(e) => { e.stopPropagation(); setIsHovered(false); setIsFlipped(current => !current); }}
