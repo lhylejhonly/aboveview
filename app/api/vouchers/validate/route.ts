@@ -24,3 +24,22 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: 'Unable to validate voucher right now.' }, { status: 500 });
   }
 }
+
+export async function GET() {
+  try {
+    const { data: voucher, error } = await getSupabaseAdmin()
+      .from('vouchers')
+      .select('code, discount_percent, expires_at, usage_limit, used_count')
+      .eq('id', 'current')
+      .eq('is_active', true)
+      .maybeSingle();
+    if (error) throw error;
+    if (!voucher || (voucher.expires_at && new Date(voucher.expires_at).getTime() < Date.now()) || (voucher.usage_limit !== null && Number(voucher.used_count) >= Number(voucher.usage_limit))) {
+      return NextResponse.json({ voucher: null });
+    }
+    return NextResponse.json({ voucher: { code: voucher.code, discountPercent: Number(voucher.discount_percent), remainingUses: voucher.usage_limit === null ? null : Math.max(0, Number(voucher.usage_limit) - Number(voucher.used_count)) } });
+  } catch (error) {
+    console.error('Active voucher lookup error', error);
+    return NextResponse.json({ voucher: null });
+  }
+}

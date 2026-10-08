@@ -24,7 +24,7 @@ import { StoreInfoTopic } from '@/data/storeInfo';
 import { CustomerProfileModal } from '@/components/CustomerProfileModal';
 import { AddedToCartModal } from '@/components/AddedToCartModal';
 import { useAdmin } from '@/context/AdminContext';
-import { X } from 'lucide-react';
+import { TicketPercent, X } from 'lucide-react';
 
 export default function AppClient() {
   const { isAdmin, products: adminProducts, categories, loading, error, refresh } = useAdmin();
@@ -50,7 +50,15 @@ export default function AppClient() {
   const [addedToCart, setAddedToCart] = useState<{ product: Product; size: string } | null>(null);
   const [storeInfoTopic, setStoreInfoTopic] = useState<StoreInfoTopic | null>(null);
   const [cartHydrated, setCartHydrated] = useState(false);
+  const [activeVoucher, setActiveVoucher] = useState<{ code: string; discountPercent: number; remainingUses: number | null } | null>(null);
   const ITEMS_PER_PAGE = 6;
+
+  useEffect(() => {
+    fetch('/api/vouchers/validate', { cache: 'no-store' })
+      .then(response => response.json())
+      .then(data => setActiveVoucher(data.voucher ?? null))
+      .catch(() => setActiveVoucher(null));
+  }, []);
 
   useEffect(() => {
     setActiveCategory(current => {
@@ -187,6 +195,11 @@ export default function AppClient() {
         onOpenTikTokShop={() => window.open("https://vt.tiktok.com/ZSPNJxSdD/?", "_blank", "noopener,noreferrer")}
         onOpenWallpaperStudio={() => setWallpaperStudioOpen(true)}
       />
+
+      {activeVoucher && <div className="mx-3 mb-5 flex items-center justify-center gap-3 border border-[#C7D4B9] bg-[#EEF4E9] px-4 py-3 text-center text-[#4F633E] sm:mx-8">
+        <TicketPercent className="h-5 w-5 shrink-0" />
+        <p className="text-xs font-semibold uppercase tracking-[.12em]">{activeVoucher.discountPercent}% off storewide with code <strong>{activeVoucher.code}</strong>{activeVoucher.remainingUses !== null ? ` · ${activeVoucher.remainingUses} left` : ''}</p>
+      </div>}
 
       <FilterBar
         categories={categories}
