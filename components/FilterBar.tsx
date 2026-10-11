@@ -226,46 +226,48 @@ export const FilterBar: React.FC<FilterBarProps> = ({
 
       {/* Size Chart Modal */}
       {showSizeChart && (
-        <div className="fixed inset-0 z-50 bg-[#2D2926]/70 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-[#F4F1EE] border border-[#D6CFC7] w-full max-w-lg p-6 relative shadow-2xl animate-in fade-in zoom-in-95 duration-200">
-            <button onClick={() => setShowSizeChart(false)} className="absolute top-4 right-4 p-1.5 text-[#2D2926] hover:bg-[#E5E0DA] transition-colors">
-              <X className="w-5 h-5" />
-            </button>
-            <div className="flex items-center gap-2 mb-4 text-[#2D2926]">
-              <Ruler className="w-5 h-5 text-[#5A5A40]" />
-              <h3 className="font-sans text-sm font-semibold uppercase tracking-[0.2em]">T-Shirt Size Chart</h3>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#171513]/75 p-3 backdrop-blur-sm sm:p-5">
+          <div className="relative max-h-[92svh] w-full max-w-2xl overflow-y-auto border border-[#D6CFC7] bg-[#F7F5F0] shadow-[0_24px_80px_rgba(23,21,19,.3)] animate-in fade-in zoom-in-95 duration-200">
+            <div className="h-1 w-full bg-[#5A5A40]" />
+            <div className="border-b border-[#D6CFC7] bg-[#FCFBF9] px-5 py-5 sm:px-8">
+              <button onClick={() => setShowSizeChart(false)} className="absolute right-4 top-5 rounded-full p-2 text-[#6F6963] transition-colors hover:bg-[#EEEAE4] hover:text-[#2D2926]" aria-label="Close size chart" title="Close size chart">
+                <X className="h-5 w-5" />
+              </button>
+              <div className="flex items-center gap-3 pr-10 text-[#2D2926]">
+                <span className="flex h-10 w-10 items-center justify-center rounded-full bg-[#EEEAE4]"><Ruler className="h-5 w-5 text-[#5A5A40]" /></span>
+                <div>
+                  <p className="text-[9px] font-bold uppercase tracking-[.24em] text-[#8C806D]">Fit reference</p>
+                  <h3 className="mt-1 font-sans text-base font-semibold uppercase tracking-[.16em]">T-shirt size chart</h3>
+                </div>
+              </div>
+              <p className="mt-5 max-w-xl text-xs leading-6 text-[#5A5A40]">
+                Heavy oversized French Terry T-shirt. Measure a similar shirt flat and compare the length, width, and sleeve measurements below.
+              </p>
             </div>
-            <p className="font-sans text-xs text-[#5A5A40] mb-5 tracking-wide leading-relaxed">
-              Heavy oversized French Terry T-shirt. Measure a similar shirt flat and compare the length, width, and sleeve measurements below.
-            </p>
-            <div className="overflow-x-auto border border-[#D6CFC7] mb-6">
-              <table className="w-full text-xs font-sans text-left text-[#2D2926]">
-                <thead className="bg-[#E5E0DA] text-[10px] uppercase tracking-widest border-b border-[#D6CFC7]">
-                  <tr>
-                    {['Size', 'Length', 'Width', 'Sleeves'].map(h => (
-                      <th key={h} className="py-2.5 px-3">{h}</th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-[#D6CFC7]/60 font-light">
-                  {[['XS','27"','21"','9.25"'],['S','28"','22"','9"'],['M','29"','23"','9.5"'],['L','30"','24"','10.25"'],['XL','31"','25"','10.5"'],['2XL','32"','26"','10.75"']].map(([size, ...vals]) => {
-                    const unavailable = ['L', 'XL', '2XL'].includes(size);
-                    return (
-                    <tr key={size} className={unavailable ? 'text-[#9A938B]' : ''}>
-                      <td className={`py-2 px-3 font-medium ${unavailable ? 'line-through' : ''}`}>{size}</td>
-                      {vals.map((v, i) => <td key={i} className={`py-2 px-3 ${unavailable ? 'line-through' : ''}`}>{v}</td>)}
-                    </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
+            <div className="p-5 sm:p-8">
+              <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+                <p className="text-[10px] font-bold uppercase tracking-[.16em] text-[#6F6963]">Measurements in inches</p>
+                <div className="flex items-center gap-3 text-[10px] text-[#8E8B82]"><span className="flex items-center gap-1.5"><span className="h-2 w-2 rounded-full bg-[#5A7050]" /> Available</span><span className="flex items-center gap-1.5"><span className="h-2 w-2 rounded-full bg-[#B8B0A6]" /> Currently unavailable</span></div>
+              </div>
+              <div className="overflow-x-auto rounded-lg border border-[#D6CFC7] bg-[#FCFBF9]">
+                <table className="w-full min-w-[34rem] text-left text-xs font-sans text-[#2D2926]">
+                  <thead className="border-b border-[#D6CFC7] bg-[#E5E0DA] text-[10px] uppercase tracking-[.16em] text-[#4A443F]">
+                    <tr>{['Size', 'Length', 'Width', 'Sleeves', 'Availability'].map(h => <th key={h} className="px-4 py-3.5 font-bold">{h}</th>)}</tr>
+                  </thead>
+                  <tbody className="divide-y divide-[#E5E0DA]">
+                    {[['XS','27"','21"','9.25"'],['S','28"','22"','9"'],['M','29"','23"','9.5"'],['L','30"','24"','10.25"'],['XL','31"','25"','10.5"'],['2XL','32"','26"','10.75"']].map(([size, ...vals]) => {
+                      const unavailable = ['L', 'XL', '2XL'].includes(size);
+                      return <tr key={size} className={unavailable ? 'text-[#AAA39A]' : 'text-[#4A443F]'}><td className="px-4 py-3.5 font-semibold text-[#2D2926]">{size}</td>{vals.map((v, i) => <td key={i} className="px-4 py-3.5">{v}</td>)}<td className="px-4 py-3.5"><span className={`inline-flex items-center gap-1.5 text-[10px] font-semibold ${unavailable ? 'text-[#AAA39A]' : 'text-[#56704B]'}`}><span className={`h-1.5 w-1.5 rounded-full ${unavailable ? 'bg-[#B8B0A6]' : 'bg-[#5A7050]'}`} />{unavailable ? 'Unavailable' : 'Available'}</span></td></tr>;
+                    })}
+                  </tbody>
+                </table>
+              </div>
+              <div className="mt-5 grid gap-3 sm:grid-cols-2">
+                <div className="rounded-lg border border-[#D6CFC7] bg-[#EEEAE4]/70 p-4"><p className="text-[10px] font-bold uppercase tracking-[.14em] text-[#6F6963]">How to measure</p><p className="mt-2 text-xs leading-5 text-[#77716A]">Lay a shirt flat. Measure from shoulder to hem for length and across the chest for width.</p></div>
+                <div className="rounded-lg border border-[#D6CFC7] bg-[#EEEAE4]/70 p-4"><p className="text-[10px] font-bold uppercase tracking-[.14em] text-[#6F6963]">Need help?</p><p className="mt-2 text-xs leading-5 text-[#77716A]">Choose your usual size for the oversized fit, or size down for a closer look.</p></div>
+              </div>
+              <button onClick={() => setShowSizeChart(false)} className="mt-6 flex min-h-12 w-full items-center justify-center bg-[#2D2926] px-5 text-xs font-bold uppercase tracking-[.18em] text-[#F4F1EE] transition-colors hover:bg-[#5A5A40]">Close size guide</button>
             </div>
-            <button
-              onClick={() => setShowSizeChart(false)}
-              className="w-full py-2.5 bg-[#2D2926] text-[#F4F1EE] font-sans text-xs uppercase tracking-[0.2em] hover:bg-[#5A5A40] transition-colors"
-            >
-              CLOSE SIZE GUIDE
-            </button>
           </div>
         </div>
       )}
