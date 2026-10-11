@@ -10,7 +10,9 @@ import {
   MapPin,
   Package,
   Plus,
+  Search,
   Save,
+  Truck,
   Trash2,
   UserRound,
   X,
@@ -224,7 +226,6 @@ export function CustomerProfileModal({ onClose }: CustomerProfileModalProps) {
     "mt-2 min-h-12 w-full rounded-lg border border-[#D9D3CA] bg-[#FCFBF9] px-3.5 py-3 text-sm text-[#2D2926] outline-none focus:border-[#8C806D] focus:ring-2 focus:ring-[#D9D0C3]/60";
   const label =
     "block text-[10px] font-bold uppercase tracking-[.14em] text-[#6F6963]";
-
   return (
     <AnimatePresence>
       <div className="fixed inset-0 z-[80] flex items-end justify-center bg-[#171513]/75 p-0 backdrop-blur-sm sm:items-center sm:p-5">
@@ -501,7 +502,8 @@ export function CustomerProfileModal({ onClose }: CustomerProfileModalProps) {
                   <LogOut className="h-4 w-4" /> Sign out
                 </button>
               </section>
-              <section className="border-t border-[#DDD7CF] p-5 sm:p-8 lg:border-t-0">
+              <CustomerOrderHistory orders={orders} />
+              <section className="hidden border-t border-[#DDD7CF] p-5 sm:p-8 lg:border-t-0">
                 <div className="mb-5 flex items-end justify-between border-b border-[#DDD7CF] pb-5">
                   <div>
                     <p className="text-[10px] font-bold uppercase tracking-[.2em] text-[#8C806D]">
@@ -625,6 +627,117 @@ export function CustomerProfileModal({ onClose }: CustomerProfileModalProps) {
     </AnimatePresence>
   );
 }
+function CustomerOrderHistory({ orders }: { orders: CustomerOrder[] }) {
+  const [activeTab, setActiveTab] = useState("all");
+  const [query, setQuery] = useState("");
+  const tabs = [
+    { key: "all", label: "All" },
+    { key: "to_pay", label: "To Pay" },
+    { key: "to_ship", label: "To Ship" },
+    { key: "to_receive", label: "To Receive" },
+    { key: "completed", label: "Completed" },
+    { key: "cancelled", label: "Cancelled" },
+    { key: "return_refund", label: "Return / Refund" },
+  ];
+  const filterByTab = (order: CustomerOrder, tab: string) => {
+    if (tab === "all") return true;
+    if (tab === "to_pay") return order.status === "pending";
+    if (tab === "to_ship") return ["confirmed", "processing"].includes(order.status);
+    if (tab === "to_receive") return ["shipped", "out_for_delivery"].includes(order.status);
+    if (tab === "completed") return order.status === "delivered";
+    if (tab === "cancelled") return order.status === "cancelled";
+    return order.status.includes("return") || order.status.includes("refund");
+  };
+  const countFor = (tab: string) => orders.filter((order) => filterByTab(order, tab)).length;
+  const visibleOrders = orders.filter((order) => {
+    const normalized = query.trim().toLowerCase();
+    const matchesQuery = !normalized || [order.order_number, order.product_name, order.product_code].some((value) => value.toLowerCase().includes(normalized));
+    return filterByTab(order, activeTab) && matchesQuery;
+  });
+
+  return (
+    <section className="border-t border-[#DDD7CF] p-5 sm:p-8 lg:border-t-0">
+      <div className="border-b border-[#DDD7CF] pb-4">
+        <div className="flex items-end justify-between gap-3">
+          <div>
+            <p className="text-[10px] font-bold uppercase tracking-[.2em] text-[#8C806D]">My purchase</p>
+            <h3 className="mt-2 text-xl font-semibold text-[#2D2926]">Order history</h3>
+          </div>
+          <span className="rounded-full bg-[#EEEAE4] px-3 py-1 text-[10px] font-bold text-[#6F6963]">
+            {orders.length} order{orders.length === 1 ? "" : "s"}
+          </span>
+        </div>
+        <div className="-mx-1 mt-5 flex gap-1 overflow-x-auto px-1 pb-px">
+          {tabs.map((tab) => (
+            <button
+              key={tab.key}
+              type="button"
+              onClick={() => setActiveTab(tab.key)}
+              className={`shrink-0 border-b-2 px-3 py-2 text-xs font-semibold transition-colors ${activeTab === tab.key ? "border-[#B85D3D] text-[#B85D3D]" : "border-transparent text-[#77716A] hover:text-[#2D2926]"}`}
+            >
+              {tab.label}
+              <span className="ml-1.5 text-[10px] text-[#989188]">{countFor(tab.key)}</span>
+            </button>
+          ))}
+        </div>
+      </div>
+      <div className="relative mt-5">
+        <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-[#A49B91]" />
+        <input
+          value={query}
+          onChange={(event) => setQuery(event.target.value)}
+          placeholder="Search order, product, or order number"
+          className="min-h-11 w-full rounded-lg border border-[#D9D3CA] bg-[#FCFBF9] pl-10 pr-3 text-sm text-[#2D2926] outline-none placeholder:text-[#A49B91] focus:border-[#8C806D] focus:ring-2 focus:ring-[#D9D0C3]/60"
+        />
+      </div>
+      {orders.length === 0 ? (
+        <EmptyOrders message="Your orders will appear here after checkout." />
+      ) : visibleOrders.length === 0 ? (
+        <EmptyOrders message="Try another tab or search term." title="No matching orders" />
+      ) : (
+        <div className="mt-5 space-y-3">
+          {visibleOrders.map((order) => (
+            <article key={order.id} className="overflow-hidden rounded-xl border border-[#DDD7CF] bg-[#FCFBF9]">
+              <div className="flex items-center justify-between gap-3 border-b border-[#E8E3DB] px-4 py-3">
+                <p className="text-[10px] font-bold uppercase tracking-[.15em] text-[#8C806D]">Order {order.order_number}</p>
+                <span className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[9px] font-bold uppercase tracking-wider ${statusClass(order.status)}`}>
+                  {order.status === "delivered" ? <Check className="h-3 w-3" /> : order.status === "shipped" ? <Truck className="h-3 w-3" /> : <Clock3 className="h-3 w-3" />}
+                  {order.status.replaceAll("_", " ")}
+                </span>
+              </div>
+              <div className="flex gap-3 p-4">
+                <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-lg bg-[#EEEAE4] text-[#8C806D]"><Package className="h-6 w-6" /></div>
+                <div className="min-w-0 flex-1">
+                  <h4 className="truncate text-sm font-semibold text-[#2D2926]">{order.product_name}</h4>
+                  <p className="mt-1 text-xs text-[#77716A]">{order.product_code} · Size {order.size} · Qty {order.quantity}</p>
+                  <p className="mt-2 text-[10px] text-[#989188]">{new Date(order.created_at).toLocaleDateString("en-PH", { year: "numeric", month: "short", day: "numeric" })}</p>
+                </div>
+                <strong className="shrink-0 self-center text-sm text-[#2D2926]">{formatPrice(Number(order.unit_price) * order.quantity)}</strong>
+              </div>
+              {order.shipment?.[0] && (
+                <div className="mx-4 mb-4 rounded-lg border border-[#DDD7CF] bg-[#F6F3EE] p-3 text-xs">
+                  <p className="font-bold uppercase tracking-wider text-[#8C806D]">Shipping · {order.shipment[0].courier === "jnt_express" ? "J&T Express" : order.shipment[0].courier}</p>
+                  <p className="mt-1.5 text-[#6F6963]">Status: <span className="font-semibold capitalize text-[#2D2926]">{order.shipment[0].shipment_status.replaceAll("_", " ")}</span></p>
+                  {order.shipment[0].tracking_number && <p className="mt-1 text-[#6F6963]">Tracking: <span className="font-semibold text-[#2D2926]">{order.shipment[0].tracking_number}</span></p>}
+                  {order.shipment[0].waybill_url && <a href={order.shipment[0].waybill_url} target="_blank" rel="noreferrer" className="mt-2 inline-block font-semibold text-[#8C806D] underline">View waybill</a>}
+                </div>
+              )}
+              <div className="flex items-center justify-between border-t border-[#E8E3DB] px-4 py-3 text-xs">
+                <span className="text-[#989188]">Order total</span>
+                <strong className="text-base text-[#B85D3D]">{formatPrice(Number(order.unit_price) * order.quantity)}</strong>
+              </div>
+            </article>
+          ))}
+        </div>
+      )}
+    </section>
+  );
+}
+
+function EmptyOrders({ title = "No orders yet", message }: { title?: string; message: string }) {
+  return <div className="mt-5 flex min-h-48 flex-col items-center justify-center rounded-xl border border-dashed border-[#D6CFC7] text-center"><Package className="h-8 w-8 text-[#C6BFB4]" /><p className="mt-4 text-sm font-semibold uppercase tracking-wider text-[#6F6963]">{title}</p><p className="mt-1 text-xs text-[#989188]">{message}</p></div>;
+}
+
 function statusClass(status: string) {
   return status === "delivered"
     ? "bg-[#E8EFE4] text-[#56704B]"

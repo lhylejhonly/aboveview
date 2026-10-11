@@ -113,7 +113,10 @@ export function CustomerOrderModal({
           )
           .eq("id", confirmedSession.user.id)
           .maybeSingle();
-        if (!profileError && data) setProfile({ ...emptyProfile, ...data });
+        if (!profileError && data) {
+          setProfile({ ...emptyProfile, ...data });
+          setShipping((current) => ({ ...current, city_municipality: data.destination ?? "" }));
+        }
       }
       setAuthLoading(false);
     };
@@ -368,6 +371,25 @@ export function CustomerOrderModal({
                 onSubmit={handleOrder}
                 className="grid gap-6 p-5 sm:p-8 lg:grid-cols-[.82fr_1.18fr] lg:gap-8"
               >
+                <section className="lg:col-span-2 rounded-xl border border-[#DDD7CF] bg-[#FCFBF9] p-4 sm:p-5">
+                  <div className="flex items-start justify-between gap-4">
+                    <div className="flex min-w-0 items-start gap-3">
+                      <div className="rounded-full bg-[#FFF1ED] p-2 text-[#B85D3D]"><MapPin className="h-5 w-5" /></div>
+                      <div className="min-w-0">
+                        <p className="text-sm font-semibold text-[#B85D3D]">Delivery Address</p>
+                        {profile.full_name && profile.contact_number && (profile.address || shipping.city_municipality) ? (
+                          <>
+                            <p className="mt-2 text-sm font-semibold text-[#2D2926]">{profile.full_name} <span className="font-normal text-[#6F6963]">({profile.contact_number})</span></p>
+                            <p className="mt-1 text-xs leading-5 text-[#6F6963]">{[profile.address, shipping.barangay, shipping.city_municipality, shipping.province, shipping.postal_code].filter(Boolean).join(", ")}</p>
+                          </>
+                        ) : (
+                          <p className="mt-2 text-xs text-[#989188]">Add your delivery details below to continue.</p>
+                        )}
+                      </div>
+                    </div>
+                    <button type="button" onClick={() => document.getElementById("delivery-details")?.scrollIntoView({ behavior: "smooth", block: "start" })} className="shrink-0 text-xs font-semibold text-[#B85D3D] hover:underline">Change</button>
+                  </div>
+                </section>
                 <aside className="h-fit rounded-2xl border border-[#DDD7CF] bg-[#FCFBF9] p-5 shadow-[0_12px_30px_rgba(45,41,38,.05)] lg:sticky lg:top-4">
                   <div className="flex items-center justify-between">
                     <p className="text-[10px] font-bold uppercase tracking-[.2em] text-[#8C806D]">
@@ -415,6 +437,11 @@ export function CustomerOrderModal({
                       />
                     </label>
                   </div>
+                  <div className="mt-5 space-y-2 border-t border-[#E5DFD7] pt-4 text-xs">
+                    <div className="flex items-center justify-between text-[#6F6963]"><span>Unit price</span><span className="font-semibold text-[#2D2926]">{formatPrice(product.price)}</span></div>
+                    <div className="flex items-center justify-between text-[#6F6963]"><span>Quantity</span><span className="font-semibold text-[#2D2926]">{quantity}</span></div>
+                    <div className="flex items-center justify-between text-[#6F6963]"><span>Item subtotal</span><span className="font-semibold text-[#2D2926]">{formatPrice(subtotal)}</span></div>
+                  </div>
                   <div className="mt-6 flex items-center justify-between border-t border-[#E5DFD7] pt-5">
                     <span className="text-xs text-[#6F6963]">Order total</span>
                     <div className="text-right">
@@ -445,7 +472,7 @@ export function CustomerOrderModal({
                     </span>
                   </div>
                 </aside>
-                <div>
+                <div id="delivery-details">
                   <div className="mb-6 flex items-start justify-between gap-4 border-b border-[#DDD7CF] pb-5">
                     <div>
                       <p className="text-[10px] font-bold uppercase tracking-[.2em] text-[#8C806D]">
