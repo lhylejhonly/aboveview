@@ -49,6 +49,7 @@ create table if not exists public.vouchers (
   code text not null unique,
   discount_percent numeric(5, 2) not null check (discount_percent > 0 and discount_percent <= 100),
   is_active boolean not null default true,
+  starts_at timestamptz,
   expires_at timestamptz,
   usage_limit integer check (usage_limit is null or usage_limit > 0),
   used_count integer not null default 0 check (used_count >= 0),

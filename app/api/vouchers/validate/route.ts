@@ -9,13 +9,13 @@ export async function POST(request: NextRequest) {
 
     const { data: voucher, error } = await getSupabaseAdmin()
       .from('vouchers')
-      .select('code, discount_percent, expires_at, usage_limit, used_count')
+      .select('code, discount_percent, starts_at, expires_at, usage_limit, used_count')
       .eq('id', 'current')
       .eq('code', normalizedCode)
       .eq('is_active', true)
       .maybeSingle();
     if (error) throw error;
-    if (!voucher || (voucher.expires_at && new Date(voucher.expires_at).getTime() < Date.now()) || (voucher.usage_limit !== null && Number(voucher.used_count) >= Number(voucher.usage_limit))) {
+    if (!voucher || (voucher.starts_at && new Date(voucher.starts_at).getTime() > Date.now()) || (voucher.expires_at && new Date(voucher.expires_at).getTime() < Date.now()) || (voucher.usage_limit !== null && Number(voucher.used_count) >= Number(voucher.usage_limit))) {
       return NextResponse.json({ error: 'Invalid or expired voucher code.' }, { status: 400 });
     }
     return NextResponse.json({ code: voucher.code, discountPercent: Number(voucher.discount_percent) });
@@ -29,12 +29,12 @@ export async function GET() {
   try {
     const { data: voucher, error } = await getSupabaseAdmin()
       .from('vouchers')
-      .select('code, discount_percent, expires_at, usage_limit, used_count')
+      .select('code, discount_percent, starts_at, expires_at, usage_limit, used_count')
       .eq('id', 'current')
       .eq('is_active', true)
       .maybeSingle();
     if (error) throw error;
-    if (!voucher || (voucher.expires_at && new Date(voucher.expires_at).getTime() < Date.now()) || (voucher.usage_limit !== null && Number(voucher.used_count) >= Number(voucher.usage_limit))) {
+    if (!voucher || (voucher.starts_at && new Date(voucher.starts_at).getTime() > Date.now()) || (voucher.expires_at && new Date(voucher.expires_at).getTime() < Date.now()) || (voucher.usage_limit !== null && Number(voucher.used_count) >= Number(voucher.usage_limit))) {
       return NextResponse.json({ voucher: null });
     }
     return NextResponse.json({ voucher: { code: voucher.code, discountPercent: Number(voucher.discount_percent), remainingUses: voucher.usage_limit === null ? null : Math.max(0, Number(voucher.usage_limit) - Number(voucher.used_count)) } });
