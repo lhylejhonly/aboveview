@@ -1,5 +1,49 @@
 @import "tailwindcss";
 
+:root {
+  color-scheme: light;
+  --page-gutter: clamp(0.875rem, 3vw, 4rem);
+}
+
+*,
+*::before,
+*::after { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  min-width: 320px;
+  overflow-x: hidden;
+  background: #f7f5f0;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+button, a, input, select, textarea { -webkit-tap-highlight-color: transparent; }
+
+button, a { touch-action: manipulation; }
+
+button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible {
+  outline: 2px solid #b85d3d;
+  outline-offset: 3px;
+}
+
+img { max-width: 100%; }
+
+@media (max-width: 639px) {
+  .mobile-safe-bottom { padding-bottom: max(1rem, env(safe-area-inset-bottom)); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
 @layer utilities {
   .font-luxury {
     font-family: 'Bodoni Moda', 'Cinzel', 'Didot', 'Bodoni MT', serif;

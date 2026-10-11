@@ -23,7 +23,7 @@ export const BrandHeader: React.FC<BrandHeaderProps> = ({
   const [animationKey, setAnimationKey] = useState(0);
 
   return (
-    <section className="relative h-[min(78svh,680px)] min-h-[480px] overflow-hidden bg-[#0A0A0A] text-white">
+    <section className="relative h-[min(78svh,680px)] min-h-[430px] overflow-hidden bg-[#0A0A0A] text-white sm:min-h-[480px]">
       <motion.div
         key={`background-${animationKey}`}
         initial={{ scale: 1.01, opacity: 0 }}
@@ -46,12 +46,12 @@ export const BrandHeader: React.FC<BrandHeaderProps> = ({
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_35%,rgba(0,0,0,0.62)_100%)]" />
       <div className="pointer-events-none absolute inset-0 opacity-[0.035] [background-image:linear-gradient(rgba(255,255,255,0.7)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.7)_1px,transparent_1px)] [background-size:56px_56px]" />
       <StarBurst centerY={58} />
-      <div className="relative z-10 flex h-full min-h-0 flex-col items-center justify-center px-4 py-12 text-center sm:py-16">
+      <div className="relative z-10 flex h-full min-h-0 flex-col items-center justify-center px-5 py-10 text-center sm:px-4 sm:py-16">
         <motion.div
           key={`tag-${animationKey}`}
           initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
-          className="mb-8 inline-flex items-center gap-3 sm:mb-10"
+          className="mb-6 inline-flex items-center gap-2 sm:mb-10 sm:gap-3"
         >
           <span className="h-px w-8 bg-[#D4B483]/60" />
           <span className="text-[10px] font-black uppercase tracking-[0.35em] text-[#D4B483]/80">New Season · SS25</span>
@@ -62,7 +62,7 @@ export const BrandHeader: React.FC<BrandHeaderProps> = ({
           key={`title-${animationKey}`}
           initial={{ opacity: 0, scale: 0.96 }} animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1], delay: 0.15 }}
-          className="font-climate relative mb-4 w-full select-none text-[clamp(2.5rem,7vw,7rem)] uppercase leading-none tracking-tight sm:mb-6 lg:mb-8"
+          className="font-climate relative mb-4 w-full select-none text-[clamp(2.2rem,11vw,7rem)] uppercase leading-[.92] tracking-tight sm:mb-6 sm:text-[clamp(2.5rem,7vw,7rem)] lg:mb-8"
         >
           ABOVE APPRL
         </motion.h1>
@@ -103,7 +103,7 @@ export const BrandHeader: React.FC<BrandHeaderProps> = ({
 
         <motion.div
           initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.6, delay: 1.2 }}
-          className="mt-10 flex flex-col items-center gap-2 sm:mt-14"
+          className="mt-7 flex flex-col items-center gap-2 sm:mt-14"
         >
           <motion.div animate={{ y: [0, 6, 0] }} transition={{ repeat: Infinity, duration: 1.6, ease: 'easeInOut' }} className="h-6 w-px bg-gradient-to-b from-[#D4B483]/60 to-transparent" />
           <span className="text-[9px] uppercase tracking-[0.3em] text-white/35">Scroll</span>

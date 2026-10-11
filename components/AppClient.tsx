@@ -196,7 +196,7 @@ export default function AppClient() {
         onOpenWallpaperStudio={() => setWallpaperStudioOpen(true)}
       />
 
-      {activeVoucher && <div className="mx-3 mb-5 flex items-center justify-center gap-3 border border-[#C7D4B9] bg-[#EEF4E9] px-4 py-3 text-center text-[#4F633E] sm:mx-8">
+      {activeVoucher && <div className="mx-3 mb-5 flex items-start justify-center gap-2 border border-[#C7D4B9] bg-[#EEF4E9] px-3 py-3 text-center text-[#4F633E] sm:mx-8 sm:items-center sm:gap-3 sm:px-4">
         <TicketPercent className="h-5 w-5 shrink-0" />
         <p className="text-xs font-semibold uppercase tracking-[.12em]">{activeVoucher.discountPercent}% off storewide with code <strong>{activeVoucher.code}</strong>{activeVoucher.remainingUses !== null ? ` · ${activeVoucher.remainingUses} left` : ''}</p>
       </div>}
@@ -220,7 +220,7 @@ export default function AppClient() {
 
       <main id="product-grid-section" className="flex-1 w-full max-w-7xl mx-auto px-3 py-2 sm:px-8">
         {loading ? (
-          <div className={`grid gap-3 sm:gap-5 ${viewMode === 'large' ? 'grid-cols-1 md:grid-cols-2 max-w-5xl mx-auto' : 'grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5'}`}>
+        <div className={`grid gap-3 sm:gap-5 ${viewMode === 'large' ? 'grid-cols-1 md:grid-cols-2 max-w-5xl mx-auto' : 'grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5'}`}>
             {Array.from({ length: 6 }).map((_, i) => <ProductSkeletonCard key={i} viewMode={viewMode === 'large' ? 'large' : 'grid'} />)}
           </div>
         ) : error ? (

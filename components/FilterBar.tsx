@@ -65,10 +65,10 @@ export const FilterBar: React.FC<FilterBarProps> = ({
   const activeCategoryLabel = categories.find(c => c.id === activeCategory)?.label || 'NO COLLECTIONS';
 
   return (
-    <div className="w-full max-w-7xl mx-auto px-4 sm:px-8 py-3.5 mb-6 border-b border-[#E2DDD5] bg-[#F7F5F0]">
+    <div className="mx-auto mb-5 w-full max-w-7xl border-b border-[#E2DDD5] bg-[#F7F5F0] px-3 py-4 sm:mb-6 sm:px-8 sm:py-3.5">
 
       {/* 1. Top nav: Home | Size Chart */}
-      <div className="flex items-center justify-center gap-3 mb-3 text-xs font-sans tracking-widest uppercase">
+      <div className="mb-4 flex items-center justify-center gap-3 text-[10px] font-sans tracking-[.14em] uppercase sm:text-xs sm:tracking-widest">
         <button
           onClick={() => { if (categories[0]) onSelectCategory(categories[0].id as Category); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
           className="font-bold text-[#1F1D1B] hover:text-[#B85D3D] transition-colors"
@@ -78,7 +78,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
         <span className="text-[#C2B280]/60 font-light">|</span>
         <button
           onClick={() => setShowSizeChart(true)}
-          className="font-semibold text-[#5A5A40] hover:text-[#1F1D1B] transition-colors flex items-center gap-1"
+            className="flex min-h-9 items-center gap-1 font-semibold text-[#5A5A40] transition-colors hover:text-[#1F1D1B]"
         >
           <Ruler className="w-3.5 h-3.5 text-[#B85D3D]" />
           <span>Size Chart Guide</span>
@@ -90,7 +90,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
         <div className="flex items-center gap-2">
           <button
             onClick={() => setIsCategoryDropdownOpen(!isCategoryDropdownOpen)}
-            className={`inline-flex max-w-[calc(100vw-2rem)] items-center gap-2 text-xs font-sans uppercase tracking-[0.14em] py-2 px-4 sm:px-6 border rounded-full transition-all font-bold shadow-xs active:scale-95 ${
+            className={`inline-flex max-w-full items-center gap-1.5 truncate rounded-full border px-3 py-2 text-[10px] font-sans font-bold uppercase tracking-[0.1em] shadow-xs transition-all active:scale-95 sm:gap-2 sm:px-6 sm:text-xs sm:tracking-[0.14em] ${
               isCategoryDropdownOpen
                 ? 'bg-[#1F1D1B] text-[#F7F5F0] border-[#1F1D1B]'
                 : 'bg-[#EFECE6]/90 text-[#1F1D1B] border-[#E2DDD5] hover:border-[#1F1D1B]'
@@ -98,7 +98,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
             id="category-dropdown-trigger"
           >
             <span className="text-[#8E8B82] font-normal text-[10px]">CATEGORY:</span>
-            <span className="font-bold">{activeCategoryLabel}</span>
+            <span className="truncate font-bold">{activeCategoryLabel}</span>
             {isCategoryDropdownOpen
               ? <ChevronUp className="w-3.5 h-3.5 text-[#B85D3D]" />
               : <ChevronDown className="w-3.5 h-3.5 text-[#8E8B82]" />}
@@ -154,12 +154,12 @@ export const FilterBar: React.FC<FilterBarProps> = ({
       </div>
 
       {/* 3. Controls: Search and sort */}
-      <div className="flex flex-col items-stretch justify-between gap-3 pt-3 max-w-6xl mx-auto sm:flex-row sm:items-center">
-        <div className="text-[11px] font-sans text-[#5A5A40] uppercase tracking-wider font-semibold">
+      <div className="mx-auto flex max-w-6xl flex-col items-stretch justify-between gap-3 border-t border-[#E2DDD5]/70 pt-3 sm:flex-row sm:items-center">
+        <div className="min-w-0 truncate text-[10px] font-sans font-semibold uppercase tracking-wider text-[#5A5A40] sm:text-[11px]">
           COLLECTION ({activeCategoryLabel}) · {itemCount} pieces
         </div>
-        <div className="flex w-full flex-wrap items-center gap-2.5 sm:w-auto sm:justify-end">
-          <form onSubmit={handleSearchSubmit} className="relative min-w-0 flex-1 sm:w-48 sm:flex-none">
+        <div className="flex w-full flex-col items-stretch gap-2 sm:w-auto sm:flex-row sm:items-center sm:justify-end sm:gap-2.5">
+          <form onSubmit={handleSearchSubmit} className="relative min-w-0 w-full sm:w-48 sm:flex-none">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[#8E8B82]" />
             <input
               type="text"
@@ -177,7 +177,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
             <select
               value={sortBy}
               onChange={e => onSortChange(e.target.value)}
-              className="pl-8 pr-7 py-1.5 bg-[#EFECE6] border border-[#E2DDD5] rounded-full font-sans text-xs font-semibold text-[#1F1D1B] uppercase appearance-none focus:outline-none focus:border-[#1F1D1B] cursor-pointer"
+              className="min-h-9 w-full cursor-pointer appearance-none rounded-full border border-[#E2DDD5] bg-[#EFECE6] pl-8 pr-7 py-1.5 font-sans text-xs font-semibold uppercase text-[#1F1D1B] focus:border-[#1F1D1B] focus:outline-none sm:w-auto"
             >
               <option value="">Sort by</option>
               <option value="price-low">Price: Low to High</option>

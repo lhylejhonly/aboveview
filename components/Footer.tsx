@@ -38,7 +38,7 @@ export const Footer: React.FC<FooterProps> = ({
       {totalPages > 1 && (
         <>
           {/* 1. Centered Pagination Row */}
-          <div className="w-full py-10 sm:py-14 flex items-center justify-center gap-2 sm:gap-4">
+          <div className="flex w-full flex-wrap items-center justify-center gap-1.5 py-8 sm:gap-4 sm:py-14">
             {pages.map((page) => (
               <button
                 key={page}
