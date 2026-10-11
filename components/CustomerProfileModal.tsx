@@ -233,19 +233,19 @@ export function CustomerProfileModal({ onClose }: CustomerProfileModalProps) {
           initial={{ opacity: 0, y: 18 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: 18 }}
-          className="flex max-h-[96svh] w-full max-w-6xl flex-col overflow-hidden rounded-t-2xl border border-[#D6CFC7] bg-[#F6F3EE] shadow-2xl sm:max-h-[92svh] sm:rounded-2xl"
+          className="flex max-h-[calc(100dvh-0.5rem)] w-full max-w-6xl flex-col overflow-hidden rounded-t-2xl border border-[#D6CFC7] bg-[#F6F3EE] shadow-2xl sm:max-h-[92svh] sm:rounded-2xl"
           role="dialog"
           aria-modal="true"
           aria-labelledby="profile-title"
         >
-          <header className="flex shrink-0 items-center justify-between border-b border-[#DDD7CF] bg-[#FCFBF9] px-5 py-4 sm:px-8 sm:py-5">
+          <header className="sticky top-0 z-10 flex shrink-0 items-center justify-between border-b border-[#DDD7CF] bg-[#FCFBF9]/95 px-4 py-3 backdrop-blur sm:px-8 sm:py-5">
             <div>
               <p className="text-[9px] font-bold uppercase tracking-[.28em] text-[#8C806D]">
                 Above Apprl · Customer profile
               </p>
               <h2
                 id="profile-title"
-                className="mt-1 text-lg font-bold uppercase tracking-[.1em] text-[#2D2926]"
+                className="mt-1 text-base font-bold uppercase tracking-[.08em] text-[#2D2926] sm:text-lg sm:tracking-[.1em]"
               >
                 My account
               </h2>
@@ -263,9 +263,9 @@ export function CustomerProfileModal({ onClose }: CustomerProfileModalProps) {
               Loading your profile...
             </div>
           ) : (
-            <div className="grid overflow-y-auto lg:grid-cols-[.9fr_1.1fr]">
-              <section className="p-5 sm:p-8 lg:border-r lg:border-[#DDD7CF]">
-                <div className="rounded-2xl bg-[#2D2926] p-5 text-[#F8F5EF]">
+            <div className="min-h-0 overflow-y-auto overscroll-contain lg:grid lg:grid-cols-[.9fr_1.1fr]">
+              <section className="p-4 sm:p-8 lg:border-r lg:border-[#DDD7CF]">
+                <div className="rounded-2xl bg-[#2D2926] p-4 text-[#F8F5EF] sm:p-5">
                   <div className="flex items-center gap-3">
                     <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#D4B483] text-[#2D2926]">
                       <UserRound className="h-5 w-5" />
@@ -298,8 +298,8 @@ export function CustomerProfileModal({ onClose }: CustomerProfileModalProps) {
                     </div>
                   </div>
                 </div>
-                <div className="mt-7 flex items-center justify-between">
-                  <div className="flex items-center gap-3">
+                <div className="mt-6 flex flex-wrap items-center justify-between gap-3 sm:mt-7">
+                  <div className="flex min-w-0 items-center gap-3">
                     <div className="rounded-lg bg-[#EEEAE4] p-2">
                       <MapPin className="h-4 w-4 text-[#8C806D]" />
                     </div>
@@ -315,7 +315,7 @@ export function CustomerProfileModal({ onClose }: CustomerProfileModalProps) {
                   <button
                     type="button"
                     onClick={reset}
-                    className="flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-[#8C806D]"
+                    className="flex min-h-10 shrink-0 items-center gap-1.5 text-[10px] font-bold uppercase tracking-wider text-[#8C806D]"
                   >
                     <Plus className="h-4 w-4" /> Add
                   </button>
@@ -359,7 +359,7 @@ export function CustomerProfileModal({ onClose }: CustomerProfileModalProps) {
                             <button
                               type="button"
                               onClick={() => edit(item)}
-                              className="p-1.5 text-[#8C806D] hover:text-[#2D2926]"
+                              className="flex min-h-9 min-w-9 items-center justify-center rounded-md p-1.5 text-[#8C806D] hover:bg-[#EEEAE4] hover:text-[#2D2926]"
                               title="Edit address"
                             >
                               <Edit3 className="h-4 w-4" />
@@ -367,7 +367,7 @@ export function CustomerProfileModal({ onClose }: CustomerProfileModalProps) {
                             <button
                               type="button"
                               onClick={() => void remove(item.id)}
-                              className="p-1.5 text-[#B85D3D]"
+                              className="flex min-h-9 min-w-9 items-center justify-center rounded-md p-1.5 text-[#B85D3D] hover:bg-[#FFF1ED]"
                               title="Delete address"
                             >
                               <Trash2 className="h-4 w-4" />
@@ -378,7 +378,7 @@ export function CustomerProfileModal({ onClose }: CustomerProfileModalProps) {
                           <button
                             type="button"
                             onClick={() => void setDefault(item.id)}
-                            className="mt-3 border border-[#D6CFC7] px-3 py-2 text-[10px] font-semibold text-[#6F6963]"
+                            className="mt-3 min-h-10 border border-[#D6CFC7] px-3 py-2 text-[10px] font-semibold text-[#6F6963]"
                           >
                             Set as default
                           </button>
@@ -389,7 +389,7 @@ export function CustomerProfileModal({ onClose }: CustomerProfileModalProps) {
                 </div>
                 <form
                   onSubmit={save}
-                  className="mt-5 rounded-xl border border-[#DDD7CF] bg-[#FCFBF9] p-4"
+                  className="mt-5 rounded-xl border border-[#DDD7CF] bg-[#FCFBF9] p-4 sm:p-5"
                 >
                   <div className="flex items-center justify-between">
                     <h3 className="text-xs font-bold uppercase tracking-[.14em] text-[#2D2926]">
@@ -656,24 +656,24 @@ function CustomerOrderHistory({ orders }: { orders: CustomerOrder[] }) {
   });
 
   return (
-    <section className="border-t border-[#DDD7CF] p-5 sm:p-8 lg:border-t-0">
+    <section className="border-t border-[#DDD7CF] p-4 sm:p-8 lg:border-t-0">
       <div className="border-b border-[#DDD7CF] pb-4">
-        <div className="flex items-end justify-between gap-3">
+        <div className="flex flex-wrap items-end justify-between gap-3">
           <div>
             <p className="text-[10px] font-bold uppercase tracking-[.2em] text-[#8C806D]">My purchase</p>
-            <h3 className="mt-2 text-xl font-semibold text-[#2D2926]">Order history</h3>
+            <h3 className="mt-2 text-lg font-semibold text-[#2D2926] sm:text-xl">Order history</h3>
           </div>
           <span className="rounded-full bg-[#EEEAE4] px-3 py-1 text-[10px] font-bold text-[#6F6963]">
             {orders.length} order{orders.length === 1 ? "" : "s"}
           </span>
         </div>
-        <div className="-mx-1 mt-5 flex gap-1 overflow-x-auto px-1 pb-px">
+        <div className="-mx-2 mt-4 flex gap-0.5 overflow-x-auto px-2 pb-1 sm:mt-5 sm:gap-1">
           {tabs.map((tab) => (
             <button
               key={tab.key}
               type="button"
               onClick={() => setActiveTab(tab.key)}
-              className={`shrink-0 border-b-2 px-3 py-2 text-xs font-semibold transition-colors ${activeTab === tab.key ? "border-[#B85D3D] text-[#B85D3D]" : "border-transparent text-[#77716A] hover:text-[#2D2926]"}`}
+              className={`min-h-10 shrink-0 border-b-2 px-2.5 py-2 text-[11px] font-semibold transition-colors sm:px-3 sm:text-xs ${activeTab === tab.key ? "border-[#B85D3D] text-[#B85D3D]" : "border-transparent text-[#77716A] hover:text-[#2D2926]"}`}
             >
               {tab.label}
               <span className="ml-1.5 text-[10px] text-[#989188]">{countFor(tab.key)}</span>
@@ -705,14 +705,14 @@ function CustomerOrderHistory({ orders }: { orders: CustomerOrder[] }) {
                   {order.status.replaceAll("_", " ")}
                 </span>
               </div>
-              <div className="flex gap-3 p-4">
+              <div className="flex flex-wrap gap-3 p-4">
                 <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-lg bg-[#EEEAE4] text-[#8C806D]"><Package className="h-6 w-6" /></div>
                 <div className="min-w-0 flex-1">
                   <h4 className="truncate text-sm font-semibold text-[#2D2926]">{order.product_name}</h4>
                   <p className="mt-1 text-xs text-[#77716A]">{order.product_code} · Size {order.size} · Qty {order.quantity}</p>
                   <p className="mt-2 text-[10px] text-[#989188]">{new Date(order.created_at).toLocaleDateString("en-PH", { year: "numeric", month: "short", day: "numeric" })}</p>
                 </div>
-                <strong className="shrink-0 self-center text-sm text-[#2D2926]">{formatPrice(Number(order.unit_price) * order.quantity)}</strong>
+                <strong className="ml-[4.75rem] shrink-0 text-sm text-[#2D2926] sm:ml-0 sm:self-center">{formatPrice(Number(order.unit_price) * order.quantity)}</strong>
               </div>
               {order.shipment?.[0] && (
                 <div className="mx-4 mb-4 rounded-lg border border-[#DDD7CF] bg-[#F6F3EE] p-3 text-xs">
