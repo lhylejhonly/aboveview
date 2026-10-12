@@ -265,7 +265,7 @@ export function CustomerProfileModal({ onClose, embedded = false }: CustomerProf
             </div>
           ) : (
             <div className={embedded ? "min-h-0 lg:grid lg:grid-cols-[.9fr_1.1fr]" : "min-h-0 overflow-y-auto overscroll-contain lg:grid lg:grid-cols-[.9fr_1.1fr]"}>
-              <section className="p-4 sm:p-8 lg:border-r lg:border-[#DDD7CF]">
+              <section id="account-section" className="p-4 sm:p-8 lg:border-r lg:border-[#DDD7CF]">
                 <div className="rounded-2xl bg-[#2D2926] p-4 text-[#F8F5EF] sm:p-5">
                   <div className="flex items-center gap-3">
                     <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#D4B483] text-[#2D2926]">
@@ -299,7 +299,7 @@ export function CustomerProfileModal({ onClose, embedded = false }: CustomerProf
                     </div>
                   </div>
                 </div>
-                <div className="mt-4 rounded-2xl border border-[#D8C6A7] bg-[#FFF8EC] p-4 text-[#6F5137] sm:p-5">
+                <div id="coupon-section" className="mt-4 rounded-2xl border border-[#D8C6A7] bg-[#FFF8EC] p-4 text-[#6F5137] sm:p-5">
                   <div className="flex items-start justify-between gap-3">
                     <div>
                       <p className="text-[9px] font-bold uppercase tracking-[.2em] text-[#A06F43]">Your first-order perk</p>
@@ -523,7 +523,7 @@ export function CustomerProfileModal({ onClose, embedded = false }: CustomerProf
                   <LogOut className="h-4 w-4" /> Sign out
                 </button>
               </section>
-              <CustomerOrderHistory orders={orders} />
+              <div id="orders-section"><CustomerOrderHistory orders={orders} /></div>
               <section className="hidden border-t border-[#DDD7CF] p-5 sm:p-8 lg:border-t-0">
                 <div className="mb-5 flex items-end justify-between border-b border-[#DDD7CF] pb-5">
                   <div>
