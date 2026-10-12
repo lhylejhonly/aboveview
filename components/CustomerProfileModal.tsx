@@ -663,9 +663,18 @@ function CustomerOrderHistory({ orders }: { orders: CustomerOrder[] }) {
             <p className="text-[10px] font-bold uppercase tracking-[.2em] text-[#8C806D]">My purchase</p>
             <h3 className="mt-2 text-lg font-semibold text-[#2D2926] sm:text-xl">Order history</h3>
           </div>
-          <span className="rounded-full bg-[#EEEAE4] px-3 py-1 text-[10px] font-bold text-[#6F6963]">
-            {orders.length} order{orders.length === 1 ? "" : "s"}
-          </span>
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => { setActiveTab("all"); setQuery(""); }}
+              className="min-h-9 rounded-full border border-[#D6CFC7] px-3 text-[10px] font-bold uppercase tracking-wider text-[#8C806D] transition-colors hover:border-[#2D2926] hover:text-[#2D2926]"
+            >
+              View all
+            </button>
+            <span className="rounded-full bg-[#EEEAE4] px-3 py-1 text-[10px] font-bold text-[#6F6963]">
+              {orders.length} order{orders.length === 1 ? "" : "s"}
+            </span>
+          </div>
         </div>
         <div className="-mx-2 mt-4 flex gap-0.5 overflow-x-auto px-2 pb-1 sm:mt-5 sm:gap-1">
           {tabs.map((tab) => (
