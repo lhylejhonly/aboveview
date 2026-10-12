@@ -90,7 +90,9 @@ export function CustomerOrderModal({
     setMessage("");
     setError("");
     setSubmittedOrder(null);
-    setVoucherCode("");
+    let savedVoucher = "";
+    try { savedVoucher = localStorage.getItem("above_selected_voucher") ?? ""; } catch {}
+    setVoucherCode(savedVoucher);
     setVoucherApplied(false);
     setVoucherMessage("");
     setVoucherDiscountPercent(0);

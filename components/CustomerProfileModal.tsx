@@ -298,6 +298,26 @@ export function CustomerProfileModal({ onClose }: CustomerProfileModalProps) {
                     </div>
                   </div>
                 </div>
+                <div className="mt-4 rounded-2xl border border-[#D8C6A7] bg-[#FFF8EC] p-4 text-[#6F5137] sm:p-5">
+                  <div className="flex items-start justify-between gap-3">
+                    <div>
+                      <p className="text-[9px] font-bold uppercase tracking-[.2em] text-[#A06F43]">Your first-order perk</p>
+                      <p className="mt-1 text-lg font-semibold text-[#5E402C]">5% off your first piece</p>
+                      <p className="mt-1 text-[11px] leading-5 text-[#8C6B51]">Keep it here and use it when you are ready to check out.</p>
+                    </div>
+                    <span className="shrink-0 rounded-md border border-[#D8C6A7] bg-white/60 px-2 py-1 font-mono text-[10px] font-bold tracking-wider text-[#8C6B51]">WELCOME5</span>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      try { localStorage.setItem("above_selected_voucher", "WELCOME5"); } catch {}
+                      setMessage("WELCOME5 is ready to use at checkout.");
+                    }}
+                    className="mt-4 flex min-h-10 w-full items-center justify-center rounded-lg bg-[#5A4030] px-4 text-[10px] font-bold uppercase tracking-[.16em] text-[#FFF8EC] transition-colors hover:bg-[#2D2926]"
+                  >
+                    Use coupon
+                  </button>
+                </div>
                 <div className="mt-6 flex flex-wrap items-center justify-between gap-3 sm:mt-7">
                   <div className="flex min-w-0 items-center gap-3">
                     <div className="rounded-lg bg-[#EEEAE4] p-2">

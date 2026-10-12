@@ -23,8 +23,10 @@ import { StoreInfoModal } from '@/components/StoreInfoModal';
 import { StoreInfoTopic } from '@/data/storeInfo';
 import { CustomerProfileModal } from '@/components/CustomerProfileModal';
 import { AddedToCartModal } from '@/components/AddedToCartModal';
+import { WelcomeOfferModal } from '@/components/WelcomeOfferModal';
 import { useAdmin } from '@/context/AdminContext';
 import { TicketPercent, X } from 'lucide-react';
+import { supabase } from '@/lib/supabase';
 
 export default function AppClient() {
   const { isAdmin, products: adminProducts, categories, loading, error, refresh } = useAdmin();
@@ -51,6 +53,7 @@ export default function AppClient() {
   const [storeInfoTopic, setStoreInfoTopic] = useState<StoreInfoTopic | null>(null);
   const [cartHydrated, setCartHydrated] = useState(false);
   const [activeVoucher, setActiveVoucher] = useState<{ code: string; discountPercent: number; remainingUses: number | null } | null>(null);
+  const [welcomeOfferOpen, setWelcomeOfferOpen] = useState(false);
   const ITEMS_PER_PAGE = 6;
 
   useEffect(() => {
@@ -59,6 +62,27 @@ export default function AppClient() {
       .then(data => setActiveVoucher(data.voucher ?? null))
       .catch(() => setActiveVoucher(null));
   }, []);
+
+  useEffect(() => {
+    let mounted = true;
+    const maybeShowWelcomeOffer = async () => {
+      try {
+        if (sessionStorage.getItem('above_welcome_offer_seen') === 'true') return;
+      } catch {}
+      const { data: { session } } = await supabase.auth.getSession();
+      if (mounted && !session) setWelcomeOfferOpen(true);
+    };
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (session) setWelcomeOfferOpen(false);
+    });
+    const timer = window.setTimeout(() => void maybeShowWelcomeOffer(), 900);
+    return () => { mounted = false; window.clearTimeout(timer); subscription.unsubscribe(); };
+  }, []);
+
+  const closeWelcomeOffer = () => {
+    try { sessionStorage.setItem('above_welcome_offer_seen', 'true'); } catch {}
+    setWelcomeOfferOpen(false);
+  };
 
   useEffect(() => {
     setActiveCategory(current => {
@@ -271,6 +295,7 @@ export default function AppClient() {
       <StoreInfoModal topic={storeInfoTopic} onClose={() => setStoreInfoTopic(null)} />
       {customerLoginOpen && <CustomerLoginModal onClose={() => setCustomerLoginOpen(false)} />}
       {customerProfileOpen && <CustomerProfileModal onClose={() => setCustomerProfileOpen(false)} />}
+      {welcomeOfferOpen && <WelcomeOfferModal onClose={closeWelcomeOffer} onOpenLogin={() => { closeWelcomeOffer(); setCustomerLoginOpen(true); }} />}
 
 
       <BackToTop />

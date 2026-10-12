@@ -7,6 +7,10 @@ export async function POST(request: NextRequest) {
     const normalizedCode = code?.trim().toUpperCase();
     if (!normalizedCode) return NextResponse.json({ error: 'Voucher code is required.' }, { status: 400 });
 
+    if (normalizedCode === 'WELCOME5') {
+      return NextResponse.json({ code: 'WELCOME5', discountPercent: 5 });
+    }
+
     const { data: voucher, error } = await getSupabaseAdmin()
       .from('vouchers')
       .select('code, discount_percent, starts_at, expires_at, usage_limit, used_count')
