@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { motion } from 'motion/react';
-import { ArrowDown, RotateCcw, ShoppingBag } from 'lucide-react';
+import { ArrowDown, RotateCcw } from 'lucide-react';
 import StarBurst from '@/components/StarBurst';
 
 interface BrandHeaderProps {
@@ -75,17 +75,6 @@ export const BrandHeader: React.FC<BrandHeaderProps> = ({
         >
           by Lyle Pelayo
         </motion.p>
-
-        <motion.div
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.85 }}
-          className="mt-7 flex flex-wrap items-center justify-center gap-2"
-        >
-          <button type="button" onClick={() => document.getElementById('product-grid-section')?.scrollIntoView({ behavior: 'smooth' })} className="inline-flex min-h-11 items-center gap-2 rounded-full bg-[#F7F5F0] px-5 text-[10px] font-black uppercase tracking-[0.16em] text-[#1F1D1B] transition hover:bg-[#D4B483]">
-            <ShoppingBag className="h-3.5 w-3.5" /> Shop collection
-          </button>
-        </motion.div>
 
         <motion.div
           initial={{ scaleX: 0 }} animate={{ scaleX: 1 }}

@@ -22,6 +22,7 @@ import { formatPrice } from "@/lib/currency";
 
 interface CustomerProfileModalProps {
   onClose: () => void;
+  embedded?: boolean;
 }
 interface Profile {
   full_name: string;
@@ -63,7 +64,7 @@ const emptyProfile: Profile = {
   delivery_notes: "",
 };
 
-export function CustomerProfileModal({ onClose }: CustomerProfileModalProps) {
+export function CustomerProfileModal({ onClose, embedded = false }: CustomerProfileModalProps) {
   const [email, setEmail] = useState("");
   const [profile, setProfile] = useState<Profile>(emptyProfile);
   const [addresses, setAddresses] = useState<SavedAddress[]>([]);
@@ -228,12 +229,12 @@ export function CustomerProfileModal({ onClose }: CustomerProfileModalProps) {
     "block text-[10px] font-bold uppercase tracking-[.14em] text-[#6F6963]";
   return (
     <AnimatePresence>
-      <div className="fixed inset-0 z-[80] flex items-end justify-center bg-[#171513]/75 p-0 backdrop-blur-sm sm:items-center sm:p-5">
+      <div className={embedded ? "min-h-screen bg-[#F7F5F0]" : "fixed inset-0 z-[80] flex items-end justify-center bg-[#171513]/75 p-0 backdrop-blur-sm sm:items-center sm:p-5"}>
         <motion.div
           initial={{ opacity: 0, y: 18 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: 18 }}
-          className="flex max-h-[calc(100dvh-0.5rem)] w-full max-w-6xl flex-col overflow-hidden rounded-t-2xl border border-[#D6CFC7] bg-[#F6F3EE] shadow-2xl sm:max-h-[92svh] sm:rounded-2xl"
+          className={embedded ? "mx-auto flex min-h-screen w-full max-w-7xl flex-col bg-[#F6F3EE]" : "flex max-h-[calc(100dvh-0.5rem)] w-full max-w-6xl flex-col overflow-hidden rounded-t-2xl border border-[#D6CFC7] bg-[#F6F3EE] shadow-2xl sm:max-h-[92svh] sm:rounded-2xl"}
           role="dialog"
           aria-modal="true"
           aria-labelledby="profile-title"
@@ -263,7 +264,7 @@ export function CustomerProfileModal({ onClose }: CustomerProfileModalProps) {
               Loading your profile...
             </div>
           ) : (
-            <div className="min-h-0 overflow-y-auto overscroll-contain lg:grid lg:grid-cols-[.9fr_1.1fr]">
+            <div className={embedded ? "min-h-0 lg:grid lg:grid-cols-[.9fr_1.1fr]" : "min-h-0 overflow-y-auto overscroll-contain lg:grid lg:grid-cols-[.9fr_1.1fr]"}>
               <section className="p-4 sm:p-8 lg:border-r lg:border-[#DDD7CF]">
                 <div className="rounded-2xl bg-[#2D2926] p-4 text-[#F8F5EF] sm:p-5">
                   <div className="flex items-center gap-3">
