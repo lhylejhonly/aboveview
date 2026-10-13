@@ -24,6 +24,7 @@ import { StoreInfoTopic } from '@/data/storeInfo';
 import { CustomerProfileModal } from '@/components/CustomerProfileModal';
 import { AddedToCartModal } from '@/components/AddedToCartModal';
 import { WelcomeOfferModal } from '@/components/WelcomeOfferModal';
+import { PromoMarquee } from '@/components/PromoMarquee';
 import { useAdmin } from '@/context/AdminContext';
 import { TicketPercent, X } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
@@ -188,6 +189,7 @@ export default function AppClient() {
     <div className="min-h-screen overflow-x-hidden bg-[#F7F5F0] text-[#1F1D1B] font-sans flex flex-col relative selection:bg-[#1F1D1B] selection:text-[#F7F5F0]">
       <TopProgressBar isLoading={loading} />
       <StoreHeader onOpenLogin={() => setCustomerLoginOpen(true)} onOpenProfile={() => router.push('/profile')} onOpenCart={() => setCartOpen(true)} cartCount={cartItems.reduce((sum, item) => sum + item.quantity, 0)} />
+      <PromoMarquee />
 
       {toastMessage && (
         <motion.div initial={{ opacity: 0, y: 12, scale: 0.94 }} animate={{ opacity: 1, y: 0, scale: 1 }} className="fixed bottom-6 left-1/2 z-50 flex -translate-x-1/2 items-center gap-2 rounded-full border border-[#C2B280]/40 bg-[#1F1D1B] px-4 py-2.5 text-xs font-sans font-semibold tracking-wider text-[#F7F5F0] shadow-2xl">

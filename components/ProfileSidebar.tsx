@@ -1,5 +1,6 @@
 'use client';
 
+import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
@@ -18,6 +19,14 @@ const items = [
 
 export function ProfileSidebar() {
   const pathname = usePathname();
+  const [activeVoucherCount, setActiveVoucherCount] = useState(0);
+
+  useEffect(() => {
+    fetch('/api/vouchers/validate', { cache: 'no-store' })
+      .then((response) => response.json())
+      .then((data) => setActiveVoucherCount(data.voucher ? 1 : 0))
+      .catch(() => setActiveVoucherCount(0));
+  }, []);
 
   return (
     <aside className="w-full shrink-0 rounded-xl border border-[#E4E0DA] bg-[#FCFBF9] p-4 shadow-sm lg:sticky lg:top-24 lg:h-fit lg:w-64 lg:p-5">
@@ -47,7 +56,12 @@ export function ProfileSidebar() {
                 className={`h-5 w-5 ${active ? '' : 'text-[#B85D3D]'}`}
                 strokeWidth={1.7}
               />
-              {label}
+              <span className="min-w-0 flex-1 truncate">{label}</span>
+              {label === 'My Vouchers' && activeVoucherCount > 0 && (
+                <span className="flex h-5 min-w-5 shrink-0 items-center justify-center rounded-full bg-[#B85D3D] px-1.5 text-[10px] font-bold text-white">
+                  {activeVoucherCount}
+                </span>
+              )}
             </Link>
           );
         })}

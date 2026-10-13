@@ -101,6 +101,14 @@ img { max-width: 100%; }
 }
 .animate-float-slow { animation: floatSlow 4s ease-in-out infinite; }
 
+@keyframes promoMarquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+.animate-promo-marquee {
+  animation: promoMarquee 22s linear infinite;
+}
+
 @keyframes shimmerEarth {
   0% { background-position: -200% 0; }
   100% { background-position: 200% 0; }
