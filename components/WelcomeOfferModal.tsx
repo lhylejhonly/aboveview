@@ -28,7 +28,7 @@ export function WelcomeOfferModal({ onClose, onOpenLogin }: WelcomeOfferModalPro
           <p className="mt-5 text-[10px] font-bold uppercase tracking-[.28em] text-[#8C806D]">A little something for your first order</p>
           <h2 id="welcome-offer-title" className="mt-3 font-cormorant text-4xl font-semibold leading-none text-[#2D2926] sm:text-5xl">5% off, on us</h2>
           <p className="mt-3 text-sm leading-6 text-[#6F6963]">Make an account and keep the welcome discount in your profile until you are ready to check out.</p>
-          <div className="mt-5 rounded-xl border border-[#D8C6A7] bg-[#FFF8EC] px-4 py-3 text-[10px] font-bold uppercase tracking-[.16em] text-[#8C806D]">For your first Abovebylhyle order</div>
+          <div className="mt-5 rounded-xl border border-[#D8C6A7] bg-[#FFF8EC] px-4 py-3 text-[10px] font-bold uppercase tracking-[.16em] text-[#8C806D]">For your first Above Apprl order</div>
           <button type="button" onClick={onOpenLogin} className="mt-5 flex min-h-12 w-full items-center justify-center rounded-lg bg-[#2D2926] px-5 text-xs font-bold uppercase tracking-[.17em] text-[#F4F1EE] transition-colors hover:bg-[#5A5A40]">Keep my 5% welcome offer</button>
           <button type="button" onClick={onClose} className="mt-4 min-h-10 px-4 text-[10px] font-bold uppercase tracking-[.14em] text-[#8C806D] transition-colors hover:text-[#2D2926]">I’ll look around first</button>
         </div>

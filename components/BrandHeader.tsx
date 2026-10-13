@@ -33,7 +33,7 @@ export const BrandHeader: React.FC<BrandHeaderProps> = ({
       >
         <img
           src="/images/above-hero.jpg.jpg"
-          alt="Abovebylhyle collection"
+          alt="Above Apprl collection"
           fetchPriority="high"
           className="h-full w-full object-cover object-center"
         />
@@ -64,7 +64,7 @@ export const BrandHeader: React.FC<BrandHeaderProps> = ({
           transition={{ duration: 0.9, ease: [0.22, 1, 0.36, 1], delay: 0.15 }}
           className="font-climate relative mb-4 w-full select-none text-[clamp(2.2rem,11vw,7rem)] uppercase leading-[.92] tracking-tight sm:mb-6 sm:text-[clamp(2.5rem,7vw,7rem)] lg:mb-8"
         >
-          ABOVEBYLHYLE
+          ABOVE APPRL
         </motion.h1>
 
         <motion.p

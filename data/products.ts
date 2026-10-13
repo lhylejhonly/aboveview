@@ -7,7 +7,7 @@ const jacketBackImg = '/images/apprl_jacket_back_1786468871363.jpg';
 const hoodieFrontImg = '/images/apprl_hoodie_front_1786468885238.jpg';
 const hoodieBackImg = '/images/apprl_hoodie_back_1786468897706.jpg';
 
-export const BRAND_NAME = "ABOVEBYLHYLE";
+export const BRAND_NAME = "ABOVE APPRL";
 export const BRAND_TAGLINE = "KEEP RISING — BY: LYLE";
 export const TIKTOK_SHOP_BRAND_URL = "https://vt.tiktok.com/ZSPNJxSdD/?";
 
