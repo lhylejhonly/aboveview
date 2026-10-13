@@ -4,7 +4,6 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
   Bell,
-  CircleDollarSign,
   ClipboardList,
   Ticket,
   UserRound,
@@ -15,7 +14,6 @@ const items = [
   { href: '/profile/purchases', label: 'My Purchase', icon: ClipboardList },
   { href: '/profile/notifications', label: 'Notifications', icon: Bell },
   { href: '/profile/vouchers', label: 'My Vouchers', icon: Ticket },
-  { href: '/profile/coins', label: 'Shopee Coins', icon: CircleDollarSign },
 ];
 
 export function ProfileSidebar() {
@@ -46,7 +44,7 @@ export function ProfileSidebar() {
               }`}
             >
               <Icon
-                className={`h-5 w-5 ${label === 'Shopee Coins' ? 'text-[#C58A16]' : active ? '' : 'text-[#B85D3D]'}`}
+                className={`h-5 w-5 ${active ? '' : 'text-[#B85D3D]'}`}
                 strokeWidth={1.7}
               />
               {label}
