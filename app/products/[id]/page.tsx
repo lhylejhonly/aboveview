@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { fetchProductById } from '@/lib/db';
 import { formatPrice } from '@/lib/currency';
+import { SITE_URL } from '@/lib/site';
 
 export const dynamic = 'force-dynamic';
 
@@ -10,11 +11,25 @@ type Props = { params: Promise<{ id: string }> };
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const product = await fetchProductById((await params).id);
-  if (!product) return { title: 'Product not found' };
+  if (!product) return { title: 'Product not found', robots: { index: false, follow: false } };
   return {
-    title: product.name,
+    title: `${product.name} | Above Apprl`,
     description: product.description,
-    openGraph: { title: product.name, description: product.description, type: 'website', images: [{ url: product.frontImage, alt: product.name }] },
+    alternates: { canonical: `${SITE_URL}/products/${encodeURIComponent(product.id)}` },
+    openGraph: {
+      title: `${product.name} | Above Apprl`,
+      description: product.description,
+      type: 'website',
+      url: `${SITE_URL}/products/${encodeURIComponent(product.id)}`,
+      siteName: 'Above Apprl',
+      images: [{ url: product.frontImage, alt: product.name }],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: `${product.name} | Above Apprl`,
+      description: product.description,
+      images: [product.frontImage],
+    },
   };
 }
 

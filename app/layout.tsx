@@ -1,18 +1,35 @@
 import type { Metadata } from 'next';
 import './globals.css';
 import { AdminProvider } from '@/context/AdminContext';
+import { SITE_URL } from '@/lib/site';
 
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://aboveapprl.com'),
-  title: 'Above Apprl — Keep Rising',
-  description: 'Earth-tone luxury heavyweight apparel by Lyle.',
+  metadataBase: new URL(SITE_URL),
+  title: 'ABOVE APPRL | Premium Streetwear',
+  description: 'Discover Above Apprl premium heavyweight streetwear and raw athleisure apparel, designed for the everyday ascent in the Philippines.',
+  alternates: { canonical: SITE_URL },
   icons: {
-    icon: '/images/logo.png',
-    apple: '/images/logo.png',
+    icon: '/images/favicon.png',
+    apple: '/images/favicon.png',
   },
-  keywords: ['Above Apprl', 'heavyweight apparel', 'streetwear Philippines', 'raw athleisure'],
-  openGraph: { title: 'Above Apprl — Keep Rising', description: 'Earth-tone heavyweight apparel designed for the everyday ascent.', type: 'website', siteName: 'Above Apprl' },
-  twitter: { card: 'summary_large_image', title: 'Above Apprl — Keep Rising', description: 'Earth-tone heavyweight apparel designed for the everyday ascent.' },
+  keywords: ['Above Apprl', 'premium streetwear', 'heavyweight apparel', 'streetwear Philippines', 'raw athleisure'],
+  openGraph: {
+    title: 'ABOVE APPRL | Premium Streetwear',
+    description: 'Premium heavyweight streetwear and raw athleisure apparel by Above Apprl.',
+    type: 'website',
+    siteName: 'Above Apprl',
+    url: SITE_URL,
+    images: [{ url: `${SITE_URL}/images/above-hero.jpg.jpg`, alt: 'Above Apprl premium streetwear' }],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'ABOVE APPRL | Premium Streetwear',
+    description: 'Premium heavyweight streetwear and raw athleisure apparel by Above Apprl.',
+    images: [`${SITE_URL}/images/above-hero.jpg.jpg`],
+  },
+  verification: process.env.GOOGLE_SITE_VERIFICATION
+    ? { google: process.env.GOOGLE_SITE_VERIFICATION }
+    : undefined,
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
