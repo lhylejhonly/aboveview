@@ -81,6 +81,7 @@ export function CustomerOrderModal({
   const [voucherApplied, setVoucherApplied] = useState(false);
   const [voucherMessage, setVoucherMessage] = useState("");
   const [voucherDiscountPercent, setVoucherDiscountPercent] = useState(0);
+  const [orderConfirmationOpen, setOrderConfirmationOpen] = useState(false);
 
   useEffect(() => {
     if (!product) return;
@@ -234,9 +235,14 @@ export function CustomerOrderModal({
     setSubmitting(false);
   };
 
-  const handleOrder = async (event: React.FormEvent) => {
+  const handleOrder = (event: React.FormEvent) => {
     event.preventDefault();
     if (!userId) return;
+    setOrderConfirmationOpen(true);
+  };
+
+  const confirmOrder = async () => {
+    setOrderConfirmationOpen(false);
     setSubmitting(true);
     setError("");
     setMessage("");
@@ -643,6 +649,55 @@ export function CustomerOrderModal({
             )}
           </div>
         </motion.div>
+        <AnimatePresence>
+          {orderConfirmationOpen && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 z-[80] flex items-center justify-center bg-[#171513]/55 p-5 backdrop-blur-sm"
+              onClick={() => setOrderConfirmationOpen(false)}
+            >
+              <motion.div
+                initial={{ opacity: 0, y: 18, scale: 0.96 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: 12, scale: 0.96 }}
+                transition={{ type: "spring", stiffness: 360, damping: 28 }}
+                role="alertdialog"
+                aria-modal="true"
+                aria-labelledby="order-confirmation-title"
+                className="w-full max-w-md rounded-2xl border border-[#D6CFC7] bg-[#FCFBF9] p-6 text-[#2D2926] shadow-2xl sm:p-8"
+                onClick={(event) => event.stopPropagation()}
+              >
+                <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-[#FFF1ED] text-[#B85D3D]">
+                  <LockKeyhole className="h-5 w-5" />
+                </div>
+                <h3 id="order-confirmation-title" className="mt-5 text-center text-lg font-bold uppercase tracking-[.1em]">
+                  Final order confirmation
+                </h3>
+                <p className="mt-3 text-center text-sm leading-6 text-[#6F6963]">
+                  Once you place the order, there&apos;s no turning back. This order cannot be cancelled.
+                </p>
+                <div className="mt-6 grid grid-cols-2 gap-3">
+                  <button
+                    type="button"
+                    onClick={() => setOrderConfirmationOpen(false)}
+                    className="min-h-12 rounded-lg border border-[#D9D3CA] px-4 text-xs font-bold uppercase tracking-[.14em] text-[#6F6963] transition-colors hover:bg-[#EEEAE4]"
+                  >
+                    Go back
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => void confirmOrder()}
+                    className="min-h-12 rounded-lg bg-[#2D2926] px-4 text-xs font-bold uppercase tracking-[.14em] text-[#F4F1EE] transition-colors hover:bg-[#5A5A40]"
+                  >
+                    Place order
+                  </button>
+                </div>
+              </motion.div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </AnimatePresence>
   );
