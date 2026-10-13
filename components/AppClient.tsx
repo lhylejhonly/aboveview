@@ -204,7 +204,7 @@ export default function AppClient() {
           <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/40 to-transparent flex items-center p-6 sm:p-10">
             <div className="max-w-xl text-[#F7F5F0]">
               <span className="px-2.5 py-0.5 bg-[#5A5A40] text-[9px] font-sans uppercase tracking-widest font-semibold rounded-md">HERITAGE BANNER</span>
-              <h2 className="font-climate text-xl sm:text-3xl text-[#F7F5F0] uppercase tracking-tight my-1">ABOVE APPRL</h2>
+              <h2 className="font-climate text-xl sm:text-3xl text-[#F7F5F0] uppercase tracking-tight my-1">ABOVEBYLHYLE</h2>
               <p className="font-sans text-xs text-[#E5E0DA] uppercase tracking-wider">Custom Web Banner • Earth Tone Collection</p>
             </div>
           </div>

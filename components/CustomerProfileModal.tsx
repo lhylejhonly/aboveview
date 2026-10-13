@@ -270,7 +270,7 @@ export function CustomerProfileModal({
           <header className="sticky top-0 z-10 flex shrink-0 items-center justify-between border-b border-[#DDD7CF] bg-[#FCFBF9]/95 px-4 py-3 backdrop-blur sm:px-8 sm:py-5">
             <div>
               <p className="text-[9px] font-bold uppercase tracking-[.28em] text-[#8C806D]">
-                Above Apprl · Customer profile
+                Abovebylhyle · Customer profile
               </p>
               <h2
                 id="profile-title"

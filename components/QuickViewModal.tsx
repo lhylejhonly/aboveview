@@ -160,7 +160,7 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({ product, onClose
               {/* Header: Code & Category */}
               <div>
                 <div className="mb-2 flex items-center justify-between font-mono text-[10px] uppercase tracking-[0.2em] text-[#8E8B82]">
-                  <span>Above Apprl / Essentials</span>
+                  <span>Abovebylhyle / Essentials</span>
                   <span>{product.code}</span>
                 </div>
                 <h2 id={`quickview-title-${product.id}`} className="font-cormorant text-4xl font-semibold leading-none tracking-tight text-[#2D2926] sm:text-[2.75rem]">

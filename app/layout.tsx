@@ -5,26 +5,26 @@ import { SITE_URL } from '@/lib/site';
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
-  title: 'ABOVE APPRL | Premium Streetwear',
-  description: 'Discover Above Apprl premium heavyweight streetwear and raw athleisure apparel, designed for the everyday ascent in the Philippines.',
+  title: 'Abovebylhyle | Premium Streetwear',
+  description: 'Discover Abovebylhyle premium heavyweight streetwear and raw athleisure apparel, designed for the everyday ascent in the Philippines.',
   alternates: { canonical: SITE_URL },
   icons: {
     icon: '/images/favicon.png',
     apple: '/images/favicon.png',
   },
-  keywords: ['Above Apprl', 'premium streetwear', 'heavyweight apparel', 'streetwear Philippines', 'raw athleisure'],
+  keywords: ['Abovebylhyle', 'premium streetwear', 'heavyweight apparel', 'streetwear Philippines', 'raw athleisure'],
   openGraph: {
-    title: 'ABOVE APPRL | Premium Streetwear',
-    description: 'Premium heavyweight streetwear and raw athleisure apparel by Above Apprl.',
+    title: 'Abovebylhyle | Premium Streetwear',
+    description: 'Premium heavyweight streetwear and raw athleisure apparel by Abovebylhyle.',
     type: 'website',
-    siteName: 'Above Apprl',
+    siteName: 'Abovebylhyle',
     url: SITE_URL,
-    images: [{ url: `${SITE_URL}/images/above-hero.jpg.jpg`, alt: 'Above Apprl premium streetwear' }],
+    images: [{ url: `${SITE_URL}/images/above-hero.jpg.jpg`, alt: 'Abovebylhyle premium streetwear' }],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'ABOVE APPRL | Premium Streetwear',
-    description: 'Premium heavyweight streetwear and raw athleisure apparel by Above Apprl.',
+    title: 'Abovebylhyle | Premium Streetwear',
+    description: 'Premium heavyweight streetwear and raw athleisure apparel by Abovebylhyle.',
     images: [`${SITE_URL}/images/above-hero.jpg.jpg`],
   },
   verification: process.env.GOOGLE_SITE_VERIFICATION

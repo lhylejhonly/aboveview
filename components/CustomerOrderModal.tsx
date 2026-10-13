@@ -222,7 +222,7 @@ export function CustomerOrderModal({
           setError(data.error ?? "Unable to create your account.");
         else {
           setMessage(
-            "Confirmation email sent by Above Apprl. Open the link in your email, then return here and sign in to continue.",
+            "Confirmation email sent by Abovebylhyle. Open the link in your email, then return here and sign in to continue.",
           );
           setAuthMode("sign-in");
         }
@@ -333,7 +333,7 @@ export function CustomerOrderModal({
           <div className="flex shrink-0 items-center justify-between border-b border-[#DDD7CF] bg-[#FCFBF9] px-5 py-4 sm:px-8 sm:py-5">
             <div>
               <p className="text-[9px] font-bold uppercase tracking-[.28em] text-[#8C806D]">
-                Above Apprl · Secure checkout
+                Abovebylhyle · Secure checkout
               </p>
               <h2
                 id="customer-order-title"
@@ -780,7 +780,7 @@ function AuthForm({
           </h3>
           <p className="mt-6 max-w-xs text-sm leading-6 text-white/65">
             Create your customer account and keep your delivery details ready
-            for every Above Apprl order.
+            for every Abovebylhyle order.
           </p>
         </div>
         <div className="relative space-y-3 text-[10px] font-bold uppercase tracking-[.14em] text-white/65">

@@ -56,7 +56,7 @@ export function ProfileSidebar() {
           <UserRound className="h-7 w-7" strokeWidth={1.4} />
         </div>
         <div className="min-w-0">
-          <p className="truncate text-sm font-bold text-[#2D2926]">Above Apprl</p>
+          <p className="truncate text-sm font-bold text-[#2D2926]">Abovebylhyle</p>
           <p className="mt-1 text-xs text-[#8C806D]">Customer account</p>
         </div>
       </div>
