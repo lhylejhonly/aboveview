@@ -9,6 +9,7 @@ import {
   Ticket,
   UserRound,
 } from 'lucide-react';
+import { supabase } from '@/lib/supabase';
 
 const items = [
   { href: '/profile', label: 'My Account', icon: UserRound },
@@ -22,10 +23,30 @@ export function ProfileSidebar() {
   const [activeVoucherCount, setActiveVoucherCount] = useState(0);
 
   useEffect(() => {
-    fetch('/api/vouchers/validate', { cache: 'no-store' })
-      .then((response) => response.json())
-      .then((data) => setActiveVoucherCount(data.voucher ? 1 : 0))
-      .catch(() => setActiveVoucherCount(0));
+    let cancelled = false;
+    const loadVoucherCount = async () => {
+      try {
+        const [{ data: { session } }, voucherResponse] = await Promise.all([
+          supabase.auth.getSession(),
+          fetch('/api/vouchers/validate', { cache: 'no-store' }),
+        ]);
+        const voucherData = await voucherResponse.json() as { voucher?: unknown };
+        let hasWelcomeVoucher = false;
+        if (session?.user) {
+          const { count, error } = await supabase
+            .from('orders')
+            .select('id', { count: 'exact', head: true })
+            .eq('user_id', session.user.id)
+            .neq('status', 'cancelled');
+          hasWelcomeVoucher = !error && count === 0;
+        }
+        if (!cancelled) setActiveVoucherCount((voucherData.voucher ? 1 : 0) + (hasWelcomeVoucher ? 1 : 0));
+      } catch {
+        if (!cancelled) setActiveVoucherCount(0);
+      }
+    };
+    void loadVoucherCount();
+    return () => { cancelled = true; };
   }, []);
 
   return (
