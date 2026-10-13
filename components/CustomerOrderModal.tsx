@@ -316,7 +316,7 @@ export function CustomerOrderModal({
           initial={{ opacity: 0, y: 18, scale: 0.99 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
           exit={{ opacity: 0, y: 18 }}
-          className="relative z-10 flex max-h-[96svh] w-full max-w-5xl flex-col overflow-hidden rounded-t-2xl border border-[#D6CFC7] bg-[#F6F3EE] shadow-2xl sm:max-h-[92svh] sm:rounded-2xl"
+          className="relative z-10 flex min-h-0 max-h-[96svh] w-full max-w-5xl flex-col overflow-hidden rounded-t-2xl border border-[#D6CFC7] bg-[#F6F3EE] shadow-2xl sm:max-h-[92svh] sm:rounded-2xl"
           role="dialog"
           aria-modal="true"
           aria-labelledby="customer-order-title"

@@ -11,6 +11,7 @@ const emptyProduct = (category: string): Omit<Product, "id"> => ({
   code: "",
   category: category as Product["category"],
   price: 0,
+  originalPrice: undefined,
   currency: "₱",
   description: "",
   frontImage: "",
@@ -70,6 +71,12 @@ function ProductEditor({
     setSaving(true);
     setSaveError(null);
     try {
+      const originalPrice = form.originalPrice == null || form.originalPrice === 0
+        ? undefined
+        : Number(form.originalPrice);
+      if (originalPrice !== undefined && originalPrice <= Number(form.price)) {
+        throw new Error("Original price must be higher than the discounted price.");
+      }
       const frontImage = frontFile
         ? await uploadProductImage(frontFile)
         : form.frontImage;
@@ -79,6 +86,7 @@ function ProductEditor({
       if (!frontImage || !backImage) throw new Error("images required");
       const payload = {
         ...form,
+        originalPrice,
         frontImage,
         backImage,
         stockCount: Object.keys(form.sizeStock ?? {}).length ? sizeStockTotal : form.stockCount,
@@ -156,7 +164,7 @@ function ProductEditor({
             />
           </label>
           <label className="text-xs font-semibold">
-            Price
+            Discounted price
             <input
               required
               type="number"
@@ -166,6 +174,21 @@ function ProductEditor({
               onFocus={(e) => e.currentTarget.select()}
               onChange={(e) => set("price", Number(e.target.value))}
             />
+          </label>
+          <label className="text-xs font-semibold">
+            Original price
+            <span className="ml-1 font-normal text-[#85898a]">(optional)</span>
+            <input
+              type="number"
+              min="0"
+              step="0.01"
+              className={input}
+              value={form.originalPrice ?? ""}
+              onFocus={(e) => e.currentTarget.select()}
+              onChange={(e) => set("originalPrice", e.target.value === "" ? undefined : Number(e.target.value))}
+              placeholder="e.g. 599"
+            />
+            <span className="mt-1 block text-[11px] font-normal text-[#85898a]">Shown crossed out as the marketing price.</span>
           </label>
           <label className="text-xs font-semibold">
             Stock quantity
@@ -473,6 +496,11 @@ function ProductDetails({
                     {product.currency}
                     {product.price.toFixed(2)}
                   </strong>
+                  {product.originalPrice && product.originalPrice > product.price && (
+                    <span className="ml-2 text-xs text-[#85898a] line-through">
+                      {product.currency}{product.originalPrice.toFixed(2)}
+                    </span>
+                  )}
                 </p>
                 <p>
                   <span className="text-[#85898a]">Stock</span>
@@ -748,6 +776,11 @@ export function ProductManagement() {
                   <td className="px-5 py-4 text-sm font-semibold">
                     {product.currency}
                     {product.price.toFixed(2)}
+                    {product.originalPrice && product.originalPrice > product.price && (
+                      <span className="ml-2 text-xs font-normal text-[#85898a] line-through">
+                        {product.currency}{product.originalPrice.toFixed(2)}
+                      </span>
+                    )}
                   </td>
                   <td className="px-5 py-4 text-sm">{product.stockCount}</td>
                   <td className="px-5 py-4">

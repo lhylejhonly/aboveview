@@ -30,14 +30,14 @@ export function ProfileSidebar() {
           <p className="mt-1 text-xs text-[#8C806D]">Customer account</p>
         </div>
       </div>
-      <nav className="mt-4 flex gap-1 overflow-x-auto lg:flex-col lg:gap-0.5" aria-label="Profile navigation">
+      <nav className="mt-4 grid grid-cols-2 gap-1 sm:grid-cols-4 lg:flex lg:flex-col lg:gap-0.5" aria-label="Profile navigation">
         {items.map(({ href, label, icon: Icon }) => {
           const active = pathname === href;
           return (
             <Link
               key={href}
               href={href}
-              className={`flex min-h-11 shrink-0 items-center gap-3 rounded-lg px-3 text-sm font-semibold transition-colors ${
+              className={`flex min-h-11 min-w-0 items-center gap-2 rounded-lg px-2 text-xs font-semibold transition-colors sm:gap-3 sm:px-3 sm:text-sm ${
                 active
                   ? 'bg-[#FFF1ED] text-[#B85D3D]'
                   : 'text-[#2D2926] hover:bg-[#EEEAE4]'
