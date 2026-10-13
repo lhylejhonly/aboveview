@@ -3,8 +3,10 @@
 import React, { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import {
+  Bell,
   Check,
   Clock3,
+  CircleDollarSign,
   Edit3,
   LogOut,
   MapPin,
@@ -20,9 +22,18 @@ import {
 import { supabase } from "@/lib/supabase";
 import { formatPrice } from "@/lib/currency";
 
+export type CustomerProfileView =
+  | "overview"
+  | "account"
+  | "purchases"
+  | "notifications"
+  | "vouchers"
+  | "coins";
+
 interface CustomerProfileModalProps {
   onClose: () => void;
   embedded?: boolean;
+  view?: CustomerProfileView;
 }
 interface Profile {
   full_name: string;
@@ -64,7 +75,11 @@ const emptyProfile: Profile = {
   delivery_notes: "",
 };
 
-export function CustomerProfileModal({ onClose, embedded = false }: CustomerProfileModalProps) {
+export function CustomerProfileModal({
+  onClose,
+  embedded = false,
+  view = "overview",
+}: CustomerProfileModalProps) {
   const [email, setEmail] = useState("");
   const [profile, setProfile] = useState<Profile>(emptyProfile);
   const [addresses, setAddresses] = useState<SavedAddress[]>([]);
@@ -77,7 +92,7 @@ export function CustomerProfileModal({ onClose, embedded = false }: CustomerProf
   const [error, setError] = useState("");
 
   useEffect(() => {
-    document.body.style.overflow = "hidden";
+    if (!embedded) document.body.style.overflow = "hidden";
     const load = async () => {
       const {
         data: { session },
@@ -124,7 +139,7 @@ export function CustomerProfileModal({ onClose, embedded = false }: CustomerProf
     };
     void load();
     return () => {
-      document.body.style.overflow = "unset";
+      if (!embedded) document.body.style.overflow = "unset";
     };
   }, [onClose]);
   const update = (key: keyof Profile, value: string) =>
@@ -227,6 +242,14 @@ export function CustomerProfileModal({ onClose, embedded = false }: CustomerProf
     "mt-2 min-h-12 w-full rounded-lg border border-[#D9D3CA] bg-[#FCFBF9] px-3.5 py-3 text-sm text-[#2D2926] outline-none focus:border-[#8C806D] focus:ring-2 focus:ring-[#D9D0C3]/60";
   const label =
     "block text-[10px] font-bold uppercase tracking-[.14em] text-[#6F6963]";
+  const viewTitle = {
+    overview: "My account",
+    account: "My account",
+    purchases: "My purchase",
+    notifications: "Notifications",
+    vouchers: "My vouchers",
+    coins: "Shopee coins",
+  }[view];
   return (
     <AnimatePresence>
       <div className={embedded ? "min-h-screen bg-[#F7F5F0]" : "fixed inset-0 z-[80] flex items-end justify-center bg-[#171513]/75 p-0 backdrop-blur-sm sm:items-center sm:p-5"}>
@@ -248,7 +271,7 @@ export function CustomerProfileModal({ onClose, embedded = false }: CustomerProf
                 id="profile-title"
                 className="mt-1 text-base font-bold uppercase tracking-[.08em] text-[#2D2926] sm:text-lg sm:tracking-[.1em]"
               >
-                My account
+                {viewTitle}
               </h2>
             </div>
             <button
@@ -264,7 +287,16 @@ export function CustomerProfileModal({ onClose, embedded = false }: CustomerProf
               Loading your profile...
             </div>
           ) : (
-            <div className={embedded ? "min-h-0 lg:grid lg:grid-cols-[.9fr_1.1fr]" : "min-h-0 overflow-y-auto overscroll-contain lg:grid lg:grid-cols-[.9fr_1.1fr]"}>
+            <div className={
+              view === "overview"
+                ? embedded
+                  ? "min-h-0 lg:grid lg:grid-cols-[.9fr_1.1fr]"
+                  : "min-h-0 overflow-y-auto overscroll-contain lg:grid lg:grid-cols-[.9fr_1.1fr]"
+                : embedded
+                  ? "min-h-0"
+                  : "min-h-0 overflow-y-auto overscroll-contain"
+            }>
+              {(view === "overview" || view === "account") && (
               <section id="account-section" className="p-4 sm:p-8 lg:border-r lg:border-[#DDD7CF]">
                 <div className="rounded-2xl bg-[#2D2926] p-4 text-[#F8F5EF] sm:p-5">
                   <div className="flex items-center gap-3">
@@ -299,6 +331,7 @@ export function CustomerProfileModal({ onClose, embedded = false }: CustomerProf
                     </div>
                   </div>
                 </div>
+                {view === "overview" && (
                 <div id="coupon-section" className="mt-4 rounded-2xl border border-[#D8C6A7] bg-[#FFF8EC] p-4 text-[#6F5137] sm:p-5">
                   <div className="flex items-start justify-between gap-3">
                     <div>
@@ -319,6 +352,7 @@ export function CustomerProfileModal({ onClose, embedded = false }: CustomerProf
                     Use coupon
                   </button>
                 </div>
+                )}
                 <div className="mt-6 flex flex-wrap items-center justify-between gap-3 sm:mt-7">
                   <div className="flex min-w-0 items-center gap-3">
                     <div className="rounded-lg bg-[#EEEAE4] p-2">
@@ -523,7 +557,29 @@ export function CustomerProfileModal({ onClose, embedded = false }: CustomerProf
                   <LogOut className="h-4 w-4" /> Sign out
                 </button>
               </section>
-              <div id="orders-section"><CustomerOrderHistory orders={orders} /></div>
+              )}
+              {(view === "overview" || view === "purchases") && (
+                <div id="orders-section"><CustomerOrderHistory orders={orders} /></div>
+              )}
+              {view === "vouchers" && (
+                <VoucherCard
+                  onUse={() => setMessage("WELCOME5 is ready to use at checkout.")}
+                />
+              )}
+              {view === "notifications" && (
+                <ProfileEmptyState
+                  icon={<Bell className="h-8 w-8" />}
+                  title="No notifications yet"
+                  message="We will show order updates and account activity here."
+                />
+              )}
+              {view === "coins" && (
+                <ProfileEmptyState
+                  icon={<CircleDollarSign className="h-8 w-8" />}
+                  title="No Shopee Coins yet"
+                  message="Your available coins and rewards will appear here."
+                />
+              )}
               <section className="hidden border-t border-[#DDD7CF] p-5 sm:p-8 lg:border-t-0">
                 <div className="mb-5 flex items-end justify-between border-b border-[#DDD7CF] pb-5">
                   <div>
@@ -766,6 +822,65 @@ function CustomerOrderHistory({ orders }: { orders: CustomerOrder[] }) {
 
 function EmptyOrders({ title = "No orders yet", message }: { title?: string; message: string }) {
   return <div className="mt-5 flex min-h-48 flex-col items-center justify-center rounded-xl border border-dashed border-[#D6CFC7] text-center"><Package className="h-8 w-8 text-[#C6BFB4]" /><p className="mt-4 text-sm font-semibold uppercase tracking-wider text-[#6F6963]">{title}</p><p className="mt-1 text-xs text-[#989188]">{message}</p></div>;
+}
+
+function VoucherCard({ onUse }: { onUse: () => void }) {
+  return (
+    <section className="p-4 sm:p-8">
+      <div className="mx-auto max-w-2xl rounded-2xl border border-[#D8C6A7] bg-[#FFF8EC] p-5 text-[#6F5137] sm:p-8">
+        <div className="flex items-start justify-between gap-4">
+          <div>
+            <p className="text-[10px] font-bold uppercase tracking-[.2em] text-[#A06F43]">
+              Your first-order perk
+            </p>
+            <p className="mt-2 text-2xl font-semibold text-[#5E402C]">
+              5% off your first piece
+            </p>
+            <p className="mt-2 max-w-md text-sm leading-6 text-[#8C6B51]">
+              Keep this voucher and use it when you are ready to check out.
+            </p>
+          </div>
+          <span className="shrink-0 rounded-md border border-[#D8C6A7] bg-white/60 px-2 py-1 font-mono text-[10px] font-bold tracking-wider text-[#8C6B51]">
+            WELCOME5
+          </span>
+        </div>
+        <button
+          type="button"
+          onClick={() => {
+            try {
+              localStorage.setItem("above_selected_voucher", "WELCOME5");
+            } catch {}
+            onUse();
+          }}
+          className="mt-6 flex min-h-11 w-full items-center justify-center rounded-lg bg-[#5A4030] px-4 text-[10px] font-bold uppercase tracking-[.16em] text-[#FFF8EC] transition-colors hover:bg-[#2D2926]"
+        >
+          Use coupon
+        </button>
+      </div>
+    </section>
+  );
+}
+
+function ProfileEmptyState({
+  icon,
+  title,
+  message,
+}: {
+  icon: React.ReactNode;
+  title: string;
+  message: string;
+}) {
+  return (
+    <section className="p-4 sm:p-8">
+      <div className="flex min-h-64 flex-col items-center justify-center rounded-2xl border border-dashed border-[#D6CFC7] bg-[#FCFBF9] px-5 text-center text-[#C6BFB4]">
+        {icon}
+        <p className="mt-4 text-sm font-semibold uppercase tracking-wider text-[#6F6963]">
+          {title}
+        </p>
+        <p className="mt-2 max-w-md text-xs leading-5 text-[#989188]">{message}</p>
+      </div>
+    </section>
+  );
 }
 
 function statusClass(status: string) {
