@@ -149,6 +149,11 @@ export function CustomerProfileModal({
     setLabelName("Home");
     setProfile(emptyProfile);
   };
+  // WELCOME5 is a first-order voucher. Keep the profile UI in sync with the
+  // database trigger, which considers cancelled orders reusable.
+  const welcomeVoucherAvailable = !orders.some(
+    (order) => order.status !== "cancelled",
+  );
   const edit = (item: SavedAddress) => {
     setEditing(item.id);
     setLabelName(item.label);
@@ -331,7 +336,7 @@ export function CustomerProfileModal({
                     </div>
                   </div>
                 </div>
-                {view === "overview" && (
+                {view === "overview" && welcomeVoucherAvailable && (
                 <div id="coupon-section" className="mt-4 rounded-2xl border border-[#D8C6A7] bg-[#FFF8EC] p-4 text-[#6F5137] sm:p-5">
                   <div className="flex items-start justify-between gap-3">
                     <div>
@@ -561,9 +566,16 @@ export function CustomerProfileModal({
               {(view === "overview" || view === "purchases") && (
                 <div id="orders-section"><CustomerOrderHistory orders={orders} /></div>
               )}
-              {view === "vouchers" && (
+              {view === "vouchers" && welcomeVoucherAvailable && (
                 <VoucherCard
                   onUse={() => setMessage("WELCOME5 is ready to use at checkout.")}
+                />
+              )}
+              {view === "vouchers" && !welcomeVoucherAvailable && (
+                <ProfileEmptyState
+                  icon={<Check className="h-8 w-8" />}
+                  title="Voucher already used"
+                  message="Your 5% welcome voucher was used on your first order."
                 />
               )}
               {view === "notifications" && (

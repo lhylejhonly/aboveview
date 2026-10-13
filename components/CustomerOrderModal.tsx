@@ -277,6 +277,9 @@ export function CustomerOrderModal({
       .single();
     if (orderError) setError(orderError.message);
     else {
+      if (voucherApplied) {
+        try { localStorage.removeItem("above_selected_voucher"); } catch {}
+      }
       try {
         await fetch("/api/orders/notify", {
           method: "POST",
