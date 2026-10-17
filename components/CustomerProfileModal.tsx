@@ -50,6 +50,8 @@ interface SavedAddress extends Profile {
 interface CustomerOrder {
   id: string;
   order_number: string;
+  product_id: string;
+  product_image?: string | null;
   product_name: string;
   product_code: string;
   size: string;
@@ -125,7 +127,7 @@ export function CustomerProfileModal({
         supabase
           .from("orders")
           .select(
-            "id, order_number, product_name, product_code, size, quantity, unit_price, status, created_at, shipments(id, courier, tracking_number, shipment_status, waybill_url)",
+            "id, order_number, product_id, product_name, product_code, size, quantity, unit_price, status, created_at, shipments(id, courier, tracking_number, shipment_status, waybill_url)",
           )
           .eq("user_id", session.user.id)
           .order("created_at", { ascending: false }),
@@ -134,7 +136,15 @@ export function CustomerProfileModal({
       if (addressError) setError(addressError.message);
       else setAddresses((savedAddresses ?? []) as SavedAddress[]);
       if (ordersError) setError(ordersError.message);
-      else setOrders((savedOrders ?? []) as CustomerOrder[]);
+      else {
+        const loadedOrders = (savedOrders ?? []) as CustomerOrder[];
+        const productIds = [...new Set(loadedOrders.map((order) => order.product_id).filter(Boolean))];
+        const { data: productImages } = productIds.length
+          ? await supabase.from("products").select("id, front_image").in("id", productIds)
+          : { data: [] as { id: string; front_image: string }[] };
+        const imageByProduct = new Map((productImages ?? []).map((product) => [product.id, product.front_image]));
+        setOrders(loadedOrders.map((order) => ({ ...order, product_image: imageByProduct.get(order.product_id) ?? null })));
+      }
       setLoading(false);
     };
     void load();
@@ -804,7 +814,7 @@ function CustomerOrderHistory({ orders }: { orders: CustomerOrder[] }) {
                 </span>
               </div>
               <div className="flex flex-wrap gap-3 p-4">
-                <div className="flex h-16 w-16 shrink-0 items-center justify-center rounded-lg bg-[#EEEAE4] text-[#8C806D]"><Package className="h-6 w-6" /></div>
+                <div className="flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-[#EEEAE4] text-[#8C806D]">{order.product_image ? <img src={order.product_image} alt={order.product_name} className="h-full w-full object-cover" /> : <Package className="h-6 w-6" />}</div>
                 <div className="min-w-0 flex-1">
                   <h4 className="truncate text-sm font-semibold text-[#2D2926]">{order.product_name}</h4>
                   <p className="mt-1 text-xs text-[#77716A]">{order.product_code} · Size {order.size} · Qty {order.quantity}</p>

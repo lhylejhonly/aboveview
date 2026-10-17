@@ -21,6 +21,7 @@ const items = [
 export function ProfileSidebar() {
   const pathname = usePathname();
   const [activeVoucherCount, setActiveVoucherCount] = useState(0);
+  const [purchaseCount, setPurchaseCount] = useState(0);
 
   useEffect(() => {
     let cancelled = false;
@@ -33,12 +34,12 @@ export function ProfileSidebar() {
         const voucherData = await voucherResponse.json() as { voucher?: unknown };
         let hasWelcomeVoucher = false;
         if (session?.user) {
-          const { count, error } = await supabase
-            .from('orders')
-            .select('id', { count: 'exact', head: true })
-            .eq('user_id', session.user.id)
-            .neq('status', 'cancelled');
-          hasWelcomeVoucher = !error && count === 0;
+          const [{ count: orderCount, error: orderError }, { count: welcomeCount, error: welcomeError }] = await Promise.all([
+            supabase.from('orders').select('id', { count: 'exact', head: true }).eq('user_id', session.user.id).neq('status', 'cancelled'),
+            supabase.from('orders').select('id', { count: 'exact', head: true }).eq('user_id', session.user.id).neq('status', 'cancelled').ilike('voucher_code', 'WELCOME5'),
+          ]);
+          if (!cancelled) setPurchaseCount(!orderError ? orderCount ?? 0 : 0);
+          hasWelcomeVoucher = !welcomeError && (welcomeCount ?? 0) === 0;
         }
         if (!cancelled) setActiveVoucherCount((voucherData.voucher ? 1 : 0) + (hasWelcomeVoucher ? 1 : 0));
       } catch {
@@ -78,6 +79,11 @@ export function ProfileSidebar() {
                 strokeWidth={1.7}
               />
               <span className="min-w-0 flex-1 truncate">{label}</span>
+              {label === 'My Purchase' && purchaseCount > 0 && (
+                <span className="flex h-5 min-w-5 shrink-0 items-center justify-center rounded-full bg-[#B85D3D] px-1.5 text-[10px] font-bold text-white">
+                  {purchaseCount}
+                </span>
+              )}
               {label === 'My Vouchers' && activeVoucherCount > 0 && (
                 <span className="flex h-5 min-w-5 shrink-0 items-center justify-center rounded-full bg-[#B85D3D] px-1.5 text-[10px] font-bold text-white">
                   {activeVoucherCount}

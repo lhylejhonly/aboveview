@@ -19,6 +19,7 @@ const versionImage = (url: string, version?: string) =>
 
 export const ProductCard: React.FC<ProductCardProps> = ({ product, forceFlipped = false, onQuickView, onOrder }) => {
   const unavailable = !product.isComingSoon && product.stockCount <= 0;
+  const welcomePrice = Math.round(product.price * 0.95 * 100) / 100;
   const [isFlipped, setIsFlipped] = useState(forceFlipped);
   const [imageLoadedFront, setImageLoadedFront] = useState(false);
   const [imageLoadedBack, setImageLoadedBack] = useState(false);
@@ -86,7 +87,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, forceFlipped 
           <div>
             <h3 onClick={() => onQuickView?.(product)} className="cursor-pointer break-words font-sans text-sm font-medium leading-snug tracking-normal text-[#1F1D1B] transition-colors hover:text-[#B85D3D] sm:text-lg">{product.name}</h3>
           </div>
-          <div className="flex min-w-0 w-full flex-col items-center pb-3 sm:pb-4"><span className="font-sans text-sm font-normal tracking-normal text-[#1F1D1B] sm:text-base">{formatPrice(product.price)}</span>{product.originalPrice && <span className="mt-1 font-sans text-[9px] font-medium leading-tight text-[#8E8B82] line-through sm:text-[10px]">{formatPrice(product.originalPrice)}</span>}{product.isComingSoon && <span className="mt-2 text-[8px] font-bold uppercase tracking-wider text-[#8E8B82]">Pre-order now</span>}{unavailable && <span className="mt-2 text-[8px] font-bold uppercase tracking-wider text-[#8E8B82]">Out of stock</span>}</div>
+          <div className="flex min-w-0 w-full flex-col items-center pb-3 sm:pb-4"><div className="flex items-baseline gap-2"><span className="font-sans text-[11px] text-[#9E9387] line-through sm:text-xs">{formatPrice(product.price)}</span><span className="font-sans text-sm font-semibold tracking-normal text-[#1F1D1B] sm:text-base">{formatPrice(welcomePrice)}</span></div>{product.originalPrice && <span className="mt-1 font-sans text-[9px] font-medium leading-tight text-[#8E8B82] line-through sm:text-[10px]">Regular: {formatPrice(product.originalPrice)}</span>}<span className="mt-1 text-[8px] font-bold uppercase tracking-wider text-[#B85D3D]">New customer -5%</span>{product.isComingSoon && <span className="mt-1 text-[8px] font-bold uppercase tracking-wider text-[#8E8B82]">Pre-order now</span>}{unavailable && <span className="mt-1 text-[8px] font-bold uppercase tracking-wider text-[#8E8B82]">Out of stock</span>}</div>
         </div>
       </motion.div>
     </div>

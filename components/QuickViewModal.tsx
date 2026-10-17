@@ -54,6 +54,7 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({ product, onClose
   if (!product) return null;
 
   const unavailable = !product.isComingSoon && product.stockCount <= 0;
+  const welcomePrice = Math.round(product.price * 0.95 * 100) / 100;
   const selectedSizeStock = getProductSizeStock(product, selectedSize);
 
   const currentImage = versionImage(activeSide === 'front' ? product.frontImage : product.backImage, product.updatedAt);
@@ -196,13 +197,15 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({ product, onClose
               {/* Price Display */}
               <div className="flex items-baseline gap-3 border-t border-[#D6CFC7]/80 pt-5">
                 <span className="font-cormorant text-4xl font-semibold leading-none text-[#2D2926]">
-                  {formatPrice(product.price)}
+                  {formatPrice(welcomePrice)}
                 </span>
+                <span className="font-sans text-sm text-[#8E8B82] line-through">{formatPrice(product.price)}</span>
                 {product.originalPrice && product.originalPrice > product.price && (
                   <span className="font-sans text-sm text-[#8E8B82] line-through">
                     {formatPrice(product.originalPrice)}
                   </span>
                 )}
+                <span className="text-[9px] font-bold uppercase tracking-wider text-[#B85D3D]">New customer -5%</span>
               </div>
 
               {/* Description */}
