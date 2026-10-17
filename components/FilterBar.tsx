@@ -249,7 +249,16 @@ export const FilterBar: React.FC<FilterBarProps> = ({
                 <p className="text-[10px] font-bold uppercase tracking-[.16em] text-[#6F6963]">Measurements in inches</p>
                 <div className="flex items-center gap-3 text-[10px] text-[#8E8B82]"><span className="flex items-center gap-1.5"><span className="h-2 w-2 rounded-full bg-[#5A7050]" /> Available</span><span className="flex items-center gap-1.5"><span className="h-2 w-2 rounded-full bg-[#B8B0A6]" /> Currently unavailable</span></div>
               </div>
-              <div className="overflow-x-auto rounded-lg border border-[#D6CFC7] bg-[#FCFBF9]">
+              <div className="space-y-2 sm:hidden">
+                {[['XS','27"','21"','9.25"'],['S','28"','22"','9"'],['M','29"','23"','9.5"'],['L','30"','24"','10.25"'],['XL','31"','25"','10.5"'],['2XL','32"','26"','10.75"']].map(([size, length, width, sleeves]) => {
+                  const unavailable = ['L', 'XL', '2XL'].includes(size);
+                  return <div key={size} className={`rounded-lg border border-[#D6CFC7] bg-[#FCFBF9] p-3 ${unavailable ? 'text-[#AAA39A]' : 'text-[#4A443F]'}`}>
+                    <div className="flex items-center justify-between border-b border-[#E5E0DA] pb-2"><strong className="text-sm text-[#2D2926]">Size {size}</strong><span className={`text-[9px] font-bold uppercase tracking-wider ${unavailable ? 'text-[#AAA39A]' : 'text-[#56704B]'}`}>{unavailable ? 'Unavailable' : 'Available'}</span></div>
+                    <div className="mt-2 grid grid-cols-3 gap-2 text-center"><div><span className="block text-[9px] uppercase tracking-wider text-[#8E8B82]">Length</span><span className="mt-1 block text-xs font-semibold">{length}</span></div><div><span className="block text-[9px] uppercase tracking-wider text-[#8E8B82]">Width</span><span className="mt-1 block text-xs font-semibold">{width}</span></div><div><span className="block text-[9px] uppercase tracking-wider text-[#8E8B82]">Sleeves</span><span className="mt-1 block text-xs font-semibold">{sleeves}</span></div></div>
+                  </div>;
+                })}
+              </div>
+              <div className="hidden overflow-x-auto rounded-lg border border-[#D6CFC7] bg-[#FCFBF9] sm:block">
                 <table className="w-full min-w-[34rem] text-left text-xs font-sans text-[#2D2926]">
                   <thead className="border-b border-[#D6CFC7] bg-[#E5E0DA] text-[10px] uppercase tracking-[.16em] text-[#4A443F]">
                     <tr>{['Size', 'Length', 'Width', 'Sleeves', 'Availability'].map(h => <th key={h} className="px-4 py-3.5 font-bold">{h}</th>)}</tr>
