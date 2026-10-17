@@ -53,7 +53,7 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({ product, onClose
 
   if (!product) return null;
 
-  const unavailable = !!product.isComingSoon || product.stockCount <= 0;
+  const unavailable = !product.isComingSoon && product.stockCount <= 0;
   const selectedSizeStock = getProductSizeStock(product, selectedSize);
 
   const currentImage = versionImage(activeSide === 'front' ? product.frontImage : product.backImage, product.updatedAt);
@@ -188,7 +188,7 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({ product, onClose
                     </span>
                   </div>
                   <span className={`border px-2.5 py-1 font-sans text-[10px] font-semibold uppercase tracking-wider ${unavailable ? 'border-[#D6CFC7] bg-[#F0EDE8] text-[#8E8B82]' : 'border-[#C8D8C1] bg-[#EFF5EC] text-[#587052]'}`}>
-                    {product.isComingSoon ? 'Coming Soon' : product.stockCount <= 0 ? 'Out of Stock' : `In Stock (${product.stockCount} available)`}
+                  {product.isComingSoon ? 'Available for Preorder' : product.stockCount <= 0 ? 'Out of Stock' : `In Stock (${product.stockCount} available)`}
                   </span>
                 </div>
               </div>
@@ -231,9 +231,9 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({ product, onClose
                   {product.sizes.map((size) => (
                     <button
                       key={size}
-                      disabled={getProductSizeStock(product, size) <= 0}
+                      disabled={!product.isComingSoon && getProductSizeStock(product, size) <= 0}
                       onClick={() => setSelectedSize(size)}
-                      className={`px-3 py-1.5 text-xs font-sans font-medium uppercase border transition-all ${getProductSizeStock(product, size) <= 0 ? 'cursor-not-allowed border-[#E5E0DA] text-[#AAA39A] line-through' :
+                        className={`px-3 py-1.5 text-xs font-sans font-medium uppercase border transition-all ${!product.isComingSoon && getProductSizeStock(product, size) <= 0 ? 'cursor-not-allowed border-[#E5E0DA] text-[#AAA39A] line-through' :
                         selectedSize === size
                           ? 'border-[#2D2926] bg-[#2D2926] text-[#F4F1EE] shadow-sm'
                           : 'border-[#D6CFC7] bg-transparent text-[#2D2926] hover:border-[#2D2926]'
@@ -250,14 +250,14 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({ product, onClose
 
             {/* Action Buttons */}
             <div className="mt-8 flex flex-col gap-2 border-t border-[#D6CFC7] pt-6">
-              {!unavailable && selectedSizeStock > 0 && <button onClick={() => onAddToCart?.(product, selectedSize)} className="w-full border border-[#2D2926] py-3.5 px-4 text-[#2D2926] font-sans text-xs font-black uppercase tracking-widest transition-colors hover:bg-[#EEEAE4]">ADD TO CART</button>}
+              {!unavailable && (product.isComingSoon || selectedSizeStock > 0) && <button onClick={() => onAddToCart?.(product, selectedSize)} className="w-full border border-[#2D2926] py-3.5 px-4 text-[#2D2926] font-sans text-xs font-black uppercase tracking-widest transition-colors hover:bg-[#EEEAE4]">ADD TO CART</button>}
               <button
-                onClick={() => { if (!unavailable) onOrder?.(product, selectedSize); }}
-                disabled={unavailable || selectedSizeStock <= 0}
-                className={`w-full py-3.5 px-4 text-[#F4F1EE] font-sans text-xs font-black uppercase tracking-widest transition-colors flex items-center justify-center gap-2 shadow-md group ${unavailable || selectedSizeStock <= 0 ? 'bg-[#8E8B82] cursor-not-allowed' : 'bg-[#2D2926] hover:bg-[#5A5A40]'}`}
+                onClick={() => { if (!unavailable && (product.isComingSoon || selectedSizeStock > 0)) onOrder?.(product, selectedSize); }}
+                disabled={unavailable || (!product.isComingSoon && selectedSizeStock <= 0)}
+                className={`w-full py-3.5 px-4 text-[#F4F1EE] font-sans text-xs font-black uppercase tracking-widest transition-colors flex items-center justify-center gap-2 shadow-md group ${unavailable || (!product.isComingSoon && selectedSizeStock <= 0) ? 'bg-[#8E8B82] cursor-not-allowed' : 'bg-[#2D2926] hover:bg-[#5A5A40]'}`}
               >
                 <ShoppingBag className="w-4 h-4" />
-                <span>{product.isComingSoon ? 'COMING SOON' : selectedSizeStock <= 0 ? 'SIZE OUT OF STOCK' : 'ORDER NOW'}</span>
+                <span>{product.isComingSoon ? 'PRE-ORDER NOW' : selectedSizeStock <= 0 ? 'SIZE OUT OF STOCK' : 'ORDER NOW'}</span>
               </button>
 
               <div className="flex items-center justify-between gap-3 pt-2 text-[10px] uppercase tracking-wide text-[#8E8B82]">

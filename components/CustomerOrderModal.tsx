@@ -269,6 +269,7 @@ export function CustomerOrderModal({
         product_id: product.id,
         product_name: product.name,
         product_code: product.code,
+        is_preorder: product.isComingSoon === true,
         size,
         quantity,
         unit_price: total / quantity,
@@ -427,8 +428,8 @@ export function CustomerOrderModal({
                       >
                         <option value="">Select</option>
                         {product.sizes.map((item) => (
-                          <option key={item} disabled={getProductSizeStock(product, item) <= 0}>
-                            {item} ({getProductSizeStock(product, item)} available)
+                          <option key={item} disabled={!product.isComingSoon && getProductSizeStock(product, item) <= 0}>
+                            {item} ({product.isComingSoon ? "preorder" : `${getProductSizeStock(product, item)} available`})
                           </option>
                         ))}
                       </select>
@@ -637,10 +638,10 @@ export function CustomerOrderModal({
                       </strong>
                     </div>
                     <button
-                      disabled={submitting || sizeStock <= 0}
+                      disabled={submitting || (!product.isComingSoon && sizeStock <= 0)}
                       className="flex min-h-13 w-full items-center justify-center gap-2 rounded-lg bg-[#2D2926] px-7 text-xs font-bold uppercase tracking-[.17em] text-[#F4F1EE] transition-colors hover:bg-[#5A5A40] disabled:opacity-60 sm:w-auto"
                     >
-                      {submitting ? "Submitting..." : sizeStock <= 0 ? "Size unavailable" : "Place order"}
+                      {submitting ? "Submitting..." : product.isComingSoon ? "Place preorder" : sizeStock <= 0 ? "Size unavailable" : "Place order"}
                       <Check className="h-4 w-4" />
                     </button>
                   </div>
