@@ -83,6 +83,20 @@ export function CustomerOrderModal({
   const [voucherDiscountPercent, setVoucherDiscountPercent] = useState(0);
   const [orderConfirmationOpen, setOrderConfirmationOpen] = useState(false);
 
+  const applyWelcomeOfferIfEligible = async (customerId: string) => {
+    const { data, error: ordersError } = await supabase
+      .from("orders")
+      .select("id")
+      .eq("user_id", customerId)
+      .neq("status", "cancelled")
+      .limit(1);
+    if (ordersError || (data && data.length > 0)) return;
+    setVoucherCode("WELCOME5");
+    setVoucherDiscountPercent(5);
+    setVoucherApplied(true);
+    setVoucherMessage("New customer offer applied: 5% off your first order.");
+  };
+
   useEffect(() => {
     if (!product) return;
     document.body.style.overflow = "hidden";
@@ -120,6 +134,7 @@ export function CustomerOrderModal({
           setProfile({ ...emptyProfile, ...data });
           setShipping((current) => ({ ...current, city_municipality: data.destination ?? "" }));
         }
+        if (!savedVoucher) await applyWelcomeOfferIfEligible(confirmedSession.user.id);
       }
       setAuthLoading(false);
     };
@@ -207,6 +222,7 @@ export function CustomerOrderModal({
         setError("Please confirm your email address before signing in.");
       } else if (result.data.session) {
         setUserId(result.data.session.user.id);
+        await applyWelcomeOfferIfEligible(result.data.session.user.id);
         setMessage("Signed in. Complete your delivery details below.");
       }
     } else {
@@ -452,7 +468,8 @@ export function CustomerOrderModal({
                   <div className="mt-5 space-y-2 border-t border-[#E5DFD7] pt-4 text-xs">
                     <div className="flex items-center justify-between text-[#6F6963]"><span>Unit price</span><span className="font-semibold text-[#2D2926]">{formatPrice(product.price)}</span></div>
                     <div className="flex items-center justify-between text-[#6F6963]"><span>Quantity</span><span className="font-semibold text-[#2D2926]">{quantity}</span></div>
-                    <div className="flex items-center justify-between text-[#6F6963]"><span>Item subtotal</span><span className="font-semibold text-[#2D2926]">{formatPrice(subtotal)}</span></div>
+                    <div className="flex items-center justify-between text-[#6F6963]"><span>Item subtotal</span><span className={`font-semibold text-[#2D2926] ${voucherApplied ? "line-through text-[#9A9187]" : ""}`}>{formatPrice(subtotal)}</span></div>
+                    {voucherApplied && <div className="flex items-center justify-between text-[#56704B]"><span>Discounted subtotal</span><span className="font-semibold">{formatPrice(subtotal - discount)}</span></div>}
                   </div>
                   <div className="mt-6 flex items-center justify-between border-t border-[#E5DFD7] pt-5">
                     <span className="text-xs text-[#6F6963]">Order total</span>
