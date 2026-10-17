@@ -9,8 +9,8 @@ export const metadata: Metadata = {
   description: 'Discover Above Apprl premium heavyweight streetwear and raw athleisure apparel, designed for the everyday ascent in the Philippines.',
   alternates: { canonical: SITE_URL },
   icons: {
-    icon: '/images/favicon-cropped.png?v=3',
-    apple: '/images/favicon-cropped.png?v=3',
+    icon: '/images/favicon-cropped.png?v=4',
+    apple: '/images/favicon-cropped.png?v=4',
   },
   keywords: ['Above Apprl', 'premium streetwear', 'heavyweight apparel', 'streetwear Philippines', 'raw athleisure'],
   openGraph: {
