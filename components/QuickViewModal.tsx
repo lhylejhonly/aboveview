@@ -116,7 +116,7 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({ product, onClose
             </div>
 
             {/* Main Image View */}
-            <div className="relative my-auto flex aspect-[4/5] max-h-[42svh] w-full items-center justify-center overflow-hidden rounded-lg bg-[#D6CFC7]/35 shadow-inner ring-1 ring-[#FBFAF7]/40 sm:max-h-none sm:rounded-xl">
+            <div className="relative my-auto flex aspect-[4/5] max-h-[42svh] w-full items-center justify-center overflow-hidden rounded-lg bg-white shadow-inner ring-1 ring-[#FBFAF7]/40 sm:max-h-none sm:rounded-xl">
               <motion.img
                 key={`${product.id}-${activeSide}`}
                 src={currentImage}
@@ -126,7 +126,7 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({ product, onClose
                 initial={{ opacity: 0.8, scale: 0.98 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.25 }}
-                className={`h-full w-full object-contain object-center p-3 sm:p-5 transition-transform duration-500 group-hover:scale-[1.015] ${product.isComingSoon ? 'scale-105 blur-[4px]' : ''}`}
+                className={`h-full w-full object-contain object-center mix-blend-multiply scale-[1.06] transition-transform duration-500 group-hover:scale-[1.09] ${product.isComingSoon ? 'blur-[4px]' : ''}`}
               />
 
               {product.isComingSoon && (
