@@ -5,6 +5,7 @@ import { Edit3, Eye, Plus, Search, Trash2, X } from "lucide-react";
 import { Product } from "@/types";
 import { useAdmin } from "@/context/AdminContext";
 import { fetchProductById, uploadProductImage } from "@/lib/db";
+import { fitProductImage } from "@/lib/imageFit";
 
 const emptyProduct = (category: string): Omit<Product, "id"> => ({
   name: "",
@@ -326,8 +327,10 @@ function ProductEditor({
               onChange={(e) => {
                 const file = e.target.files?.[0];
                 if (file) {
-                  setFrontFile(file);
-                  setFrontPreview(URL.createObjectURL(file));
+                  fitProductImage(file).then((fitted) => {
+                    setFrontFile(fitted);
+                    setFrontPreview(URL.createObjectURL(fitted));
+                  });
                 }
               }}
             />
@@ -349,8 +352,10 @@ function ProductEditor({
               onChange={(e) => {
                 const file = e.target.files?.[0];
                 if (file) {
-                  setBackFile(file);
-                  setBackPreview(URL.createObjectURL(file));
+                  fitProductImage(file).then((fitted) => {
+                    setBackFile(fitted);
+                    setBackPreview(URL.createObjectURL(fitted));
+                  });
                 }
               }}
             />
