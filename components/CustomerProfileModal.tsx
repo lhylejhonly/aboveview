@@ -732,6 +732,7 @@ function CustomerOrderHistory({ orders, onOrderUpdated }: { orders: CustomerOrde
   const [query, setQuery] = useState("");
   const [actionLoading, setActionLoading] = useState<string | null>(null);
   const [actionError, setActionError] = useState("");
+  const [pendingAction, setPendingAction] = useState<{ order: CustomerOrder; action: "cancel" | "return" } | null>(null);
   const tabs = [
     { key: "all", label: "All" },
     { key: "to_pay", label: "To Pay" },
@@ -757,8 +758,6 @@ function CustomerOrderHistory({ orders, onOrderUpdated }: { orders: CustomerOrde
     return filterByTab(order, activeTab) && matchesQuery;
   });
   const runOrderAction = async (order: CustomerOrder, action: "cancel" | "return") => {
-    const label = action === "cancel" ? "cancel this order" : "request a return for this order";
-    if (!window.confirm(`Are you sure you want to ${label}?`)) return;
     setActionLoading(`${action}:${order.id}`);
     setActionError("");
     const { data: { session } } = await supabase.auth.getSession();
@@ -782,6 +781,7 @@ function CustomerOrderHistory({ orders, onOrderUpdated }: { orders: CustomerOrde
       setActionLoading(null);
     }
   };
+  const requestOrderAction = (order: CustomerOrder, action: "cancel" | "return") => setPendingAction({ order, action });
 
   return (
     <section className="border-t border-[#DDD7CF] p-4 sm:p-8 lg:border-t-0">
@@ -861,8 +861,8 @@ function CustomerOrderHistory({ orders, onOrderUpdated }: { orders: CustomerOrde
                 </div>
               )}
               <div className="flex flex-wrap justify-end gap-2 border-t border-[#E8E3DB] px-4 py-3">
-                {order.status === "pending" && <button type="button" onClick={() => void runOrderAction(order, "cancel")} disabled={actionLoading !== null} className="rounded-lg border border-[#D8B7AC] px-3 py-2 text-[10px] font-bold uppercase tracking-wider text-[#9A4D3A] transition-colors hover:bg-[#FFF1ED] disabled:cursor-wait disabled:opacity-60">{actionLoading === `cancel:${order.id}` ? "Cancelling..." : "Cancel order"}</button>}
-                {order.status === "delivered" && <><button type="button" onClick={() => window.location.assign(`/?product=${encodeURIComponent(order.product_id)}`)} className="rounded-lg border border-[#D6CFC7] px-3 py-2 text-[10px] font-bold uppercase tracking-wider text-[#6F6963] transition-colors hover:border-[#2D2926] hover:text-[#2D2926]"><Star className="mr-1 inline h-3 w-3" />Review</button><button type="button" onClick={() => void runOrderAction(order, "return")} disabled={actionLoading !== null} className="rounded-lg border border-[#D8B7AC] px-3 py-2 text-[10px] font-bold uppercase tracking-wider text-[#9A4D3A] transition-colors hover:bg-[#FFF1ED] disabled:cursor-wait disabled:opacity-60">{actionLoading === `return:${order.id}` ? "Returning..." : "Returned"}</button></>}
+                {order.status === "pending" && <button type="button" onClick={() => requestOrderAction(order, "cancel")} disabled={actionLoading !== null} className="rounded-lg border border-[#D8B7AC] px-3 py-2 text-[10px] font-bold uppercase tracking-wider text-[#9A4D3A] transition-colors hover:bg-[#FFF1ED] disabled:cursor-wait disabled:opacity-60">Cancel order</button>}
+                {order.status === "delivered" && <><button type="button" onClick={() => window.location.assign(`/?product=${encodeURIComponent(order.product_id)}`)} className="rounded-lg border border-[#D6CFC7] px-3 py-2 text-[10px] font-bold uppercase tracking-wider text-[#6F6963] transition-colors hover:border-[#2D2926] hover:text-[#2D2926]"><Star className="mr-1 inline h-3 w-3" />Review</button><button type="button" onClick={() => requestOrderAction(order, "return")} disabled={actionLoading !== null} className="rounded-lg border border-[#D8B7AC] px-3 py-2 text-[10px] font-bold uppercase tracking-wider text-[#9A4D3A] transition-colors hover:bg-[#FFF1ED] disabled:cursor-wait disabled:opacity-60">Returned</button></>}
               </div>
               <div className="flex items-center justify-between border-t border-[#E8E3DB] px-4 py-3 text-xs">
                 <span className="text-[#989188]">Order total</span>
@@ -872,6 +872,54 @@ function CustomerOrderHistory({ orders, onOrderUpdated }: { orders: CustomerOrde
           ))}
         </div>
       )}
+      <AnimatePresence>
+        {pendingAction && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[100] flex items-center justify-center bg-[#171513]/70 p-4 backdrop-blur-sm"
+            onClick={() => setPendingAction(null)}
+          >
+            <motion.div
+              initial={{ opacity: 0, y: 16, scale: 0.96 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: 10, scale: 0.97 }}
+              transition={{ duration: 0.2 }}
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="order-action-title"
+              className="relative w-full max-w-md overflow-hidden rounded-2xl border border-[#D6CFC7] bg-[#FBFAF7] shadow-[0_24px_80px_rgba(23,21,19,.28)]"
+              onClick={event => event.stopPropagation()}
+            >
+              <div className="h-1.5 w-full bg-[#B85D3D]" />
+              <button type="button" onClick={() => setPendingAction(null)} className="absolute right-4 top-4 rounded-full p-2 text-[#8E8B82] transition-colors hover:bg-[#EEEAE4] hover:text-[#2D2926]" aria-label="Close confirmation">
+                <X className="h-4 w-4" />
+              </button>
+              <div className="p-6 sm:p-8">
+                <div className="flex h-11 w-11 items-center justify-center rounded-full bg-[#F6E7E1] text-[#B85D3D]">
+                  <Package className="h-5 w-5" />
+                </div>
+                <p className="mt-5 text-[10px] font-bold uppercase tracking-[.2em] text-[#B85D3D]">Order action</p>
+                <h3 id="order-action-title" className="mt-2 pr-8 font-cormorant text-3xl font-semibold text-[#2D2926]">
+                  {pendingAction.action === "cancel" ? "Cancel this order?" : "Request a return?"}
+                </h3>
+                <p className="mt-3 text-sm leading-6 text-[#6F6963]">
+                  {pendingAction.action === "cancel" ? "Your order will be cancelled and the reserved stock will be released." : "We’ll mark this delivered order as returned for follow-up."}
+                </p>
+                <div className="mt-4 rounded-xl border border-[#E5E0DA] bg-[#F6F3EE] px-4 py-3">
+                  <p className="text-[9px] font-bold uppercase tracking-[.16em] text-[#8E8B82]">{pendingAction.order.order_number}</p>
+                  <p className="mt-1 text-sm font-semibold text-[#2D2926]">{pendingAction.order.product_name}</p>
+                </div>
+                <div className="mt-6 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
+                  <button type="button" onClick={() => setPendingAction(null)} className="min-h-11 rounded-lg border border-[#D6CFC7] px-4 text-[10px] font-bold uppercase tracking-[.14em] text-[#6F6963] transition-colors hover:border-[#2D2926] hover:text-[#2D2926]">Keep order</button>
+                  <button type="button" onClick={() => { const { order, action } = pendingAction; setPendingAction(null); void runOrderAction(order, action); }} className="min-h-11 rounded-lg bg-[#2D2926] px-4 text-[10px] font-bold uppercase tracking-[.14em] text-[#F7F5F0] transition-colors hover:bg-[#B85D3D]">{pendingAction.action === "cancel" ? "Yes, cancel order" : "Yes, request return"}</button>
+                </div>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </section>
   );
 }
