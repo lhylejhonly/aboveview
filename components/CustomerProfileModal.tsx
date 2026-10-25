@@ -955,6 +955,7 @@ function VoucherCard({ onUse }: { onUse: () => void }) {
               localStorage.setItem("above_selected_voucher", "WELCOME5");
             } catch {}
             onUse();
+            window.location.assign("/");
           }}
           className="mt-6 flex min-h-11 w-full items-center justify-center rounded-lg bg-[#5A4030] px-4 text-[10px] font-bold uppercase tracking-[.16em] text-[#FFF8EC] transition-colors hover:bg-[#2D2926]"
         >
