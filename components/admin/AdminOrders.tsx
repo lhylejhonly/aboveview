@@ -6,6 +6,7 @@ import {
   Clock3,
   Download,
   Eye,
+  AlertTriangle,
   PackageCheck,
   RefreshCw,
   Search,
@@ -14,6 +15,7 @@ import {
   X,
 } from "lucide-react";
 import { formatPrice } from "@/lib/currency";
+import { motion } from "motion/react";
 
 type Order = {
   id: string;
@@ -346,16 +348,18 @@ export function AdminOrders() {
       )}
 
       {deletingOrder && (
-        <div className="fixed inset-0 z-[80] flex items-center justify-center bg-[#11151a]/65 p-4 backdrop-blur-sm" onClick={() => !deleteLoading && setDeletingOrder(null)}>
-          <div className="w-full max-w-md overflow-hidden rounded-2xl border border-[#deded8] bg-white shadow-2xl" onClick={(event) => event.stopPropagation()}>
-            <div className="h-1.5 bg-[#ad6250]" />
+        <div className="fixed inset-0 z-[80] flex items-center justify-center bg-[#11151a]/70 p-4 backdrop-blur-md" onClick={() => !deleteLoading && setDeletingOrder(null)}>
+          <motion.div initial={{ opacity: 0, y: 14, scale: 0.97 }} animate={{ opacity: 1, y: 0, scale: 1 }} transition={{ duration: 0.2, ease: "easeOut" }} className="w-full max-w-md overflow-hidden rounded-2xl border border-[#deded8] bg-white shadow-[0_24px_80px_rgba(18,22,27,.28)]" onClick={(event) => event.stopPropagation()}>
+            <div className="flex items-center justify-between bg-[#20242b] px-6 py-4 text-white sm:px-7">
+              <div className="flex items-center gap-2.5"><span className="flex h-7 w-7 items-center justify-center rounded-full bg-[#ad6250]/20 text-[#e7a18e]"><AlertTriangle className="h-3.5 w-3.5" /></span><span className="text-[10px] font-bold uppercase tracking-[.2em] text-white/75">Admin confirmation</span></div>
+              <button type="button" onClick={() => setDeletingOrder(null)} disabled={deleteLoading} className="rounded-lg p-1.5 text-white/55 transition-colors hover:bg-white/10 hover:text-white disabled:opacity-50" aria-label="Close delete confirmation"><X className="h-4 w-4" /></button>
+            </div>
             <div className="p-6 sm:p-7">
               <div className="flex items-start justify-between gap-4">
                 <div>
-                  <p className="text-[10px] font-bold uppercase tracking-[.2em] text-[#ad6250]">Delete order</p>
-                  <h3 className="mt-2 text-xl font-semibold text-[#20242b]">Remove this order?</h3>
+                  <p className="text-[10px] font-bold uppercase tracking-[.2em] text-[#ad6250]">Permanent action</p>
+                  <h3 className="mt-2 text-2xl font-semibold tracking-tight text-[#20242b]">Remove this order?</h3>
                 </div>
-                <button type="button" onClick={() => setDeletingOrder(null)} disabled={deleteLoading} className="rounded-lg p-2 text-[#85898a] hover:bg-[#f1f2ed] disabled:opacity-50" aria-label="Close delete confirmation"><X className="h-5 w-5" /></button>
               </div>
               <div className="mt-5 rounded-xl border border-[#ecece6] bg-[#fbfbf8] p-4">
                 <p className="font-mono text-[10px] font-bold uppercase tracking-widest text-[#85898a]">{deletingOrder.order_number}</p>
@@ -368,7 +372,7 @@ export function AdminOrders() {
                 <button type="button" onClick={() => void deleteOrder(deletingOrder)} disabled={deleteLoading} className="inline-flex items-center justify-center gap-2 rounded-lg bg-[#ad6250] px-4 py-2.5 text-xs font-semibold text-white hover:bg-[#934c3c] disabled:cursor-wait disabled:opacity-60"><Trash2 className="h-3.5 w-3.5" />{deleteLoading ? "Deleting..." : "Delete permanently"}</button>
               </div>
             </div>
-          </div>
+          </motion.div>
         </div>
       )}
     </div>
