@@ -64,6 +64,8 @@ export function AdminOrders() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
+  const [deletingOrder, setDeletingOrder] = useState<Order | null>(null);
+  const [deleteLoading, setDeleteLoading] = useState(false);
 
   const loadOrders = useCallback(async () => {
     setLoading(true);
@@ -127,19 +129,24 @@ export function AdminOrders() {
   };
 
   const deleteOrder = async (order: Order) => {
-    if (!window.confirm(`Delete order ${order.order_number}? Stock and voucher usage will be restored when applicable.`)) return;
-    const response = await fetch("/api/admin/orders", {
-      method: "DELETE",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ id: order.id }),
-    });
-    if (!response.ok) {
+    setDeleteLoading(true);
+    setError("");
+    try {
+      const response = await fetch("/api/admin/orders", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id: order.id }),
+      });
       const data = await response.json().catch(() => null) as { error?: string } | null;
-      setError(data?.error ?? "Unable to delete order.");
-      return;
+      if (!response.ok) throw new Error(data?.error ?? "Unable to delete order.");
+      setOrders((current) => current.filter((item) => item.id !== order.id));
+      if (selectedOrder?.id === order.id) setSelectedOrder(null);
+      setDeletingOrder(null);
+    } catch (reason) {
+      setError(reason instanceof Error ? reason.message : "Unable to delete order.");
+    } finally {
+      setDeleteLoading(false);
     }
-    setOrders((current) => current.filter((item) => item.id !== order.id));
-    if (selectedOrder?.id === order.id) setSelectedOrder(null);
   };
 
   return (
@@ -315,7 +322,7 @@ export function AdminOrders() {
                     <td className="px-5 py-4 text-right">
                       <button
                         type="button"
-                        onClick={() => void deleteOrder(order)}
+                        onClick={() => setDeletingOrder(order)}
                         title={`Delete ${order.order_number}`}
                         aria-label={`Delete ${order.order_number}`}
                         className="rounded-md p-2 text-[#ad6250] hover:bg-[#f7e9e4]"
@@ -336,6 +343,33 @@ export function AdminOrders() {
           order={selectedOrder}
           onClose={() => setSelectedOrder(null)}
         />
+      )}
+
+      {deletingOrder && (
+        <div className="fixed inset-0 z-[80] flex items-center justify-center bg-[#11151a]/65 p-4 backdrop-blur-sm" onClick={() => !deleteLoading && setDeletingOrder(null)}>
+          <div className="w-full max-w-md overflow-hidden rounded-2xl border border-[#deded8] bg-white shadow-2xl" onClick={(event) => event.stopPropagation()}>
+            <div className="h-1.5 bg-[#ad6250]" />
+            <div className="p-6 sm:p-7">
+              <div className="flex items-start justify-between gap-4">
+                <div>
+                  <p className="text-[10px] font-bold uppercase tracking-[.2em] text-[#ad6250]">Delete order</p>
+                  <h3 className="mt-2 text-xl font-semibold text-[#20242b]">Remove this order?</h3>
+                </div>
+                <button type="button" onClick={() => setDeletingOrder(null)} disabled={deleteLoading} className="rounded-lg p-2 text-[#85898a] hover:bg-[#f1f2ed] disabled:opacity-50" aria-label="Close delete confirmation"><X className="h-5 w-5" /></button>
+              </div>
+              <div className="mt-5 rounded-xl border border-[#ecece6] bg-[#fbfbf8] p-4">
+                <p className="font-mono text-[10px] font-bold uppercase tracking-widest text-[#85898a]">{deletingOrder.order_number}</p>
+                <p className="mt-1 text-sm font-semibold text-[#20242b]">{deletingOrder.product_name}</p>
+                <p className="mt-1 text-xs text-[#85898a]">{deletingOrder.full_name} · {formatPrice(Number(deletingOrder.unit_price) * deletingOrder.quantity)}</p>
+              </div>
+              <p className="mt-4 text-xs leading-5 text-[#777b80]">This permanently removes the order. Reserved stock and voucher usage will be restored when applicable.</p>
+              <div className="mt-6 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
+                <button type="button" onClick={() => setDeletingOrder(null)} disabled={deleteLoading} className="rounded-lg border border-[#d9dad4] px-4 py-2.5 text-xs font-semibold text-[#62676a] hover:bg-[#f7f7f4] disabled:opacity-50">Keep order</button>
+                <button type="button" onClick={() => void deleteOrder(deletingOrder)} disabled={deleteLoading} className="inline-flex items-center justify-center gap-2 rounded-lg bg-[#ad6250] px-4 py-2.5 text-xs font-semibold text-white hover:bg-[#934c3c] disabled:cursor-wait disabled:opacity-60"><Trash2 className="h-3.5 w-3.5" />{deleteLoading ? "Deleting..." : "Delete permanently"}</button>
+              </div>
+            </div>
+          </div>
+        </div>
       )}
     </div>
   );
