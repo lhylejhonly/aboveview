@@ -101,17 +101,12 @@ export async function PATCH(request: NextRequest) {
     const supabase = getSupabaseAdmin();
     const { data: currentOrder, error: findError } = await supabase
       .from("orders")
-      .select("id, order_number, user_id, product_name, product_code, size, quantity, unit_price, full_name, contact_number, destination, address")
+      .select("id, order_number, user_id, status, product_name, product_code, size, quantity, unit_price, full_name, contact_number, destination, address")
       .eq("id", id)
       .maybeSingle();
     if (findError) throw findError;
     if (!currentOrder) return NextResponse.json({ error: "Order not found." }, { status: 404 });
 
-    const { data: previousOrder } = await supabase
-      .from("orders")
-      .select("status")
-      .eq("id", id)
-      .single();
     const { error } = await supabase
       .from("orders")
       .update({ status })
@@ -119,7 +114,7 @@ export async function PATCH(request: NextRequest) {
     if (error) throw error;
     let emailSent = false;
     let emailError = "";
-    if (status === "confirmed" && previousOrder?.status !== "confirmed") {
+    if (status !== "pending" && currentOrder.status !== status) {
       const smtpHost = process.env.SMTP_HOST;
       const smtpUser = process.env.SMTP_USER;
       const smtpPassword = process.env.SMTP_PASSWORD;

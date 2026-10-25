@@ -57,6 +57,7 @@ const statuses = [
   "shipped",
   "delivered",
   "cancelled",
+  "returned",
 ];
 
 export function AdminOrders() {
@@ -129,7 +130,7 @@ export function AdminOrders() {
           order.id === id ? { ...order, status } : order,
         ),
       );
-      if (status === "confirmed" && data?.emailSent === false) setError(`Order confirmed, but customer email was not sent: ${data.emailError ?? "check SMTP settings."}`);
+      if (status !== "pending" && data?.emailSent === false) setError(`Order updated, but customer email was not sent: ${data.emailError ?? "check SMTP settings."}`);
       else setError("");
     } else {
       setError(data?.error ?? "Unable to update order.");
