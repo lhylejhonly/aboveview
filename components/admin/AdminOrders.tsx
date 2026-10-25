@@ -122,12 +122,18 @@ export function AdminOrders() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ id, status }),
     });
-    if (response.ok)
+    const data = await response.json().catch(() => null) as { error?: string; emailSent?: boolean; emailError?: string } | null;
+    if (response.ok) {
       setOrders((current) =>
         current.map((order) =>
           order.id === id ? { ...order, status } : order,
         ),
       );
+      if (status === "confirmed" && data?.emailSent === false) setError(`Order confirmed, but customer email was not sent: ${data.emailError ?? "check SMTP settings."}`);
+      else setError("");
+    } else {
+      setError(data?.error ?? "Unable to update order.");
+    }
   };
 
   const deleteOrder = async (order: Order) => {
