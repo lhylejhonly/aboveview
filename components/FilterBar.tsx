@@ -248,11 +248,11 @@ export const FilterBar: React.FC<FilterBarProps> = ({
                 <span className="flex h-10 w-10 items-center justify-center rounded-full bg-[#EEEAE4]"><Ruler className="h-5 w-5 text-[#5A5A40]" /></span>
                 <div>
                   <p className="text-[9px] font-bold uppercase tracking-[.24em] text-[#8C806D]">Fit reference</p>
-                  <h3 className="mt-1 font-sans text-base font-semibold uppercase tracking-[.16em]">T-shirt size chart</h3>
+                  <h3 className="mt-1 font-sans text-base font-semibold uppercase tracking-[.16em]">Boxy Tee size chart</h3>
                 </div>
               </div>
               <p className="mt-5 max-w-xl text-xs leading-6 text-[#5A5A40]">
-                Heavy oversized French Terry T-shirt. Measure a similar shirt flat and compare the length, width, and sleeve measurements below.
+                Relaxed boxy-fit tee with dropped shoulders. Measure a similar shirt flat and compare the body length, chest width, and sleeve measurements below.
               </p>
             </div>
             <div className="p-5 sm:p-8">
