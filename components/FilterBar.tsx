@@ -7,7 +7,7 @@ import { Category } from '@/types';
 interface FilterBarProps {
   categories: { id: string; label: string }[];
   activeCategory: Category | '';
-  onSelectCategory: (category: Category) => void;
+  onSelectCategory: (category: Category | '') => void;
   searchQuery: string;
   onSearchChange: (query: string) => void;
   sortBy: string;
@@ -62,7 +62,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
     if (searchQuery.trim()) saveRecentSearch(searchQuery);
   };
 
-  const activeCategoryLabel = categories.find(c => c.id === activeCategory)?.label || 'NO COLLECTIONS';
+  const activeCategoryLabel = categories.find(c => c.id === activeCategory)?.label || 'ALL';
 
   return (
     <div className="mx-auto mb-5 w-full max-w-7xl border-b border-[#E2DDD5] bg-[#F7F5F0] px-3 py-4 sm:mb-6 sm:px-8 sm:py-3.5">
@@ -120,13 +120,24 @@ export const FilterBar: React.FC<FilterBarProps> = ({
               >
                 <div className="px-3 py-2 border-b border-[#E2DDD5] flex items-center justify-between mb-1">
                   <span className="text-[10px] font-sans font-bold uppercase tracking-widest text-[#8E8B82]">
-                    Select Collection ({categories.length})
+                    Select Collection ({categories.length + 1})
                   </span>
                   <button onClick={() => setIsCategoryDropdownOpen(false)} className="p-1 hover:bg-[#EFECE6] rounded-md text-[#8E8B82] hover:text-[#1F1D1B]">
                     <X className="w-3.5 h-3.5" />
                   </button>
                 </div>
                 <div className="flex flex-col gap-0.5 mt-1">
+                  <button
+                    onClick={() => { onSelectCategory(''); setIsCategoryDropdownOpen(false); }}
+                    className={`w-full py-2.5 px-3.5 text-xs font-sans tracking-[0.1em] uppercase transition-all rounded-lg flex items-center justify-between ${
+                      activeCategory === ''
+                        ? 'bg-[#1F1D1B] text-[#F7F5F0] font-bold shadow-xs'
+                        : 'text-[#5A5A40] hover:bg-[#EFECE6] hover:text-[#1F1D1B] font-medium'
+                    }`}
+                  >
+                    <span className="truncate">ALL</span>
+                    {activeCategory === '' && <span className="w-1.5 h-1.5 rounded-full bg-[#B85D3D] shrink-0" />}
+                  </button>
                   {categories.length === 0 && <p className="px-3.5 py-5 text-xs text-[#8E8B82]">No collections available.</p>}
                   {categories.map(cat => {
                     const isActive = activeCategory === cat.id;

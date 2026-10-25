@@ -88,6 +88,7 @@ export default function AppClient() {
   useEffect(() => {
     setActiveCategory(current => {
       if (categories.length === 0) return '';
+      if (current === '') return current;
       return categories.some(category => category.id === current)
         ? current
         : categories[0].id as Category;
@@ -148,7 +149,7 @@ export default function AppClient() {
 
   const filteredProducts = useMemo(() => {
     return adminProducts.filter((product) => {
-      const matchesCategory = product.category === activeCategory;
+      const matchesCategory = activeCategory === '' || product.category === activeCategory;
       const query = searchQuery.toLowerCase().trim();
       const matchesSearch = !query ||
         product.name.toLowerCase().includes(query) ||
@@ -174,7 +175,7 @@ export default function AppClient() {
   }, [filteredProducts, currentPage]);
 
   const activeCollectionComingSoon = useMemo(() => {
-    const collectionProducts = adminProducts.filter(product => product.category === activeCategory);
+    const collectionProducts = adminProducts.filter(product => activeCategory !== '' && product.category === activeCategory);
     return collectionProducts.length > 0 && collectionProducts.every(product => product.isComingSoon);
   }, [activeCategory, adminProducts]);
 
@@ -262,7 +263,7 @@ export default function AppClient() {
               className="py-20 text-center bg-[#E5E0DA] border border-[#D6CFC7] max-w-xl mx-auto my-12 p-8">
               <p className="font-cinzel text-lg font-bold text-[#2D2926] mb-2 uppercase tracking-wide">No matching pieces found</p>
               <p className="font-sans text-xs text-[#4A443F] mb-6">Try adjusting your search terms or filter selection.</p>
-              <button onClick={() => { setActiveCategory((categories[0]?.id as Category) ?? ''); setSearchQuery(''); setCurrentPage(1); }}
+              <button onClick={() => { setActiveCategory(''); setSearchQuery(''); setCurrentPage(1); }}
                 className="px-5 py-2.5 bg-[#2D2926] text-[#F4F1EE] font-sans text-xs font-black uppercase tracking-widest hover:bg-[#5A5A40] transition-all">
                 Reset Filters
               </button>
