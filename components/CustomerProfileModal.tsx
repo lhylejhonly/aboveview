@@ -14,6 +14,7 @@ import {
   Plus,
   Search,
   Save,
+  Star,
   Truck,
   Trash2,
   UserRound,
@@ -574,7 +575,7 @@ export function CustomerProfileModal({
               </section>
               )}
               {(view === "overview" || view === "purchases") && (
-                <div id="orders-section"><CustomerOrderHistory orders={orders} /></div>
+                <div id="orders-section"><CustomerOrderHistory orders={orders} onOrderUpdated={(orderId, status) => setOrders(current => current.map(order => order.id === orderId ? { ...order, status } : order))} /></div>
               )}
               {view === "vouchers" && welcomeVoucherAvailable && (
                 <VoucherCard
@@ -726,9 +727,11 @@ export function CustomerProfileModal({
     </AnimatePresence>
   );
 }
-function CustomerOrderHistory({ orders }: { orders: CustomerOrder[] }) {
+function CustomerOrderHistory({ orders, onOrderUpdated }: { orders: CustomerOrder[]; onOrderUpdated: (orderId: string, status: string) => void }) {
   const [activeTab, setActiveTab] = useState("all");
   const [query, setQuery] = useState("");
+  const [actionLoading, setActionLoading] = useState<string | null>(null);
+  const [actionError, setActionError] = useState("");
   const tabs = [
     { key: "all", label: "All" },
     { key: "to_pay", label: "To Pay" },
@@ -753,6 +756,32 @@ function CustomerOrderHistory({ orders }: { orders: CustomerOrder[] }) {
     const matchesQuery = !normalized || [order.order_number, order.product_name, order.product_code].some((value) => value.toLowerCase().includes(normalized));
     return filterByTab(order, activeTab) && matchesQuery;
   });
+  const runOrderAction = async (order: CustomerOrder, action: "cancel" | "return") => {
+    const label = action === "cancel" ? "cancel this order" : "request a return for this order";
+    if (!window.confirm(`Are you sure you want to ${label}?`)) return;
+    setActionLoading(`${action}:${order.id}`);
+    setActionError("");
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) {
+      setActionError("Your session has expired. Please sign in again.");
+      setActionLoading(null);
+      return;
+    }
+    try {
+      const response = await fetch("/api/customer/orders/action", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${session.access_token}` },
+        body: JSON.stringify({ orderId: order.id, action }),
+      });
+      const data = await response.json() as { status?: string; error?: string };
+      if (!response.ok || !data.status) throw new Error(data.error ?? "Unable to update this order.");
+      onOrderUpdated(order.id, data.status);
+    } catch (error) {
+      setActionError(error instanceof Error ? error.message : "Unable to update this order.");
+    } finally {
+      setActionLoading(null);
+    }
+  };
 
   return (
     <section className="border-t border-[#DDD7CF] p-4 sm:p-8 lg:border-t-0">
@@ -798,6 +827,7 @@ function CustomerOrderHistory({ orders }: { orders: CustomerOrder[] }) {
           className="min-h-11 w-full rounded-lg border border-[#D9D3CA] bg-[#FCFBF9] pl-10 pr-3 text-sm text-[#2D2926] outline-none placeholder:text-[#A49B91] focus:border-[#8C806D] focus:ring-2 focus:ring-[#D9D0C3]/60"
         />
       </div>
+      {actionError && <p className="mt-3 rounded-lg border border-[#F0C9BD] bg-[#FFF6F2] px-3 py-2 text-xs text-[#9A4D3A]">{actionError}</p>}
       {orders.length === 0 ? (
         <EmptyOrders message="Your orders will appear here after checkout." />
       ) : visibleOrders.length === 0 ? (
@@ -830,6 +860,10 @@ function CustomerOrderHistory({ orders }: { orders: CustomerOrder[] }) {
                   {order.shipment[0].waybill_url && <a href={order.shipment[0].waybill_url} target="_blank" rel="noreferrer" className="mt-2 inline-block font-semibold text-[#8C806D] underline">View waybill</a>}
                 </div>
               )}
+              <div className="flex flex-wrap justify-end gap-2 border-t border-[#E8E3DB] px-4 py-3">
+                {order.status === "pending" && <button type="button" onClick={() => void runOrderAction(order, "cancel")} disabled={actionLoading !== null} className="rounded-lg border border-[#D8B7AC] px-3 py-2 text-[10px] font-bold uppercase tracking-wider text-[#9A4D3A] transition-colors hover:bg-[#FFF1ED] disabled:cursor-wait disabled:opacity-60">{actionLoading === `cancel:${order.id}` ? "Cancelling..." : "Cancel order"}</button>}
+                {order.status === "delivered" && <><button type="button" onClick={() => window.location.assign(`/?product=${encodeURIComponent(order.product_id)}`)} className="rounded-lg border border-[#D6CFC7] px-3 py-2 text-[10px] font-bold uppercase tracking-wider text-[#6F6963] transition-colors hover:border-[#2D2926] hover:text-[#2D2926]"><Star className="mr-1 inline h-3 w-3" />Review</button><button type="button" onClick={() => void runOrderAction(order, "return")} disabled={actionLoading !== null} className="rounded-lg border border-[#D8B7AC] px-3 py-2 text-[10px] font-bold uppercase tracking-wider text-[#9A4D3A] transition-colors hover:bg-[#FFF1ED] disabled:cursor-wait disabled:opacity-60">{actionLoading === `return:${order.id}` ? "Returning..." : "Returned"}</button></>}
+              </div>
               <div className="flex items-center justify-between border-t border-[#E8E3DB] px-4 py-3 text-xs">
                 <span className="text-[#989188]">Order total</span>
                 <strong className="text-base text-[#B85D3D]">{formatPrice(Number(order.unit_price) * order.quantity)}</strong>
