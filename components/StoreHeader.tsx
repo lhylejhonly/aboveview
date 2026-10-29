@@ -40,7 +40,7 @@ export function StoreHeader({ onOpenLogin, onOpenProfile, onOpenCart, cartCount 
   };
 
   return (
-    <header className="sticky top-0 z-40 border-b border-[#DDD9D2] bg-[#FCFBF9] text-[#242220] shadow-[0_2px_12px_rgba(31,29,27,0.06)]">
+    <header className="sticky top-0 z-40 border-b border-[#332633] bg-[#100d12]/95 text-[#f7efe8] shadow-[0_2px_18px_rgba(0,0,0,0.24)] backdrop-blur-md">
       <div className="relative mx-auto flex h-16 w-full max-w-[1920px] items-center justify-between px-1 sm:h-20 sm:px-6 md:px-10 lg:px-16 max-[380px]:h-14">
         <a href="#top" className="absolute left-1/2 flex h-16 w-[clamp(6rem,24vw,9rem)] -translate-x-1/2 items-center justify-center overflow-visible sm:h-24 sm:w-44 max-[380px]:h-14 max-[380px]:w-28" aria-label="Above Apprl home"><img src="/images/logo.png" alt="Above Apprl mountain logo" className="h-full w-full object-contain" /></a>
         <div className="flex min-w-0 items-center gap-0 sm:gap-2" aria-label="Shopping actions">

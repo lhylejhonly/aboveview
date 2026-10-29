@@ -41,7 +41,8 @@ export const BrandHeader: React.FC<BrandHeaderProps> = ({
         <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0A] via-[#0A0A0A]/30 to-[#0A0A0A]/20" />
       </motion.div>
 
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_70%_65%_at_50%_45%,rgba(212,180,131,0.18)_0%,rgba(10,10,10,0.05)_42%,transparent_72%)]" />
+      <div className="halloween-glow pointer-events-none absolute -right-20 -top-24 h-72 w-72 rounded-full bg-[#e8752d]/30 blur-3xl" />
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_70%_65%_at_50%_45%,rgba(232,117,45,0.16)_0%,rgba(10,10,10,0.05)_42%,transparent_72%)]" />
       <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(115deg,rgba(212,180,131,0.08),transparent_32%,transparent_68%,rgba(255,255,255,0.04))]" />
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_35%,rgba(0,0,0,0.62)_100%)]" />
       <div className="pointer-events-none absolute inset-0 opacity-[0.035] [background-image:linear-gradient(rgba(255,255,255,0.7)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.7)_1px,transparent_1px)] [background-size:56px_56px]" />
@@ -87,7 +88,7 @@ export const BrandHeader: React.FC<BrandHeaderProps> = ({
           transition={{ duration: 0.6, delay: 0.65 }}
           className="mt-3 max-w-[280px] text-xs leading-5 tracking-wide text-white/60 sm:max-w-xs sm:text-sm sm:leading-6"
         >
-          Premium streetwear crafted for those who move with purpose.
+          Premium streetwear for the ones who move after dark.
         </motion.p>
 
         <motion.div
