@@ -187,7 +187,7 @@ export default function AppClient() {
   };
 
   return (
-    <div className="min-h-screen overflow-x-hidden bg-[#100d12] text-[#f7efe8] font-sans flex flex-col relative selection:bg-[#e8752d] selection:text-[#170f12]">
+    <div className="min-h-screen overflow-x-hidden bg-[#F7F5F0] text-[#1F1D1B] font-sans flex flex-col relative selection:bg-[#1F1D1B] selection:text-[#F7F5F0]">
       <TopProgressBar isLoading={loading} />
       <StoreHeader onOpenLogin={() => setCustomerLoginOpen(true)} onOpenProfile={() => router.push('/profile')} onOpenCart={() => setCartOpen(true)} cartCount={cartItems.reduce((sum, item) => sum + item.quantity, 0)} />
       <PromoMarquee />
