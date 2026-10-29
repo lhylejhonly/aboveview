@@ -44,6 +44,11 @@ export const BrandHeader: React.FC<BrandHeaderProps> = ({
       <div className="pointer-events-none absolute right-[10%] top-[12%] h-20 w-20 rounded-full bg-[#D4B483]/35 shadow-[0_0_40px_rgba(212,180,131,0.2)]" />
       <div className="pointer-events-none absolute right-[23%] top-[18%] text-xl opacity-80 grayscale" aria-hidden="true">🦇</div>
       <div className="pointer-events-none absolute right-[30%] top-[27%] text-sm opacity-60 grayscale" aria-hidden="true">🦇</div>
+      <div className="pointer-events-none absolute -left-3 -top-3 text-7xl leading-none opacity-55 grayscale" aria-hidden="true">🕸️</div>
+      <div className="pointer-events-none absolute left-[14%] top-0 text-lg opacity-75 grayscale" aria-hidden="true">
+        <span className="mx-auto block h-10 w-px bg-white/35" />
+        🕷️
+      </div>
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_70%_65%_at_50%_45%,rgba(212,180,131,0.18)_0%,rgba(10,10,10,0.05)_42%,transparent_72%)]" />
       <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(115deg,rgba(212,180,131,0.08),transparent_32%,transparent_68%,rgba(255,255,255,0.04))]" />
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_35%,rgba(0,0,0,0.62)_100%)]" />
