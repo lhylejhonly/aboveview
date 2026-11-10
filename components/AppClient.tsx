@@ -217,10 +217,16 @@ export default function AppClient({ collectionsOnly = false }: { collectionsOnly
       )}
 
       {collectionsOnly ? (
-        <section className="border-b border-[#D6CFC7] bg-[#2D2926] px-5 py-16 text-center text-[#F4F1EE] sm:px-8 sm:py-24">
-          <p className="text-[10px] font-bold uppercase tracking-[.3em] text-[#D4B483]">Above Apprl / All pieces</p>
-          <h1 className="mt-4 font-climate text-4xl uppercase leading-none tracking-tight sm:text-6xl">All collections.</h1>
-          <p className="mx-auto mt-5 max-w-md font-cormorant text-lg italic text-[#D6CFC7]">Considered essentials for the everyday ascent.</p>
+        <section className="relative isolate overflow-hidden border-b border-[#D6CFC7] bg-[#292522] px-5 py-12 text-center text-[#F4F1EE] sm:px-8 sm:py-[4.5rem]">
+          <img src="/images/above-hero.jpg.jpg" alt="" aria-hidden="true" className="pointer-events-none absolute inset-0 -z-20 h-full w-full object-cover opacity-[.12] grayscale" />
+          <div className="pointer-events-none absolute inset-0 -z-10 bg-[#292522]/90" />
+          <div className="pointer-events-none absolute left-1/2 top-1/2 -z-10 h-[20rem] w-[36rem] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#D4B483]/[.07] blur-3xl" />
+          <motion.div initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .8, ease: [0.22, 1, 0.36, 1] }}>
+            <p className="text-[10px] font-bold uppercase tracking-[.34em] text-[#D4B483]">Above Apprl / All pieces</p>
+            <h1 className="mt-4 font-cinzel text-3xl font-bold uppercase leading-none tracking-[.08em] text-[#F4F1EE] sm:text-6xl">All collections</h1>
+            <p className="mx-auto mt-5 max-w-md font-cormorant text-lg italic text-[#D6CFC7] sm:text-xl">Considered essentials for the everyday ascent.</p>
+          </motion.div>
+          <motion.div initial={{ scaleX: 0, opacity: 0 }} animate={{ scaleX: 1, opacity: 1 }} transition={{ duration: 1, delay: .25 }} className="mx-auto mt-7 h-px w-16 bg-[#D4B483]" />
         </section>
       ) : (
         <>
@@ -263,7 +269,7 @@ export default function AppClient({ collectionsOnly = false }: { collectionsOnly
         </div>
       )}
 
-      <main id="product-grid-section" className="flex-1 w-full max-w-7xl mx-auto px-3 py-2 sm:px-8">
+      <main id="product-grid-section" className={`flex-1 w-full max-w-7xl mx-auto px-3 py-2 sm:px-8 ${collectionsOnly ? 'sm:py-6' : ''}`}>
         {loading ? (
         <div className={`grid gap-3 sm:gap-5 ${viewMode === 'large' ? 'grid-cols-1 md:grid-cols-2 max-w-5xl mx-auto' : 'grid-cols-2 max-[380px]:grid-cols-1 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5'}`}>
             {Array.from({ length: 6 }).map((_, i) => <ProductSkeletonCard key={i} viewMode={viewMode === 'large' ? 'large' : 'grid'} />)}
