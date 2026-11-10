@@ -191,6 +191,7 @@ export default function AppClient({ collectionsOnly = false }: { collectionsOnly
     <div className="min-h-screen overflow-x-hidden bg-[#F7F5F0] text-[#1F1D1B] font-sans flex flex-col relative selection:bg-[#1F1D1B] selection:text-[#F7F5F0]">
       <TopProgressBar isLoading={loading} />
       <StoreHeader onOpenLogin={() => setCustomerLoginOpen(true)} onOpenProfile={() => router.push('/profile')} onOpenCart={() => setCartOpen(true)} cartCount={cartItems.reduce((sum, item) => sum + item.quantity, 0)} />
+      {collectionsOnly && <div className="border-b border-[#3B352F] bg-[#1F1D1B] px-4 py-2.5 text-center text-[9px] font-bold uppercase tracking-[.22em] text-[#D4B483]">Complimentary delivery on orders over ₱2,500</div>}
       {!collectionsOnly && <PromoMarquee />}
 
       {toastMessage && (
@@ -217,16 +218,19 @@ export default function AppClient({ collectionsOnly = false }: { collectionsOnly
       )}
 
       {collectionsOnly ? (
-        <section className="relative isolate overflow-hidden border-b border-[#D6CFC7] bg-[#292522] px-5 py-12 text-center text-[#F4F1EE] sm:px-8 sm:py-[4.5rem]">
-          <img src="/images/above-hero.jpg.jpg" alt="" aria-hidden="true" className="pointer-events-none absolute inset-0 -z-20 h-full w-full object-cover opacity-[.12] grayscale" />
-          <div className="pointer-events-none absolute inset-0 -z-10 bg-[#292522]/90" />
-          <div className="pointer-events-none absolute left-1/2 top-1/2 -z-10 h-[20rem] w-[36rem] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#D4B483]/[.07] blur-3xl" />
-          <motion.div initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .8, ease: [0.22, 1, 0.36, 1] }}>
-            <p className="text-[10px] font-bold uppercase tracking-[.34em] text-[#D4B483]">Above Apprl / All pieces</p>
-            <h1 className="mt-4 font-cinzel text-3xl font-bold uppercase leading-none tracking-[.08em] text-[#F4F1EE] sm:text-6xl">All collections</h1>
-            <p className="mx-auto mt-5 max-w-md font-cormorant text-lg italic text-[#D6CFC7] sm:text-xl">Considered essentials for the everyday ascent.</p>
-          </motion.div>
-          <motion.div initial={{ scaleX: 0, opacity: 0 }} animate={{ scaleX: 1, opacity: 1 }} transition={{ duration: 1, delay: .25 }} className="mx-auto mt-7 h-px w-16 bg-[#D4B483]" />
+        <section className="border-b border-[#D6CFC7] bg-[#2B2724] text-[#F4F1EE]">
+          <div className="mx-auto grid min-h-[310px] max-w-[1440px] md:grid-cols-[.82fr_1.18fr]">
+            <motion.div initial={{ opacity: 0, x: -18 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: .7, ease: [0.22, 1, 0.36, 1] }} className="flex flex-col justify-center px-6 py-12 sm:px-12 lg:px-20">
+              <p className="text-[9px] font-bold uppercase tracking-[.32em] text-[#D4B483]">Shop / All pieces</p>
+              <h1 className="mt-4 font-cinzel text-4xl font-bold uppercase leading-[.95] tracking-[.04em] sm:text-6xl">All<br className="hidden sm:block" /> collections</h1>
+              <p className="mt-5 max-w-sm font-cormorant text-lg italic text-[#D6CFC7]">A considered edit of everyday essentials, made to move with you.</p>
+            </motion.div>
+            <motion.div initial={{ opacity: 0, scale: 1.04 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 1.1, ease: [0.22, 1, 0.36, 1] }} className="relative min-h-[230px] overflow-hidden border-t border-[#D4B483]/20 md:min-h-0 md:border-l md:border-t-0">
+              <img src="/images/above-hero.jpg.jpg" alt="Above Apprl collection" className="h-full w-full object-cover opacity-75 grayscale-[.2]" />
+              <div className="absolute inset-0 bg-gradient-to-r from-[#2B2724]/35 via-transparent to-[#2B2724]/10" />
+              <div className="absolute bottom-5 right-6 text-right sm:bottom-8 sm:right-10"><p className="text-[9px] font-bold uppercase tracking-[.25em] text-[#F4F1EE]/70">Above Apprl</p><p className="mt-1 font-cormorant text-xl italic text-[#D4B483]">The everyday ascent</p></div>
+            </motion.div>
+          </div>
         </section>
       ) : (
         <>
