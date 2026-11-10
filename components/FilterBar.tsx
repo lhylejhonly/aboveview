@@ -67,25 +67,6 @@ export const FilterBar: React.FC<FilterBarProps> = ({
   return (
     <div className="mx-auto mb-5 w-full max-w-7xl border-b border-[#E2DDD5] bg-[#F7F5F0] px-3 py-4 sm:mb-6 sm:px-8 sm:py-3.5">
 
-      {/* 1. Top nav: Home | Size Chart */}
-      <div className="mb-4 flex items-center justify-center gap-3 text-[10px] font-sans tracking-[.14em] uppercase sm:text-xs sm:tracking-widest">
-        <button
-          onClick={() => { if (categories[0]) onSelectCategory(categories[0].id as Category); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
-          className="font-bold text-[#1F1D1B] hover:text-[#B85D3D] transition-colors"
-        >
-          Home
-        </button>
-        <span className="text-[#C2B280]/60 font-light">|</span>
-        <button
-          onClick={() => setShowSizeChart(true)}
-            className="flex min-h-9 items-center gap-1 font-semibold text-[#5A5A40] transition-colors hover:text-[#1F1D1B]"
-        >
-          <Ruler className="w-3.5 h-3.5 text-[#B85D3D]" />
-          <span>Size Chart Guide</span>
-        </button>
-      </div>
-
-      {/* 2. Category selector */}
       <div className="relative flex flex-col items-center justify-center mb-3">
         <div className="flex items-center gap-2">
           <button
@@ -197,6 +178,15 @@ export const FilterBar: React.FC<FilterBarProps> = ({
               <option value="rating">Top Rated</option>
             </select>
           </div>
+
+          <button
+            type="button"
+            onClick={() => setShowSizeChart(true)}
+            className="inline-flex min-h-9 items-center justify-center gap-1.5 rounded-full border border-[#D4C6B5] bg-[#F8F5EF] px-3 py-1.5 text-[10px] font-bold uppercase tracking-[.12em] text-[#5A5A40] transition-all hover:border-[#8C806D] hover:bg-[#EFE9DE] hover:text-[#2D2926]"
+          >
+            <Ruler className="h-3.5 w-3.5 text-[#B85D3D]" />
+            <span>Size guide</span>
+          </button>
 
         </div>
       </div>
