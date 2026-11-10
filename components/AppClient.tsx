@@ -250,11 +250,16 @@ export default function AppClient({ collectionsOnly = false }: { collectionsOnly
         <p className="text-xs font-semibold uppercase tracking-[.12em]">{activeVoucher.discountPercent}% off storewide with code <strong>{activeVoucher.code}</strong>{activeVoucher.remainingUses !== null ? ` · ${activeVoucher.remainingUses} left` : ''}</p>
       </div>}
 
-      {!collectionsOnly && <section className="mx-auto w-full max-w-7xl px-4 pb-2 pt-10 text-center sm:px-8 sm:pb-4 sm:pt-16">
-        <p className="font-sans text-[10px] font-bold uppercase tracking-[0.28em] text-[#8E8B82]">The latest collection</p>
-        <h2 className="mt-3 font-climate text-2xl uppercase tracking-tight text-[#1F1D1B] sm:text-4xl">Considered essentials.</h2>
-        <p className="mx-auto mt-3 max-w-md font-cormorant text-base italic text-[#5A5A40] sm:text-lg">Made to move with you.</p>
-      </section>}
+      {!collectionsOnly && <motion.section initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: .35 }} transition={{ duration: .8, ease: [0.22, 1, 0.36, 1] }} className="mx-auto w-full max-w-7xl px-4 pb-5 pt-14 text-center sm:px-8 sm:pb-8 sm:pt-20">
+        <div className="mx-auto flex max-w-xl items-center justify-center gap-4 text-[#B79A69]">
+          <span className="h-px w-12 bg-[#B79A69]/60 sm:w-20" />
+          <p className="font-sans text-[10px] font-bold uppercase tracking-[0.3em] text-[#8E8B82]">The latest collection</p>
+          <span className="h-px w-12 bg-[#B79A69]/60 sm:w-20" />
+        </div>
+        <motion.h2 initial={{ opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: .7, delay: .12 }} className="mt-5 font-cinzel text-3xl font-bold uppercase leading-none tracking-[.05em] text-[#1F1D1B] sm:text-5xl">Considered essentials</motion.h2>
+        <p className="mx-auto mt-4 max-w-md font-cormorant text-lg italic text-[#5A5A40] sm:text-xl">Made to move with you.</p>
+        <motion.div initial={{ scaleX: 0 }} whileInView={{ scaleX: 1 }} viewport={{ once: true }} transition={{ duration: .7, delay: .25 }} className="mx-auto mt-6 h-px w-14 bg-[#B79A69]" />
+      </motion.section>}
 
       <FilterBar
         categories={categories}
