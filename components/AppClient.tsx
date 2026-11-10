@@ -262,13 +262,14 @@ export default function AppClient({ collectionsOnly = false }: { collectionsOnly
       </motion.section>}
 
       <FilterBar
-        categories={categories}
-        activeCategory={activeCategory} onSelectCategory={(cat) => { setActiveCategory(cat); setCurrentPage(1); }}
-        searchQuery={searchQuery} onSearchChange={(q) => { setSearchQuery(q); setCurrentPage(1); }}
-        sortBy={sortBy} onSortChange={(s) => { setSortBy(s); setCurrentPage(1); }}
-        itemCount={filteredProducts.length} allFlipped={allFlipped} onToggleFlipAll={handleToggleFlipAll}
-        onOpenWallpaperStudio={() => setWallpaperStudioOpen(true)}
-      />
+          categories={categories}
+          activeCategory={activeCategory} onSelectCategory={(cat) => { setActiveCategory(cat); setCurrentPage(1); }}
+          searchQuery={searchQuery} onSearchChange={(q) => { setSearchQuery(q); setCurrentPage(1); }}
+          sortBy={sortBy} onSortChange={(s) => { setSortBy(s); setCurrentPage(1); }}
+          itemCount={filteredProducts.length} allFlipped={allFlipped} onToggleFlipAll={handleToggleFlipAll}
+          onOpenWallpaperStudio={() => setWallpaperStudioOpen(true)}
+          sizeGuideOnly={!collectionsOnly}
+        />
 
       {activeCollectionComingSoon && (
         <div className="mx-3 mb-5 border border-[#D6CFC7] bg-[#E5E0DA] px-5 py-5 text-center sm:mx-8 sm:px-8">

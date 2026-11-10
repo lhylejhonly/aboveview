@@ -16,6 +16,7 @@ interface FilterBarProps {
   allFlipped?: boolean;
   onToggleFlipAll?: () => void;
   onOpenWallpaperStudio?: () => void;
+  sizeGuideOnly?: boolean;
 }
 
 export const FilterBar: React.FC<FilterBarProps> = ({
@@ -27,6 +28,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
   sortBy,
   onSortChange,
   itemCount = 0,
+  sizeGuideOnly = false,
 }) => {
   const [showSizeChart, setShowSizeChart] = useState(false);
   const [isCategoryDropdownOpen, setIsCategoryDropdownOpen] = useState(false);
@@ -67,7 +69,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
   return (
     <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .55, ease: [0.22, 1, 0.36, 1] }} className="mx-auto mb-5 w-full max-w-7xl border-b border-[#E2DDD5] bg-[#F7F5F0] px-3 py-4 sm:mb-6 sm:px-8 sm:py-3.5">
 
-      <div className="relative mb-5 flex flex-col items-stretch justify-center border-b border-[#E2DDD5]/80 pb-4 sm:mb-4 sm:flex-row sm:items-center sm:justify-between">
+      <div className={`relative mb-5 flex flex-col items-stretch justify-center border-b border-[#E2DDD5]/80 pb-4 sm:mb-4 sm:flex-row sm:items-center sm:justify-between ${sizeGuideOnly ? 'hidden' : ''}`}>
         <div className="mb-3 flex items-center justify-between gap-3 sm:mb-0">
           <div><p className="text-[9px] font-bold uppercase tracking-[.22em] text-[#8E8B82]">Browse the edit</p><p className="mt-1 text-xs text-[#6F6963]">Choose a collection</p></div>
           <button
@@ -147,7 +149,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
       </div>
 
       {/* 3. Controls: Search and sort */}
-      <div className="mx-auto flex max-w-6xl flex-col items-stretch justify-between gap-4 pt-1 sm:flex-row sm:items-center">
+      <div className={`mx-auto flex max-w-6xl flex-col items-stretch justify-between gap-4 pt-1 sm:flex-row sm:items-center ${sizeGuideOnly ? 'hidden' : ''}`}>
         <div className="min-w-0 truncate text-[10px] font-sans font-semibold uppercase tracking-wider text-[#5A5A40] sm:text-[11px]">
           COLLECTION ({activeCategoryLabel}) · {itemCount} pieces
         </div>
@@ -193,7 +195,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
       </div>
 
       {/* 4. Recent searches */}
-      {recentSearches.length > 0 && (
+      {!sizeGuideOnly && recentSearches.length > 0 && (
         <div className="flex flex-wrap items-center justify-end gap-2 pt-2.5 max-w-6xl mx-auto text-[10px] font-sans uppercase tracking-wider text-[#8E8B82]">
           <span className="flex items-center gap-1 font-semibold text-[#5A5A40]">
             <History className="w-3 h-3 text-[#5A5A40]" />
@@ -225,6 +227,16 @@ export const FilterBar: React.FC<FilterBarProps> = ({
           </div>
         </div>
       )}
+
+      {sizeGuideOnly && <div className="mx-auto flex max-w-5xl items-center justify-between gap-5 border-y border-[#D6CFC7] bg-[#EFE9DE]/60 px-5 py-5 sm:px-8 sm:py-6">
+        <div>
+          <p className="text-[9px] font-bold uppercase tracking-[.26em] text-[#8C806D]">Find your fit</p>
+          <p className="mt-1 font-cormorant text-xl italic text-[#2D2926] sm:text-2xl">A considered fit starts here.</p>
+        </div>
+        <motion.button whileHover={{ y: -2 }} whileTap={{ scale: .98 }} type="button" onClick={() => setShowSizeChart(true)} className="inline-flex min-h-11 shrink-0 items-center gap-2 rounded-md bg-[#2D2926] px-4 text-[10px] font-bold uppercase tracking-[.16em] text-[#F4F1EE] shadow-[0_8px_18px_rgba(45,41,38,.12)] transition-colors hover:bg-[#5A5A40] sm:px-5">
+          <Ruler className="h-4 w-4 text-[#D4B483]" /> Size guide
+        </motion.button>
+      </div>}
 
       {/* Size Chart Modal */}
       {showSizeChart && (
