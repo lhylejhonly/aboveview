@@ -65,13 +65,14 @@ export const FilterBar: React.FC<FilterBarProps> = ({
   const activeCategoryLabel = categories.find(c => c.id === activeCategory)?.label || 'ALL';
 
   return (
-    <div className="mx-auto mb-5 w-full max-w-7xl border-b border-[#E2DDD5] bg-[#F7F5F0] px-3 py-4 sm:mb-6 sm:px-8 sm:py-3.5">
+    <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .55, ease: [0.22, 1, 0.36, 1] }} className="mx-auto mb-5 w-full max-w-7xl border-b border-[#E2DDD5] bg-[#F7F5F0] px-3 py-4 sm:mb-6 sm:px-8 sm:py-3.5">
 
-      <div className="relative flex flex-col items-center justify-center mb-3">
-        <div className="flex items-center gap-2">
+      <div className="relative mb-5 flex flex-col items-stretch justify-center border-b border-[#E2DDD5]/80 pb-4 sm:mb-4 sm:flex-row sm:items-center sm:justify-between">
+        <div className="mb-3 flex items-center justify-between gap-3 sm:mb-0">
+          <div><p className="text-[9px] font-bold uppercase tracking-[.22em] text-[#8E8B82]">Browse the edit</p><p className="mt-1 text-xs text-[#6F6963]">Choose a collection</p></div>
           <button
             onClick={() => setIsCategoryDropdownOpen(!isCategoryDropdownOpen)}
-            className={`inline-flex max-w-full items-center gap-1.5 truncate rounded-full border px-3 py-2 text-[10px] font-sans font-bold uppercase tracking-[0.1em] shadow-xs transition-all active:scale-95 sm:gap-2 sm:px-6 sm:text-xs sm:tracking-[0.14em] ${
+            className={`inline-flex max-w-[15rem] items-center gap-1.5 truncate rounded-full border px-3 py-2 text-[10px] font-sans font-bold uppercase tracking-[0.1em] shadow-xs transition-all active:scale-95 sm:gap-2 sm:px-6 sm:text-xs sm:tracking-[0.14em] ${
               isCategoryDropdownOpen
                 ? 'bg-[#1F1D1B] text-[#F7F5F0] border-[#1F1D1B]'
                 : 'bg-[#EFECE6]/90 text-[#1F1D1B] border-[#E2DDD5] hover:border-[#1F1D1B]'
@@ -146,7 +147,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
       </div>
 
       {/* 3. Controls: Search and sort */}
-      <div className="mx-auto flex max-w-6xl flex-col items-stretch justify-between gap-3 border-t border-[#E2DDD5]/70 pt-3 sm:flex-row sm:items-center">
+      <div className="mx-auto flex max-w-6xl flex-col items-stretch justify-between gap-4 pt-1 sm:flex-row sm:items-center">
         <div className="min-w-0 truncate text-[10px] font-sans font-semibold uppercase tracking-wider text-[#5A5A40] sm:text-[11px]">
           COLLECTION ({activeCategoryLabel}) · {itemCount} pieces
         </div>
@@ -281,6 +282,6 @@ export const FilterBar: React.FC<FilterBarProps> = ({
           </div>
         </div>
       )}
-    </div>
+    </motion.div>
   );
 };
