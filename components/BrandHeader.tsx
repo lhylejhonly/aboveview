@@ -101,6 +101,15 @@ export const BrandHeader: React.FC<BrandHeaderProps> = ({
           Premium streetwear crafted for those who move with purpose.
         </motion.p>
 
+        <motion.a
+          href="#product-grid-section"
+          initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.85 }}
+          className="mt-7 inline-flex items-center gap-3 border border-[#D4B483]/70 bg-[#D4B483] px-5 py-3 text-[10px] font-bold uppercase tracking-[0.18em] text-[#1F1D1B] transition-colors hover:bg-[#F4E5C7] sm:mt-9"
+        >
+          Shop the collection <span aria-hidden="true">↗</span>
+        </motion.a>
+
         <motion.div
           initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.6, delay: 1.2 }}
           className="mt-6 flex flex-col items-center gap-2 sm:mt-14"

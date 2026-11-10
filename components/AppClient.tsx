@@ -25,6 +25,7 @@ import { CustomerProfileModal } from '@/components/CustomerProfileModal';
 import { AddedToCartModal } from '@/components/AddedToCartModal';
 import { WelcomeOfferModal } from '@/components/WelcomeOfferModal';
 import { PromoMarquee } from '@/components/PromoMarquee';
+import { MarketingAd } from '@/components/MarketingAd';
 import { useAdmin } from '@/context/AdminContext';
 import { TicketPercent, X } from 'lucide-react';
 import { supabase } from '@/lib/supabase';
@@ -223,10 +224,18 @@ export default function AppClient() {
         onOpenWallpaperStudio={() => setWallpaperStudioOpen(true)}
       />
 
+      <MarketingAd onShopNow={() => document.getElementById('product-grid-section')?.scrollIntoView({ behavior: 'smooth' })} />
+
       {activeVoucher && <div className="mx-3 mb-5 flex items-start justify-center gap-2 border border-[#C7D4B9] bg-[#EEF4E9] px-3 py-3 text-center text-[#4F633E] sm:mx-8 sm:items-center sm:gap-3 sm:px-4">
         <TicketPercent className="h-5 w-5 shrink-0" />
         <p className="text-xs font-semibold uppercase tracking-[.12em]">{activeVoucher.discountPercent}% off storewide with code <strong>{activeVoucher.code}</strong>{activeVoucher.remainingUses !== null ? ` · ${activeVoucher.remainingUses} left` : ''}</p>
       </div>}
+
+      <section className="mx-auto w-full max-w-7xl px-4 pb-2 pt-10 text-center sm:px-8 sm:pb-4 sm:pt-16">
+        <p className="font-sans text-[10px] font-bold uppercase tracking-[0.28em] text-[#8E8B82]">The latest collection</p>
+        <h2 className="mt-3 font-climate text-2xl uppercase tracking-tight text-[#1F1D1B] sm:text-4xl">Considered essentials.</h2>
+        <p className="mx-auto mt-3 max-w-md font-cormorant text-base italic text-[#5A5A40] sm:text-lg">Made to move with you.</p>
+      </section>
 
       <FilterBar
         categories={categories}
@@ -286,6 +295,18 @@ export default function AppClient() {
           </AnimatePresence>
         )}
       </main>
+
+      <section className="mx-auto mt-14 grid w-full max-w-7xl items-stretch gap-0 overflow-hidden border-y border-[#D6CFC7] bg-[#2D2926] text-[#F4F1EE] sm:mt-20 md:grid-cols-2">
+        <div className="min-h-[260px] bg-[#1F1D1B] sm:min-h-[340px]">
+          <img src="/images/above-hero.jpg.jpg" alt="Above Apprl campaign landscape" loading="lazy" className="h-full w-full object-cover opacity-70 grayscale transition-opacity duration-500 hover:opacity-85" />
+        </div>
+        <div className="flex flex-col justify-center px-7 py-12 sm:px-12 sm:py-16">
+          <p className="font-sans text-[10px] font-bold uppercase tracking-[0.28em] text-[#D4B483]">Above Apprl / Our approach</p>
+          <h2 className="mt-4 max-w-sm font-climate text-3xl uppercase leading-[0.95] tracking-tight sm:text-5xl">Made for the journey.</h2>
+          <p className="mt-5 max-w-md text-sm leading-7 text-[#D6CFC7]">Everyday streetwear with considered design, wearable silhouettes, and details that make each piece feel personal.</p>
+          <a href="#product-grid-section" className="mt-7 w-fit border-b border-[#D4B483] pb-1 text-[10px] font-bold uppercase tracking-[0.22em] text-[#D4B483] transition-colors hover:text-white">Explore the collection ↗</a>
+        </div>
+      </section>
 
       <Footer currentPage={currentPage} totalPages={totalPages} onPageChange={handlePageChange} onOpenInfo={setStoreInfoTopic} />
 
