@@ -224,7 +224,7 @@ export default function AppClient() {
         onOpenWallpaperStudio={() => setWallpaperStudioOpen(true)}
       />
 
-      <MarketingAd onShopNow={() => document.getElementById('product-grid-section')?.scrollIntoView({ behavior: 'smooth' })} />
+      <MarketingAd />
 
       {activeVoucher && <div className="mx-3 mb-5 flex items-start justify-center gap-2 border border-[#C7D4B9] bg-[#EEF4E9] px-3 py-3 text-center text-[#4F633E] sm:mx-8 sm:items-center sm:gap-3 sm:px-4">
         <TicketPercent className="h-5 w-5 shrink-0" />
