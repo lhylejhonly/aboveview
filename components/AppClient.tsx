@@ -269,6 +269,7 @@ export default function AppClient({ collectionsOnly = false }: { collectionsOnly
           itemCount={filteredProducts.length} allFlipped={allFlipped} onToggleFlipAll={handleToggleFlipAll}
           onOpenWallpaperStudio={() => setWallpaperStudioOpen(true)}
           sizeGuideOnly={!collectionsOnly}
+          searchOnly={collectionsOnly}
         />
 
       {activeCollectionComingSoon && (

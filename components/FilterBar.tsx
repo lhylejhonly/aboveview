@@ -17,6 +17,7 @@ interface FilterBarProps {
   onToggleFlipAll?: () => void;
   onOpenWallpaperStudio?: () => void;
   sizeGuideOnly?: boolean;
+  searchOnly?: boolean;
 }
 
 export const FilterBar: React.FC<FilterBarProps> = ({
@@ -29,6 +30,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
   onSortChange,
   itemCount = 0,
   sizeGuideOnly = false,
+  searchOnly = false,
 }) => {
   const [showSizeChart, setShowSizeChart] = useState(false);
   const [isCategoryDropdownOpen, setIsCategoryDropdownOpen] = useState(false);
@@ -69,7 +71,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
   return (
     <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .55, ease: [0.22, 1, 0.36, 1] }} className={`mb-5 w-full border-b border-[#E2DDD5] bg-[#F7F5F0] sm:mb-6 ${sizeGuideOnly ? 'mx-0 max-w-none px-0 py-0 sm:px-0 sm:py-0' : 'mx-auto max-w-7xl px-3 py-4 sm:px-8 sm:py-3.5'}`}>
 
-      <div className={`relative mb-5 flex flex-col items-stretch justify-center border-b border-[#E2DDD5]/80 pb-4 sm:mb-4 sm:flex-row sm:items-center sm:justify-between ${sizeGuideOnly ? 'hidden' : ''}`}>
+      <div className={`relative mb-5 flex flex-col items-stretch justify-center border-b border-[#E2DDD5]/80 pb-4 sm:mb-4 sm:flex-row sm:items-center sm:justify-between ${sizeGuideOnly || searchOnly ? 'hidden' : ''}`}>
         <div className="mb-3 flex items-center justify-between gap-3 sm:mb-0">
           <div><p className="text-[9px] font-bold uppercase tracking-[.22em] text-[#8E8B82]">Browse the edit</p><p className="mt-1 text-xs text-[#6F6963]">Choose a collection</p></div>
           <button
@@ -149,12 +151,12 @@ export const FilterBar: React.FC<FilterBarProps> = ({
       </div>
 
       {/* 3. Controls: Search and sort */}
-      <div className={`mx-auto flex max-w-6xl flex-col items-stretch justify-between gap-4 pt-1 sm:flex-row sm:items-center ${sizeGuideOnly ? 'hidden' : ''}`}>
-        <div className="min-w-0 truncate text-[10px] font-sans font-semibold uppercase tracking-wider text-[#5A5A40] sm:text-[11px]">
+      <div className={`mx-auto flex max-w-6xl flex-col items-stretch justify-between gap-4 pt-1 sm:flex-row sm:items-center ${sizeGuideOnly ? 'hidden' : ''} ${searchOnly ? 'justify-center' : ''}`}>
+        <div className={`min-w-0 truncate text-[10px] font-sans font-semibold uppercase tracking-wider text-[#5A5A40] sm:text-[11px] ${searchOnly ? 'hidden' : ''}`}>
           COLLECTION ({activeCategoryLabel}) · {itemCount} pieces
         </div>
-        <div className="flex w-full flex-col items-stretch gap-2 sm:w-auto sm:flex-row sm:items-center sm:justify-end sm:gap-2.5">
-          <form onSubmit={handleSearchSubmit} className="relative min-w-0 w-full sm:w-48 sm:flex-none">
+        <div className={`flex w-full flex-col items-stretch gap-2 sm:w-auto sm:flex-row sm:items-center sm:justify-end sm:gap-2.5 ${searchOnly ? 'sm:w-full sm:justify-center' : ''}`}>
+          <form onSubmit={handleSearchSubmit} className={`relative min-w-0 w-full sm:w-48 sm:flex-none ${searchOnly ? 'sm:w-80' : ''}`}>
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-[#8E8B82]" />
             <input
               type="text"
@@ -167,7 +169,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
             />
           </form>
 
-          <div className="relative inline-flex items-center">
+          <div className={`relative inline-flex items-center ${searchOnly ? 'hidden' : ''}`}>
             <SlidersHorizontal className="absolute left-3 w-3.5 h-3.5 text-[#8E8B82] pointer-events-none" />
             <select
               value={sortBy}
@@ -185,7 +187,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
           <button
             type="button"
             onClick={() => setShowSizeChart(true)}
-            className="inline-flex min-h-9 items-center justify-center gap-1.5 rounded-full border border-[#D4C6B5] bg-[#F8F5EF] px-3 py-1.5 text-[10px] font-bold uppercase tracking-[.12em] text-[#5A5A40] transition-all hover:border-[#8C806D] hover:bg-[#EFE9DE] hover:text-[#2D2926]"
+            className={`inline-flex min-h-9 items-center justify-center gap-1.5 rounded-full border border-[#D4C6B5] bg-[#F8F5EF] px-3 py-1.5 text-[10px] font-bold uppercase tracking-[.12em] text-[#5A5A40] transition-all hover:border-[#8C806D] hover:bg-[#EFE9DE] hover:text-[#2D2926] ${searchOnly ? 'hidden' : ''}`}
           >
             <Ruler className="h-3.5 w-3.5 text-[#B85D3D]" />
             <span>Size guide</span>
@@ -195,7 +197,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
       </div>
 
       {/* 4. Recent searches */}
-      {!sizeGuideOnly && recentSearches.length > 0 && (
+      {!sizeGuideOnly && !searchOnly && recentSearches.length > 0 && (
         <div className="flex flex-wrap items-center justify-end gap-2 pt-2.5 max-w-6xl mx-auto text-[10px] font-sans uppercase tracking-wider text-[#8E8B82]">
           <span className="flex items-center gap-1 font-semibold text-[#5A5A40]">
             <History className="w-3 h-3 text-[#5A5A40]" />
