@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { TicketPercent } from 'lucide-react';
+import { Sparkles, TicketPercent } from 'lucide-react';
 import { motion } from 'motion/react';
 
 export function MarketingAd() {
@@ -33,7 +33,12 @@ export function MarketingAd() {
           </motion.div>
           <p className="mt-4 font-cormorant text-3xl italic leading-none text-[#2D2926] sm:text-4xl">A considered first step.</p>
           <p className="mt-4 max-w-sm text-sm leading-6 text-[#6F6963]">Discover everyday streetwear made with considered details and silhouettes designed to move with you.</p>
-          <p className="mt-6 border-t border-[#C9BFB1] pt-4 text-[10px] font-bold uppercase tracking-[.18em] text-[#5A5A40]">New customers receive 5% off with <span className="font-mono tracking-wider text-[#2D2926]">WELCOME5</span></p>
+          <motion.div animate={{ y: [0, -3, 0] }} transition={{ duration: 3.5, repeat: Infinity, ease: 'easeInOut' }} className="relative mt-6 overflow-hidden rounded-xl border border-[#D8C6A7] bg-[#FFF8EC] p-4 shadow-[0_10px_24px_rgba(140,107,81,.08)]">
+            <motion.div animate={{ x: ['-120%', '160%'] }} transition={{ duration: 3.2, repeat: Infinity, repeatDelay: 2, ease: 'easeInOut' }} className="pointer-events-none absolute inset-y-0 w-16 -skew-x-12 bg-white/35 blur-md" />
+            <div className="relative flex items-center gap-2 text-[#8C806D]"><Sparkles className="h-4 w-4 text-[#B79A69]" /><p className="text-[10px] font-bold uppercase tracking-[.2em]">First purchase privilege</p></div>
+            <p className="relative mt-2 font-cormorant text-3xl font-semibold leading-none text-[#2D2926]">5% off your first order</p>
+            <p className="relative mt-2 text-[10px] font-bold uppercase tracking-[.15em] text-[#6F5735]">Use code <span className="rounded-full bg-[#F7F0E2] px-2 py-1 font-mono tracking-wider">WELCOME5</span></p>
+          </motion.div>
         </motion.div>
       </div>
     </section>
