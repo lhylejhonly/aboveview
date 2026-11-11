@@ -28,11 +28,9 @@ export function CustomerLoginModal({ onClose }: CustomerLoginModalProps) {
     setLoading(true);
     setError('');
     setMessage('');
-    const result = await supabase.auth.signInWithOtp({
-      email: email.trim(),
-      options: { emailRedirectTo: `${window.location.origin}/`, shouldCreateUser: true },
-    });
-    if (result.error) setError(result.error.message);
+    const response = await fetch('/api/auth/magic-link', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: email.trim() }) });
+    const result = await response.json().catch(() => ({})) as { error?: string };
+    if (!response.ok) setError(result.error ?? 'Unable to send the sign-in link.');
     else setMessage('Confirmation link sent. Check your email and click the link to continue.');
     setLoading(false);
   };
