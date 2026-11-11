@@ -57,6 +57,7 @@ export default function AppClient({ collectionsOnly = false }: { collectionsOnly
   const [activeVoucher, setActiveVoucher] = useState<{ code: string; discountPercent: number; remainingUses: number | null } | null>(null);
   const [welcomeOfferOpen, setWelcomeOfferOpen] = useState(false);
   const ITEMS_PER_PAGE = 6;
+  const CUSTOMER_SESSION_MAX_AGE = 7 * 24 * 60 * 60 * 1000;
 
   useEffect(() => {
     fetch('/api/vouchers/validate', { cache: 'no-store' })
@@ -79,6 +80,30 @@ export default function AppClient({ collectionsOnly = false }: { collectionsOnly
     });
     const timer = window.setTimeout(() => void maybeShowWelcomeOffer(), 900);
     return () => { mounted = false; window.clearTimeout(timer); subscription.unsubscribe(); };
+  }, []);
+
+  useEffect(() => {
+    const sessionStartedKey = 'above_customer_session_started_at';
+    const enforceSessionAge = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) {
+        localStorage.removeItem(sessionStartedKey);
+        return;
+      }
+      const startedAt = Number(localStorage.getItem(sessionStartedKey));
+      if (!startedAt) {
+        localStorage.setItem(sessionStartedKey, String(Date.now()));
+      } else if (Date.now() - startedAt >= CUSTOMER_SESSION_MAX_AGE) {
+        await supabase.auth.signOut();
+        localStorage.removeItem(sessionStartedKey);
+      }
+    };
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (event === 'SIGNED_IN' && session) localStorage.setItem(sessionStartedKey, String(Date.now()));
+      if (event === 'SIGNED_OUT') localStorage.removeItem(sessionStartedKey);
+    });
+    void enforceSessionAge();
+    return () => subscription.unsubscribe();
   }, []);
 
   const closeWelcomeOffer = () => {
