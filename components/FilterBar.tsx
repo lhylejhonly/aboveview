@@ -67,7 +67,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
   const activeCategoryLabel = categories.find(c => c.id === activeCategory)?.label || 'ALL';
 
   return (
-    <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .55, ease: [0.22, 1, 0.36, 1] }} className="mx-auto mb-5 w-full max-w-7xl border-b border-[#E2DDD5] bg-[#F7F5F0] px-3 py-4 sm:mb-6 sm:px-8 sm:py-3.5">
+    <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .55, ease: [0.22, 1, 0.36, 1] }} className={`mb-5 w-full border-b border-[#E2DDD5] bg-[#F7F5F0] sm:mb-6 ${sizeGuideOnly ? 'mx-0 max-w-none px-0 py-0 sm:px-0 sm:py-0' : 'mx-auto max-w-7xl px-3 py-4 sm:px-8 sm:py-3.5'}`}>
 
       <div className={`relative mb-5 flex flex-col items-stretch justify-center border-b border-[#E2DDD5]/80 pb-4 sm:mb-4 sm:flex-row sm:items-center sm:justify-between ${sizeGuideOnly ? 'hidden' : ''}`}>
         <div className="mb-3 flex items-center justify-between gap-3 sm:mb-0">
