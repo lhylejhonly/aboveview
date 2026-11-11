@@ -234,7 +234,7 @@ export default function AppClient({ collectionsOnly = false }: { collectionsOnly
         </motion.div>
       )}
 
-      {memberWelcomeEmail && <MemberWelcomeModal email={memberWelcomeEmail} onClose={() => setMemberWelcomeEmail(null)} onOpenProfile={() => { setMemberWelcomeEmail(null); router.push('/profile'); }} />}
+      {memberWelcomeEmail && <MemberWelcomeModal email={memberWelcomeEmail} onClose={() => setMemberWelcomeEmail(null)} />}
 
       {customBannerUrl && (
         <div className="relative w-full h-32 sm:h-44 md:h-52 bg-[#1F1D1B] overflow-hidden border-b border-[#E2DDD5] group">
