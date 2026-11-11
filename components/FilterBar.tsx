@@ -67,6 +67,11 @@ export const FilterBar: React.FC<FilterBarProps> = ({
   };
 
   const activeCategoryLabel = categories.find(c => c.id === activeCategory)?.label || 'ALL';
+  const isBoxyTeeChart = activeCategory === 'ua-box-tees';
+  const sizeChartRows: Array<[string, string, string, string]> = isBoxyTeeChart
+    ? [['S', '24"', '21"', '8"'], ['M', '25"', '22"', '8.5"'], ['L', '26"', '23"', '9"'], ['XL', '27"', '24"', '9.5"'], ['2XL', '28"', '25"', '10"'], ['3XL', '29"', '26"', '10.5"']]
+    : [['XS', '27"', '21"', '9.25"'], ['S', '28"', '22"', '9"'], ['M', '29"', '23"', '9.5"'], ['L', '30"', '24"', '10.25"'], ['XL', '31"', '25"', '10.5"'], ['2XL', '32"', '26"', '10.75"']];
+  const unavailableSizes = isBoxyTeeChart ? [] : ['L', 'XL', '2XL'];
 
   return (
     <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .55, ease: [0.22, 1, 0.36, 1] }} className={`mb-5 w-full border-b border-[#E2DDD5] bg-[#F7F5F0] sm:mb-6 ${sizeGuideOnly ? 'mx-0 max-w-none px-0 py-0 sm:px-0 sm:py-0' : 'mx-auto max-w-7xl px-3 py-4 sm:px-8 sm:py-3.5'}`}>
@@ -228,21 +233,22 @@ export const FilterBar: React.FC<FilterBarProps> = ({
       {/* Size Chart Modal */}
       {showSizeChart && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#171513]/75 p-3 backdrop-blur-sm sm:p-5">
-          <div className="relative max-h-[92svh] w-full max-w-2xl overflow-y-auto border border-[#D6CFC7] bg-[#F7F5F0] shadow-[0_24px_80px_rgba(23,21,19,.3)] animate-in fade-in zoom-in-95 duration-200">
-            <div className="h-1 w-full bg-[#5A5A40]" />
-            <div className="border-b border-[#D6CFC7] bg-[#FCFBF9] px-5 py-5 sm:px-8">
+          <div className="relative max-h-[92svh] w-full max-w-3xl overflow-y-auto rounded-2xl border border-[#D6CFC7] bg-[#F7F5F0] shadow-[0_24px_80px_rgba(23,21,19,.3)] animate-in fade-in zoom-in-95 duration-200">
+            <div className="h-1.5 w-full bg-gradient-to-r from-[#2D2926] via-[#B79A69] to-[#5A5A40]" />
+            <div className="border-b border-[#D6CFC7] bg-gradient-to-br from-[#FCFBF9] to-[#EFE9DE] px-5 py-6 sm:px-8">
               <button onClick={() => setShowSizeChart(false)} className="absolute right-4 top-5 rounded-full p-2 text-[#6F6963] transition-colors hover:bg-[#EEEAE4] hover:text-[#2D2926]" aria-label="Close size chart" title="Close size chart">
                 <X className="h-5 w-5" />
               </button>
-              <div className="flex items-center gap-3 pr-10 text-[#2D2926]">
-                <span className="flex h-10 w-10 items-center justify-center rounded-full bg-[#EEEAE4]"><Ruler className="h-5 w-5 text-[#5A5A40]" /></span>
+              <div className="flex items-start gap-3 pr-10 text-[#2D2926]">
+                <span className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-[#2D2926] shadow-sm"><Ruler className="h-5 w-5 text-[#D4B483]" /></span>
                 <div>
-                  <p className="text-[9px] font-bold uppercase tracking-[.24em] text-[#8C806D]">Fit reference</p>
-                  <h3 className="mt-1 font-sans text-base font-semibold uppercase tracking-[.16em]">Boxy Tee size chart</h3>
+                  <p className="text-[9px] font-bold uppercase tracking-[.24em] text-[#8C806D]">{isBoxyTeeChart ? 'Boxy Tee / Fit reference' : 'French Terry / Fit reference'}</p>
+                  <h3 className="mt-1 font-sans text-base font-semibold uppercase tracking-[.16em]">{isBoxyTeeChart ? 'Boxy Tee size chart' : 'French Terry size chart'}</h3>
+                  <span className="mt-2 inline-flex rounded-full bg-[#D4B483]/25 px-2.5 py-1 text-[9px] font-bold uppercase tracking-[.16em] text-[#6F5735]">{isBoxyTeeChart ? 'New · Boxy Tee' : 'French Terry'}</span>
                 </div>
               </div>
               <p className="mt-5 max-w-xl text-xs leading-6 text-[#5A5A40]">
-                Relaxed boxy-fit tee with dropped shoulders. Measure a similar shirt flat and compare the body length, chest width, and sleeve measurements below.
+                {isBoxyTeeChart ? 'Relaxed boxy-fit tee with dropped shoulders. Measure a similar shirt flat and compare the body length, chest width, and sleeve measurements below.' : 'French Terry fit reference. Measure a similar garment flat and compare the body length, chest width, and sleeve measurements below.'}
               </p>
             </div>
             <div className="p-5 sm:p-8">
@@ -251,23 +257,23 @@ export const FilterBar: React.FC<FilterBarProps> = ({
                 <div className="flex items-center gap-3 text-[10px] text-[#8E8B82]"><span className="flex items-center gap-1.5"><span className="h-2 w-2 rounded-full bg-[#5A7050]" /> Available</span><span className="flex items-center gap-1.5"><span className="h-2 w-2 rounded-full bg-[#B8B0A6]" /> Currently unavailable</span></div>
               </div>
               <div className="space-y-2 sm:hidden">
-                {[['XS','27"','21"','9.25"'],['S','28"','22"','9"'],['M','29"','23"','9.5"'],['L','30"','24"','10.25"'],['XL','31"','25"','10.5"'],['2XL','32"','26"','10.75"']].map(([size, length, width, sleeves]) => {
-                  const unavailable = ['L', 'XL', '2XL'].includes(size);
+                {sizeChartRows.map(([size, length, width, sleeves]) => {
+                  const unavailable = unavailableSizes.includes(size);
                   return <div key={size} className={`rounded-lg border border-[#D6CFC7] bg-[#FCFBF9] p-3 ${unavailable ? 'text-[#AAA39A]' : 'text-[#4A443F]'}`}>
                     <div className="flex items-center justify-between border-b border-[#E5E0DA] pb-2"><strong className="text-sm text-[#2D2926]">Size {size}</strong><span className={`text-[9px] font-bold uppercase tracking-wider ${unavailable ? 'text-[#AAA39A]' : 'text-[#56704B]'}`}>{unavailable ? 'Unavailable' : 'Available'}</span></div>
-                    <div className="mt-2 grid grid-cols-3 gap-2 text-center"><div><span className="block text-[9px] uppercase tracking-wider text-[#8E8B82]">Length</span><span className="mt-1 block text-xs font-semibold">{length}</span></div><div><span className="block text-[9px] uppercase tracking-wider text-[#8E8B82]">Width</span><span className="mt-1 block text-xs font-semibold">{width}</span></div><div><span className="block text-[9px] uppercase tracking-wider text-[#8E8B82]">Sleeves</span><span className="mt-1 block text-xs font-semibold">{sleeves}</span></div></div>
+                    <div className="mt-2 grid grid-cols-3 gap-2 text-center"><div><span className="block text-[9px] uppercase tracking-wider text-[#8E8B82]">Length</span><span className="mt-1 block text-xs font-semibold">{length}</span></div><div><span className="block text-[9px] uppercase tracking-wider text-[#8E8B82]">Width</span><span className="mt-1 block text-xs font-semibold">{width}</span></div><div><span className="block text-[9px] uppercase tracking-wider text-[#8E8B82]">Sleeve length</span><span className="mt-1 block text-xs font-semibold">{sleeves}</span></div></div>
                   </div>;
                 })}
               </div>
-              <div className="hidden overflow-x-auto rounded-lg border border-[#D6CFC7] bg-[#FCFBF9] sm:block">
+              <div className="hidden overflow-x-auto rounded-xl border border-[#D6CFC7] bg-[#FCFBF9] shadow-sm sm:block">
                 <table className="w-full min-w-[34rem] text-left text-xs font-sans text-[#2D2926]">
                   <thead className="border-b border-[#D6CFC7] bg-[#E5E0DA] text-[10px] uppercase tracking-[.16em] text-[#4A443F]">
-                    <tr>{['Size', 'Length', 'Width', 'Sleeves', 'Availability'].map(h => <th key={h} className="px-4 py-3.5 font-bold">{h}</th>)}</tr>
+                    <tr>{['Size', 'Length', 'Width', 'Sleeve length', 'Availability'].map(h => <th key={h} className="px-4 py-3.5 font-bold">{h}</th>)}</tr>
                   </thead>
                   <tbody className="divide-y divide-[#E5E0DA]">
-                    {[['XS','27"','21"','9.25"'],['S','28"','22"','9"'],['M','29"','23"','9.5"'],['L','30"','24"','10.25"'],['XL','31"','25"','10.5"'],['2XL','32"','26"','10.75"']].map(([size, ...vals]) => {
-                      const unavailable = ['L', 'XL', '2XL'].includes(size);
-                      return <tr key={size} className={unavailable ? 'text-[#AAA39A]' : 'text-[#4A443F]'}><td className="px-4 py-3.5 font-semibold text-[#2D2926]">{size}</td>{vals.map((v, i) => <td key={i} className="px-4 py-3.5">{v}</td>)}<td className="px-4 py-3.5"><span className={`inline-flex items-center gap-1.5 text-[10px] font-semibold ${unavailable ? 'text-[#AAA39A]' : 'text-[#56704B]'}`}><span className={`h-1.5 w-1.5 rounded-full ${unavailable ? 'bg-[#B8B0A6]' : 'bg-[#5A7050]'}`} />{unavailable ? 'Unavailable' : 'Available'}</span></td></tr>;
+                    {sizeChartRows.map(([size, ...vals]) => {
+                      const unavailable = unavailableSizes.includes(size);
+                      return <tr key={size} className={`transition-colors hover:bg-[#F3EEE7] ${unavailable ? 'text-[#AAA39A]' : 'text-[#4A443F]'}`}><td className="px-4 py-3.5 font-semibold text-[#2D2926]">{size}</td>{vals.map((v, i) => <td key={i} className="px-4 py-3.5">{v}</td>)}<td className="px-4 py-3.5"><span className={`inline-flex items-center gap-1.5 text-[10px] font-semibold ${unavailable ? 'text-[#AAA39A]' : 'text-[#56704B]'}`}><span className={`h-1.5 w-1.5 rounded-full ${unavailable ? 'bg-[#B8B0A6]' : 'bg-[#5A7050]'}`} />{unavailable ? 'Unavailable' : 'Available'}</span></td></tr>;
                     })}
                   </tbody>
                 </table>
@@ -276,7 +282,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
                 <div className="rounded-lg border border-[#D6CFC7] bg-[#EEEAE4]/70 p-4"><p className="text-[10px] font-bold uppercase tracking-[.14em] text-[#6F6963]">How to measure</p><p className="mt-2 text-xs leading-5 text-[#77716A]">Lay a shirt flat. Measure from shoulder to hem for length and across the chest for width.</p></div>
                 <div className="rounded-lg border border-[#D6CFC7] bg-[#EEEAE4]/70 p-4"><p className="text-[10px] font-bold uppercase tracking-[.14em] text-[#6F6963]">Need help?</p><p className="mt-2 text-xs leading-5 text-[#77716A]">Choose your usual size for the oversized fit, or size down for a closer look.</p></div>
               </div>
-              <button onClick={() => setShowSizeChart(false)} className="mt-6 flex min-h-12 w-full items-center justify-center bg-[#2D2926] px-5 text-xs font-bold uppercase tracking-[.18em] text-[#F4F1EE] transition-colors hover:bg-[#5A5A40]">Close size guide</button>
+              <button onClick={() => setShowSizeChart(false)} className="mt-6 flex min-h-12 w-full items-center justify-center rounded-lg bg-[#2D2926] px-5 text-xs font-bold uppercase tracking-[.18em] text-[#F4F1EE] shadow-[0_8px_18px_rgba(45,41,38,.14)] transition-colors hover:bg-[#5A5A40]">Close size guide</button>
             </div>
           </div>
         </div>
