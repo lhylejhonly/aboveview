@@ -356,17 +356,17 @@ export default function AppClient({ collectionsOnly = false }: { collectionsOnly
         )}
       </main>
 
-      {!collectionsOnly && <section className="mx-auto mt-14 grid w-full max-w-7xl items-stretch gap-0 overflow-hidden border-y border-[#D6CFC7] bg-[#2D2926] text-[#F4F1EE] sm:mt-20 md:grid-cols-2">
-        <div className="min-h-[260px] bg-[#1F1D1B] sm:min-h-[340px]">
-          <img src="/images/above-hero.jpg.jpg" alt="Above Apprl campaign landscape" loading="lazy" className="h-full w-full object-cover opacity-70 grayscale transition-opacity duration-500 hover:opacity-85" />
-        </div>
-        <div className="flex flex-col justify-center px-7 py-12 sm:px-12 sm:py-16">
+      {!collectionsOnly && <motion.section initial={{ opacity: 0, y: 28 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: .2 }} transition={{ duration: .85, ease: [0.22, 1, 0.36, 1] }} className="mx-auto mt-14 grid w-full max-w-7xl items-stretch gap-0 overflow-hidden border-y border-[#D6CFC7] bg-[#2D2926] text-[#F4F1EE] sm:mt-20 md:grid-cols-2">
+        <motion.div initial={{ opacity: 0, scale: 1.08 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true, amount: .2 }} transition={{ duration: 1.1, ease: [0.22, 1, 0.36, 1] }} className="min-h-[260px] overflow-hidden bg-[#1F1D1B] sm:min-h-[340px]">
+          <img src="/images/above-hero.jpg.jpg" alt="Above Apprl campaign landscape" loading="lazy" className="h-full w-full object-cover opacity-70 grayscale transition duration-700 hover:scale-105 hover:opacity-85" />
+        </motion.div>
+        <motion.div initial={{ opacity: 0, x: 24 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true, amount: .2 }} transition={{ duration: .75, delay: .12, ease: [0.22, 1, 0.36, 1] }} className="flex flex-col justify-center px-7 py-12 sm:px-12 sm:py-16">
           <p className="font-sans text-[10px] font-bold uppercase tracking-[0.28em] text-[#D4B483]">Above Apprl / Our approach</p>
           <h2 className="mt-4 max-w-sm font-climate text-3xl uppercase leading-[0.95] tracking-tight sm:text-5xl">Made for the journey.</h2>
           <p className="mt-5 max-w-md text-sm leading-7 text-[#D6CFC7]">Everyday streetwear with considered design, wearable silhouettes, and details that make each piece feel personal.</p>
           <a href="/collections" className="mt-7 w-fit border-b border-[#D4B483] pb-1 text-[10px] font-bold uppercase tracking-[0.22em] text-[#D4B483] transition-colors hover:text-white">Explore the collection ↗</a>
-        </div>
-      </section>}
+        </motion.div>
+      </motion.section>}
 
       <Footer currentPage={currentPage} totalPages={totalPages} onPageChange={handlePageChange} onOpenInfo={setStoreInfoTopic} />
 
