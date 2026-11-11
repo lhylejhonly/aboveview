@@ -172,9 +172,9 @@ export const FilterBar: React.FC<FilterBarProps> = ({
           <button
             type="button"
             onClick={() => setShowSizeChart(true)}
-            className={`inline-flex min-h-9 items-center justify-center gap-1.5 rounded-full border border-[#D4C6B5] bg-[#F8F5EF] px-3 py-1.5 text-[10px] font-bold uppercase tracking-[.12em] text-[#5A5A40] transition-all hover:border-[#8C806D] hover:bg-[#EFE9DE] hover:text-[#2D2926] ${searchOnly ? 'hidden' : ''}`}
+            className={`inline-flex min-h-10 items-center justify-center gap-1.5 rounded-md bg-[#2D2926] px-3 text-[9px] font-bold uppercase tracking-[.16em] text-[#F4F1EE] shadow-[0_6px_14px_rgba(45,41,38,.12)] transition-colors hover:bg-[#5A5A40] sm:px-4 ${searchOnly ? 'hidden' : ''}`}
           >
-            <Ruler className="h-3.5 w-3.5 text-[#B85D3D]" />
+            <Ruler className="h-3.5 w-3.5 text-[#D4B483]" />
             <span>Size guide</span>
           </button>
 
