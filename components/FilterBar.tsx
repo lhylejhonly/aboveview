@@ -228,7 +228,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
         </div>
       )}
 
-      {sizeGuideOnly && <div className="flex w-full items-center justify-between gap-4 border-y border-[#D6CFC7] bg-[#EFE9DE]/60 px-4 py-4 sm:px-6 sm:py-5">
+      {sizeGuideOnly && <div className="flex w-full flex-col items-center justify-center gap-3 border-y border-[#D6CFC7] bg-[#EFE9DE]/60 px-4 py-5 text-center sm:px-6 sm:py-6">
         <div>
           <p className="text-[9px] font-bold uppercase tracking-[.26em] text-[#8C806D]">Find your fit</p>
           <p className="mt-1 font-cormorant text-lg italic text-[#2D2926] sm:text-xl">A considered fit starts here.</p>
