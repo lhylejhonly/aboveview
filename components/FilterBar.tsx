@@ -72,7 +72,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
   const sizeChartRows: Array<[string, string, string, string]> = isBoxyTeeChart
     ? [['S', '24"', '21"', '8"'], ['M', '25"', '22"', '8.5"'], ['L', '26"', '23"', '9"'], ['XL', '27"', '24"', '9.5"'], ['2XL', '28"', '25"', '10"'], ['3XL', '29"', '26"', '10.5"']]
     : [['XS', '27"', '21"', '9.25"'], ['S', '28"', '22"', '9"'], ['M', '29"', '23"', '9.5"'], ['L', '30"', '24"', '10.25"'], ['XL', '31"', '25"', '10.5"'], ['2XL', '32"', '26"', '10.75"']];
-  const unavailableSizes = isBoxyTeeChart ? [] : ['L', 'XL', '2XL'];
+  const unavailableSizes = isBoxyTeeChart ? ['S', '2XL', '3XL'] : ['L', 'XL', '2XL'];
   const openSizeChart = () => {
     setSizeChartType(activeCategory === 'ua-box-tees' ? 'boxy-tee' : 'french-terry');
     setShowSizeChart(true);
