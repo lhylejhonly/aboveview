@@ -24,6 +24,7 @@ import { StoreInfoTopic } from '@/data/storeInfo';
 import { CustomerProfileModal } from '@/components/CustomerProfileModal';
 import { AddedToCartModal } from '@/components/AddedToCartModal';
 import { WelcomeOfferModal } from '@/components/WelcomeOfferModal';
+import { MemberWelcomeModal } from '@/components/MemberWelcomeModal';
 import { PromoMarquee } from '@/components/PromoMarquee';
 import { MarketingAd } from '@/components/MarketingAd';
 import { useAdmin } from '@/context/AdminContext';
@@ -56,6 +57,7 @@ export default function AppClient({ collectionsOnly = false }: { collectionsOnly
   const [cartHydrated, setCartHydrated] = useState(false);
   const [activeVoucher, setActiveVoucher] = useState<{ code: string; discountPercent: number; remainingUses: number | null } | null>(null);
   const [welcomeOfferOpen, setWelcomeOfferOpen] = useState(false);
+  const [memberWelcomeEmail, setMemberWelcomeEmail] = useState<string | null>(null);
   const ITEMS_PER_PAGE = 6;
   const CUSTOMER_SESSION_MAX_AGE = 7 * 24 * 60 * 60 * 1000;
 
@@ -75,8 +77,9 @@ export default function AppClient({ collectionsOnly = false }: { collectionsOnly
       const { data: { session } } = await supabase.auth.getSession();
       if (mounted && !session) setWelcomeOfferOpen(true);
     };
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       if (session) setWelcomeOfferOpen(false);
+      if (event === 'SIGNED_IN' && session?.user.email) setMemberWelcomeEmail(session.user.email);
     });
     const timer = window.setTimeout(() => void maybeShowWelcomeOffer(), 900);
     return () => { mounted = false; window.clearTimeout(timer); subscription.unsubscribe(); };
@@ -225,6 +228,8 @@ export default function AppClient({ collectionsOnly = false }: { collectionsOnly
           <span>{toastMessage}</span>
         </motion.div>
       )}
+
+      {memberWelcomeEmail && <MemberWelcomeModal email={memberWelcomeEmail} onClose={() => setMemberWelcomeEmail(null)} onOpenProfile={() => { setMemberWelcomeEmail(null); router.push('/profile'); }} />}
 
       {customBannerUrl && (
         <div className="relative w-full h-32 sm:h-44 md:h-52 bg-[#1F1D1B] overflow-hidden border-b border-[#E2DDD5] group">
