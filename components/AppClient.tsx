@@ -79,7 +79,12 @@ export default function AppClient({ collectionsOnly = false }: { collectionsOnly
     };
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       if (session) setWelcomeOfferOpen(false);
-      if (event === 'SIGNED_IN' && session?.user.email) setMemberWelcomeEmail(session.user.email);
+      if (event === 'SIGNED_IN' && session?.user.email) {
+        void (async () => {
+          const { count, error } = await supabase.from('orders').select('id', { count: 'exact', head: true }).eq('user_id', session.user.id).ilike('voucher_code', 'WELCOME5').neq('status', 'cancelled');
+          if (!error && (count ?? 0) === 0) setMemberWelcomeEmail(session.user.email ?? null);
+        })();
+      }
     });
     const timer = window.setTimeout(() => void maybeShowWelcomeOffer(), 900);
     return () => { mounted = false; window.clearTimeout(timer); subscription.unsubscribe(); };
