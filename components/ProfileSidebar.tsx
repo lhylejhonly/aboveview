@@ -51,14 +51,14 @@ export function ProfileSidebar() {
   }, []);
 
   return (
-    <aside className="w-full shrink-0 rounded-xl border border-[#E4E0DA] bg-[#FCFBF9] p-4 shadow-sm lg:sticky lg:top-24 lg:h-fit lg:w-64 lg:p-5">
+    <aside className="w-full shrink-0 rounded-2xl border border-[#D8D0C5] bg-[#FCFBF9]/95 p-4 shadow-[0_16px_40px_rgba(45,41,38,.10)] backdrop-blur lg:sticky lg:top-24 lg:h-fit lg:w-72 lg:p-6">
       <div className="flex items-center gap-3 border-b border-[#E5E0DA] pb-4">
-        <div className="flex h-14 w-14 items-center justify-center rounded-full border border-[#D6CFC7] bg-[#F7F5F0] text-[#8C806D]">
-          <UserRound className="h-7 w-7" strokeWidth={1.4} />
+        <div className="flex h-14 w-14 items-center justify-center rounded-full border border-[#B79A69] bg-[#2D2926] text-[#D4B483] shadow-[0_8px_20px_rgba(45,41,38,.16)]">
+          <UserRound className="h-7 w-7" strokeWidth={1.25} />
         </div>
         <div className="min-w-0">
-          <p className="truncate text-sm font-bold text-[#2D2926]">Above Apprl</p>
-          <p className="mt-1 text-xs text-[#8C806D]">Customer account</p>
+          <p className="truncate text-sm font-bold uppercase tracking-[.12em] text-[#2D2926]">Above Apprl</p>
+          <p className="mt-1 text-[10px] font-semibold uppercase tracking-[.18em] text-[#8C806D]">Private member space</p>
         </div>
       </div>
       <nav className="mt-4 grid grid-cols-2 gap-1 sm:grid-cols-4 lg:flex lg:flex-col lg:gap-0.5" aria-label="Profile navigation">
@@ -70,12 +70,12 @@ export function ProfileSidebar() {
               href={href}
               className={`flex min-h-11 min-w-0 items-center gap-2 rounded-lg px-2 text-xs font-semibold transition-colors sm:gap-3 sm:px-3 sm:text-sm ${
                 active
-                  ? 'bg-[#FFF1ED] text-[#B85D3D]'
-                  : 'text-[#2D2926] hover:bg-[#EEEAE4]'
+                  ? 'bg-[#2D2926] text-[#D4B483] shadow-[0_8px_18px_rgba(45,41,38,.14)]'
+                  : 'text-[#2D2926] hover:bg-[#EEEAE4] hover:text-[#8C6B51]'
               }`}
             >
               <Icon
-                className={`h-5 w-5 ${active ? '' : 'text-[#B85D3D]'}`}
+                className={`h-5 w-5 ${active ? 'text-[#D4B483]' : 'text-[#B85D3D]'}`}
                 strokeWidth={1.7}
               />
               <span className="min-w-0 flex-1 truncate">{label}</span>

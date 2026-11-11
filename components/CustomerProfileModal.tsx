@@ -278,14 +278,14 @@ export function CustomerProfileModal({
           aria-modal="true"
           aria-labelledby="profile-title"
         >
-          <header className="sticky top-0 z-10 flex shrink-0 items-center justify-between border-b border-[#DDD7CF] bg-[#FCFBF9]/95 px-4 py-3 backdrop-blur sm:px-8 sm:py-5">
+          <header className="sticky top-0 z-10 flex shrink-0 items-center justify-between border-b border-[#D8D0C5] bg-[#FCFBF9]/95 px-4 py-4 backdrop-blur sm:px-10 sm:py-7">
             <div>
-              <p className="text-[9px] font-bold uppercase tracking-[.28em] text-[#8C806D]">
+              <p className="text-[9px] font-bold uppercase tracking-[.32em] text-[#9A805D]">
                 Above Apprl · Customer profile
               </p>
               <h2
                 id="profile-title"
-                className="mt-1 text-base font-bold uppercase tracking-[.08em] text-[#2D2926] sm:text-lg sm:tracking-[.1em]"
+                className="mt-2 font-cinzel text-2xl font-bold uppercase tracking-[.08em] text-[#2D2926] sm:text-3xl"
               >
                 {viewTitle}
               </h2>
@@ -313,13 +313,14 @@ export function CustomerProfileModal({
                   : "min-h-0 overflow-y-auto overscroll-contain"
             }>
               {(view === "overview" || view === "account") && (
-              <section id="account-section" className="p-4 sm:p-8 lg:border-r lg:border-[#DDD7CF]">
-                <div className="rounded-2xl bg-[#2D2926] p-4 text-[#F8F5EF] sm:p-5">
+              <section id="account-section" className="p-4 sm:p-10 lg:border-r lg:border-[#DDD7CF]">
+                <motion.div initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .55 }} className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-[#332E2A] via-[#2D2926] to-[#171513] p-5 text-[#F8F5EF] shadow-[0_18px_32px_rgba(45,41,38,.18)] sm:p-6">
+                  <motion.div animate={{ x: [0, 24, 0], y: [0, -12, 0] }} transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }} className="pointer-events-none absolute -right-16 -top-16 h-44 w-44 rounded-full bg-[#D4B483]/15 blur-3xl" />
                   <div className="flex items-center gap-3">
-                    <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#D4B483] text-[#2D2926]">
+                    <div className="relative flex h-12 w-12 items-center justify-center rounded-full bg-[#D4B483] text-[#2D2926] shadow-[0_8px_18px_rgba(212,180,131,.22)]">
                       <UserRound className="h-5 w-5" />
                     </div>
-                    <div className="min-w-0">
+                    <div className="relative min-w-0">
                       <p className="text-[9px] font-bold uppercase tracking-[.2em] text-[#D4B483]">
                         Member account
                       </p>
@@ -328,7 +329,7 @@ export function CustomerProfileModal({
                       </p>
                     </div>
                   </div>
-                  <div className="mt-6 grid grid-cols-2 gap-3 border-t border-white/15 pt-4">
+                  <div className="relative mt-6 grid grid-cols-2 gap-3 border-t border-white/15 pt-4">
                     <div>
                       <p className="text-[9px] uppercase tracking-widest text-white/50">
                         Orders
@@ -346,7 +347,7 @@ export function CustomerProfileModal({
                       </p>
                     </div>
                   </div>
-                </div>
+                </motion.div>
                 {view === "overview" && welcomeVoucherAvailable && (
                 <div id="coupon-section" className="mt-4 rounded-2xl border border-[#D8C6A7] bg-[#FFF8EC] p-4 text-[#6F5137] sm:p-5">
                   <div className="flex items-start justify-between gap-3">
