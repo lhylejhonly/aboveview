@@ -228,13 +228,13 @@ export const FilterBar: React.FC<FilterBarProps> = ({
         </div>
       )}
 
-      {sizeGuideOnly && <div className="mx-auto flex max-w-5xl items-center justify-between gap-5 border-y border-[#D6CFC7] bg-[#EFE9DE]/60 px-5 py-5 sm:px-8 sm:py-6">
+      {sizeGuideOnly && <div className="mx-auto flex max-w-4xl items-center justify-between gap-4 border-y border-[#D6CFC7] bg-[#EFE9DE]/60 px-4 py-4 sm:px-6 sm:py-5">
         <div>
           <p className="text-[9px] font-bold uppercase tracking-[.26em] text-[#8C806D]">Find your fit</p>
-          <p className="mt-1 font-cormorant text-xl italic text-[#2D2926] sm:text-2xl">A considered fit starts here.</p>
+          <p className="mt-1 font-cormorant text-lg italic text-[#2D2926] sm:text-xl">A considered fit starts here.</p>
         </div>
-        <motion.button whileHover={{ y: -2 }} whileTap={{ scale: .98 }} type="button" onClick={() => setShowSizeChart(true)} className="inline-flex min-h-11 shrink-0 items-center gap-2 rounded-md bg-[#2D2926] px-4 text-[10px] font-bold uppercase tracking-[.16em] text-[#F4F1EE] shadow-[0_8px_18px_rgba(45,41,38,.12)] transition-colors hover:bg-[#5A5A40] sm:px-5">
-          <Ruler className="h-4 w-4 text-[#D4B483]" /> Size guide
+        <motion.button whileHover={{ y: -2 }} whileTap={{ scale: .98 }} type="button" onClick={() => setShowSizeChart(true)} className="inline-flex min-h-10 shrink-0 items-center gap-1.5 rounded-md bg-[#2D2926] px-3 text-[9px] font-bold uppercase tracking-[.16em] text-[#F4F1EE] shadow-[0_6px_14px_rgba(45,41,38,.12)] transition-colors hover:bg-[#5A5A40] sm:px-4">
+          <Ruler className="h-3.5 w-3.5 text-[#D4B483]" /> Size guide
         </motion.button>
       </div>}
 
