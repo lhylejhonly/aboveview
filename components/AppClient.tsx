@@ -58,6 +58,7 @@ export default function AppClient({ collectionsOnly = false }: { collectionsOnly
   const [activeVoucher, setActiveVoucher] = useState<{ code: string; discountPercent: number; remainingUses: number | null } | null>(null);
   const [welcomeOfferOpen, setWelcomeOfferOpen] = useState(false);
   const [memberWelcomeEmail, setMemberWelcomeEmail] = useState<string | null>(null);
+  const [customerLoggedIn, setCustomerLoggedIn] = useState(false);
   const ITEMS_PER_PAGE = 6;
   const CUSTOMER_SESSION_MAX_AGE = 7 * 24 * 60 * 60 * 1000;
 
@@ -75,9 +76,13 @@ export default function AppClient({ collectionsOnly = false }: { collectionsOnly
         if (sessionStorage.getItem('above_welcome_offer_seen') === 'true') return;
       } catch {}
       const { data: { session } } = await supabase.auth.getSession();
-      if (mounted && !session) setWelcomeOfferOpen(true);
+      if (mounted) {
+        setCustomerLoggedIn(Boolean(session));
+        if (!session) setWelcomeOfferOpen(true);
+      }
     };
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      setCustomerLoggedIn(Boolean(session));
       if (session) setWelcomeOfferOpen(false);
       if (event === 'SIGNED_IN' && session?.user.email) {
         void (async () => {
@@ -276,7 +281,7 @@ export default function AppClient({ collectionsOnly = false }: { collectionsOnly
             onOpenTikTokShop={() => window.open("https://vt.tiktok.com/ZSPNJxSdD/?", "_blank", "noopener,noreferrer")}
             onOpenWallpaperStudio={() => setWallpaperStudioOpen(true)}
           />
-          <MarketingAd />
+          <MarketingAd isLoggedIn={customerLoggedIn} />
         </>
       )}
 
