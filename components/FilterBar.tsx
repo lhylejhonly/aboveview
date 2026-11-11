@@ -33,6 +33,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
   searchOnly = false,
 }) => {
   const [showSizeChart, setShowSizeChart] = useState(false);
+  const [sizeChartType, setSizeChartType] = useState<'french-terry' | 'boxy-tee'>('french-terry');
   const [isCategoryDropdownOpen, setIsCategoryDropdownOpen] = useState(false);
 
   const [recentSearches, setRecentSearches] = useState<string[]>(() => {
@@ -67,11 +68,15 @@ export const FilterBar: React.FC<FilterBarProps> = ({
   };
 
   const activeCategoryLabel = categories.find(c => c.id === activeCategory)?.label || 'ALL';
-  const isBoxyTeeChart = activeCategory === 'ua-box-tees';
+  const isBoxyTeeChart = sizeChartType === 'boxy-tee';
   const sizeChartRows: Array<[string, string, string, string]> = isBoxyTeeChart
     ? [['S', '24"', '21"', '8"'], ['M', '25"', '22"', '8.5"'], ['L', '26"', '23"', '9"'], ['XL', '27"', '24"', '9.5"'], ['2XL', '28"', '25"', '10"'], ['3XL', '29"', '26"', '10.5"']]
     : [['XS', '27"', '21"', '9.25"'], ['S', '28"', '22"', '9"'], ['M', '29"', '23"', '9.5"'], ['L', '30"', '24"', '10.25"'], ['XL', '31"', '25"', '10.5"'], ['2XL', '32"', '26"', '10.75"']];
   const unavailableSizes = isBoxyTeeChart ? [] : ['L', 'XL', '2XL'];
+  const openSizeChart = () => {
+    setSizeChartType(activeCategory === 'ua-box-tees' ? 'boxy-tee' : 'french-terry');
+    setShowSizeChart(true);
+  };
 
   return (
     <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: .55, ease: [0.22, 1, 0.36, 1] }} className={`mb-5 w-full border-b border-[#E2DDD5] bg-[#F7F5F0] sm:mb-6 ${sizeGuideOnly ? 'mx-0 max-w-none px-0 py-0 sm:px-0 sm:py-0' : 'mx-auto max-w-7xl px-3 py-4 sm:px-8 sm:py-3.5'}`}>
@@ -176,7 +181,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
 
           <button
             type="button"
-            onClick={() => setShowSizeChart(true)}
+            onClick={openSizeChart}
             className={`inline-flex min-h-10 items-center justify-center gap-1.5 rounded-md bg-[#2D2926] px-3 text-[9px] font-bold uppercase tracking-[.16em] text-[#F4F1EE] shadow-[0_6px_14px_rgba(45,41,38,.12)] transition-colors hover:bg-[#5A5A40] sm:px-4 ${searchOnly ? 'hidden' : ''}`}
           >
             <Ruler className="h-3.5 w-3.5 text-[#D4B483]" />
@@ -225,7 +230,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
           <p className="text-[9px] font-bold uppercase tracking-[.26em] text-[#8C806D]">Find your fit</p>
           <p className="mt-1 font-cormorant text-lg italic text-[#2D2926] sm:text-xl">A considered fit starts here.</p>
         </div>
-        <motion.button whileHover={{ y: -2 }} whileTap={{ scale: .98 }} type="button" onClick={() => setShowSizeChart(true)} className="inline-flex min-h-10 shrink-0 items-center gap-1.5 rounded-md bg-[#2D2926] px-3 text-[9px] font-bold uppercase tracking-[.16em] text-[#F4F1EE] shadow-[0_6px_14px_rgba(45,41,38,.12)] transition-colors hover:bg-[#5A5A40] sm:px-4">
+        <motion.button whileHover={{ y: -2 }} whileTap={{ scale: .98 }} type="button" onClick={openSizeChart} className="inline-flex min-h-10 shrink-0 items-center gap-1.5 rounded-md bg-[#2D2926] px-3 text-[9px] font-bold uppercase tracking-[.16em] text-[#F4F1EE] shadow-[0_6px_14px_rgba(45,41,38,.12)] transition-colors hover:bg-[#5A5A40] sm:px-4">
           <Ruler className="h-3.5 w-3.5 text-[#D4B483]" /> Size guide
         </motion.button>
       </div>}
@@ -250,6 +255,13 @@ export const FilterBar: React.FC<FilterBarProps> = ({
               <p className="mt-5 max-w-xl text-xs leading-6 text-[#5A5A40]">
                 {isBoxyTeeChart ? 'Relaxed boxy-fit tee with dropped shoulders. Measure a similar shirt flat and compare the body length, chest width, and sleeve measurements below.' : 'French Terry fit reference. Measure a similar garment flat and compare the body length, chest width, and sleeve measurements below.'}
               </p>
+              <div className="mt-5 inline-flex rounded-lg border border-[#D6CFC7] bg-[#F7F5F0] p-1">
+                {([['french-terry', 'French Terry'], ['boxy-tee', 'Boxy Tee']] as const).map(([type, label]) => (
+                  <button key={type} type="button" onClick={() => setSizeChartType(type)} className={`rounded-md px-3 py-2 text-[9px] font-bold uppercase tracking-[.12em] transition-colors ${sizeChartType === type ? 'bg-[#2D2926] text-[#F4F1EE]' : 'text-[#6F6963] hover:bg-[#EEEAE4]'}`}>
+                    {label}
+                  </button>
+                ))}
+              </div>
             </div>
             <div className="p-5 sm:p-8">
               <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
