@@ -1,6 +1,6 @@
 'use client';
 import React, { useState } from 'react';
-import { Search, SlidersHorizontal, Ruler, ChevronDown, ChevronUp, History, X } from 'lucide-react';
+import { Search, Ruler, ChevronDown, ChevronUp, History, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Category } from '@/types';
 
@@ -168,21 +168,6 @@ export const FilterBar: React.FC<FilterBarProps> = ({
               className="w-full pl-8 pr-3 py-1.5 bg-[#EFECE6] border border-[#E2DDD5] rounded-full font-sans text-xs text-[#1F1D1B] placeholder-[#8E8B82] focus:outline-none focus:border-[#1F1D1B] focus:ring-1 focus:ring-[#1F1D1B] transition-all"
             />
           </form>
-
-          <div className={`relative inline-flex items-center ${searchOnly ? 'hidden' : ''}`}>
-            <SlidersHorizontal className="absolute left-3 w-3.5 h-3.5 text-[#8E8B82] pointer-events-none" />
-            <select
-              value={sortBy}
-              onChange={e => onSortChange(e.target.value)}
-              className="min-h-9 w-full cursor-pointer appearance-none rounded-full border border-[#E2DDD5] bg-[#EFECE6] pl-8 pr-7 py-1.5 font-sans text-xs font-semibold uppercase text-[#1F1D1B] focus:border-[#1F1D1B] focus:outline-none sm:w-auto"
-            >
-              <option value="">Sort by</option>
-              <option value="price-low">Price: Low to High</option>
-              <option value="price-high">Price: High to Low</option>
-              <option value="gsm">Heavyweight GSM</option>
-              <option value="rating">Top Rated</option>
-            </select>
-          </div>
 
           <button
             type="button"
