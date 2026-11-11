@@ -191,7 +191,7 @@ export default function AppClient({ collectionsOnly = false }: { collectionsOnly
     <div className="min-h-screen overflow-x-hidden bg-[#F7F5F0] text-[#1F1D1B] font-sans flex flex-col relative selection:bg-[#1F1D1B] selection:text-[#F7F5F0]">
       <TopProgressBar isLoading={loading} />
       <StoreHeader onOpenLogin={() => setCustomerLoginOpen(true)} onOpenProfile={() => router.push('/profile')} onOpenCart={() => setCartOpen(true)} cartCount={cartItems.reduce((sum, item) => sum + item.quantity, 0)} />
-      {collectionsOnly && <div className="border-b border-[#3B352F] bg-[#1F1D1B] px-4 py-2.5 text-center text-[9px] font-bold uppercase tracking-[.22em] text-[#D4B483]">Complimentary delivery on orders over ₱2,500</div>}
+      {collectionsOnly && <div className="border-b border-[#3B352F] bg-[#1F1D1B] px-4 py-2.5 text-center text-[9px] font-bold uppercase tracking-[.22em] text-[#D4B483]">Free shipping on orders ₱2,500 and above</div>}
       {!collectionsOnly && <PromoMarquee />}
 
       {toastMessage && (
