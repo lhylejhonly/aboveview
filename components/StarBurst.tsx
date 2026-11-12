@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from 'react';
 
-export default function StarBurst({ centerY = 58 }: { centerY?: number }) {
+export default function StarBurst({ centerY = 58, className = '' }: { centerY?: number; className?: string }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
@@ -82,5 +82,5 @@ export default function StarBurst({ centerY = 58 }: { centerY?: number }) {
     };
   }, [centerY]);
 
-  return <canvas ref={canvasRef} aria-hidden="true" className="pointer-events-none absolute inset-0 z-[1] h-full w-full opacity-70" />;
+  return <canvas ref={canvasRef} aria-hidden="true" className={`pointer-events-none absolute inset-0 z-[1] h-full w-full opacity-70 ${className}`} />;
 }
