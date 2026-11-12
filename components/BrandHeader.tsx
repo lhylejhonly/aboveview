@@ -105,9 +105,11 @@ export const BrandHeader: React.FC<BrandHeaderProps> = ({
           href="/collections"
           initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.85 }}
-          className="mt-6 inline-flex min-h-12 items-center gap-3 border border-[#D4B483]/70 bg-[#D4B483] px-5 py-3 text-[10px] font-bold uppercase tracking-[0.18em] text-[#1F1D1B] transition-colors hover:bg-[#F4E5C7] sm:mt-9"
+          className="group relative mt-6 inline-flex min-h-14 items-center gap-4 overflow-hidden border border-[#E8C98D] bg-[#D8B981]/95 px-7 py-4 font-cinzel text-[9px] font-bold uppercase tracking-[0.2em] text-[#211D19] shadow-[0_10px_28px_rgba(0,0,0,.24),inset_0_1px_0_rgba(255,255,255,.3)] transition-all duration-300 hover:-translate-y-0.5 hover:border-[#F4E5C7] hover:bg-[#E5C88F] hover:shadow-[0_14px_34px_rgba(0,0,0,.3),inset_0_1px_0_rgba(255,255,255,.45)] sm:mt-9 sm:px-8"
         >
-          Shop the collection <span aria-hidden="true">↗</span>
+          <span className="pointer-events-none absolute inset-y-0 -left-1/3 w-1/4 -skew-x-12 bg-white/35 opacity-0 blur-sm transition-all duration-700 group-hover:left-[125%] group-hover:opacity-100" />
+          <span className="relative">Shop the collection</span>
+          <span aria-hidden="true" className="relative text-[12px] font-normal leading-none">↗</span>
         </motion.a>
 
         <motion.div
