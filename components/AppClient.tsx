@@ -361,7 +361,7 @@ export default function AppClient({ collectionsOnly = false }: { collectionsOnly
         )}
       </main>
 
-      {!collectionsOnly && <motion.section initial={{ opacity: 0, y: 28 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: .2 }} transition={{ duration: .85, ease: [0.22, 1, 0.36, 1] }} className="mx-auto mt-14 grid w-full max-w-7xl items-stretch gap-0 overflow-hidden border-y border-[#D6CFC7] bg-[#2D2926] text-[#F4F1EE] sm:mt-20 md:grid-cols-2">
+      {false && <motion.section initial={{ opacity: 0, y: 28 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: .2 }} transition={{ duration: .85, ease: [0.22, 1, 0.36, 1] }} className="mx-auto mt-14 grid w-full max-w-7xl items-stretch gap-0 overflow-hidden border-y border-[#D6CFC7] bg-[#2D2926] text-[#F4F1EE] sm:mt-20 md:grid-cols-2">
         <motion.div initial={{ opacity: 0, scale: 1.08 }} whileInView={{ opacity: 1, scale: 1 }} viewport={{ once: true, amount: .2 }} transition={{ duration: 1.1, ease: [0.22, 1, 0.36, 1] }} className="min-h-[260px] overflow-hidden bg-[#1F1D1B] sm:min-h-[340px]">
           <img src="/images/above-hero.jpg.jpg" alt="Above Apprl campaign landscape" loading="lazy" className="h-full w-full object-cover opacity-70 grayscale transition duration-700 hover:scale-105 hover:opacity-85" />
         </motion.div>
