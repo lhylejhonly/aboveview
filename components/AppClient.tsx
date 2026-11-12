@@ -319,7 +319,7 @@ export default function AppClient({ collectionsOnly = false }: { collectionsOnly
         </div>
       )}
 
-      <main id="product-grid-section" className={`flex-1 w-full max-w-7xl mx-auto px-3 py-2 sm:px-8 ${collectionsOnly ? 'sm:py-6' : ''}`}>
+      <main id="product-grid-section" className={`flex-1 w-full max-w-7xl mx-auto px-3 py-4 sm:px-8 ${collectionsOnly ? 'sm:py-6' : ''}`}>
         {loading ? (
         <div className={`grid gap-3 sm:gap-5 ${viewMode === 'large' ? 'grid-cols-1 md:grid-cols-2 max-w-5xl mx-auto' : 'grid-cols-2 max-[380px]:grid-cols-1 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5'}`}>
             {Array.from({ length: 6 }).map((_, i) => <ProductSkeletonCard key={i} viewMode={viewMode === 'large' ? 'large' : 'grid'} />)}
