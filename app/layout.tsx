@@ -40,6 +40,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <head>
+        <link rel="icon" type="image/png" sizes="1024x1024" href="/images/favicon.png?v=8" />
+        <link rel="shortcut icon" type="image/png" href="/images/favicon.png?v=8" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link
