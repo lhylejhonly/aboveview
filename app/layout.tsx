@@ -10,10 +10,11 @@ export const metadata: Metadata = {
   alternates: { canonical: SITE_URL },
   icons: {
     icon: [
-      { url: '/favicon.svg?v=5', type: 'image/svg+xml' },
-      { url: '/images/favicon-cropped.png?v=5', type: 'image/png', sizes: '512x512' },
+      { url: '/images/favicon.png?v=7', type: 'image/png', sizes: '1024x1024' },
+      { url: '/images/favicon-cropped.png?v=7', type: 'image/png', sizes: '512x512' },
+      { url: '/favicon.svg?v=6', type: 'image/svg+xml' },
     ],
-    apple: '/images/favicon-cropped.png?v=5',
+    apple: '/images/favicon.png?v=7',
   },
   keywords: ['Above Apprl', 'premium streetwear', 'heavyweight apparel', 'streetwear Philippines', 'raw athleisure'],
   openGraph: {
