@@ -105,10 +105,10 @@ export const BrandHeader: React.FC<BrandHeaderProps> = ({
           href="/collections"
           initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.85 }}
-          className="mt-6 inline-flex min-h-14 items-center gap-3 border border-[#D4B483] bg-[#D4B483] px-7 py-4 font-montserrat text-[10px] font-semibold uppercase tracking-[0.18em] text-[#211D1B] transition-colors hover:bg-[#E5C995] sm:mt-9 sm:px-8"
+          className="mt-6 inline-flex min-h-11 items-center gap-2.5 border border-white/40 bg-white/10 px-5 py-3 font-montserrat text-[9px] font-semibold uppercase tracking-[0.16em] text-white/90 shadow-[0_6px_20px_rgba(0,0,0,.14)] backdrop-blur-md transition-colors hover:border-[#D4B483]/80 hover:bg-white/20 sm:mt-9 sm:px-6"
         >
           <span>Shop the collection</span>
-          <span aria-hidden="true" className="text-[11px] font-normal leading-none">↗</span>
+          <span aria-hidden="true" className="text-[10px] font-normal leading-none text-[#D4B483]">↗</span>
         </motion.a>
 
         <motion.div

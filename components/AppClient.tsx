@@ -290,7 +290,7 @@ export default function AppClient({ collectionsOnly = false }: { collectionsOnly
         <p className="text-xs font-semibold uppercase tracking-[.12em]">{activeVoucher.discountPercent}% off storewide with code <strong>{activeVoucher.code}</strong>{activeVoucher.remainingUses !== null ? ` · ${activeVoucher.remainingUses} left` : ''}</p>
       </div>}
 
-      {!collectionsOnly && <motion.section initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: .35 }} transition={{ duration: .8, ease: [0.22, 1, 0.36, 1] }} className="mx-auto w-full max-w-7xl px-4 pb-5 pt-14 text-center sm:px-8 sm:pb-8 sm:pt-20">
+      {false && <motion.section initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, amount: .35 }} transition={{ duration: .8, ease: [0.22, 1, 0.36, 1] }} className="mx-auto w-full max-w-7xl px-4 pb-5 pt-14 text-center sm:px-8 sm:pb-8 sm:pt-20">
         <div className="mx-auto flex max-w-xl items-center justify-center gap-4 text-[#B79A69]">
           <span className="h-px w-12 bg-[#B79A69]/60 sm:w-20" />
           <p className="font-sans text-[10px] font-bold uppercase tracking-[0.3em] text-[#8E8B82]">The latest collection</p>
