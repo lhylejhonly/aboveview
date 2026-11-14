@@ -239,7 +239,7 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({ product, onClose
                           : 'border-[#D6CFC7] bg-transparent text-[#2D2926] hover:border-[#2D2926]'
                       }`}
                     >
-                      {size} ({getProductSizeStock(product, size)})
+                      {size}
                     </button>
                   ))}
                 </div>
