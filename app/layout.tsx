@@ -10,7 +10,7 @@ export const metadata: Metadata = {
   alternates: { canonical: SITE_URL },
   icons: {
     icon: [
-      { url: '/images/favicon.png?v=13', type: 'image/png', sizes: '1024x1024' },
+      { url: '/images/favicon-tight.png?v=14', type: 'image/png', sizes: '512x512' },
     ],
     apple: '/images/favicon.png?v=7',
   },
@@ -38,8 +38,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <head>
-        <link rel="icon" type="image/png" sizes="1024x1024" href="/images/logo.png?v=13" />
-        <link rel="shortcut icon" type="image/png" href="/images/logo.png?v=13" />
+        <link rel="icon" type="image/png" sizes="512x512" href="/images/favicon-tight.png?v=14" />
+        <link rel="shortcut icon" type="image/png" href="/images/favicon-tight.png?v=14" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link
