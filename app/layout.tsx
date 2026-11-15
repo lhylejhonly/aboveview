@@ -12,7 +12,7 @@ export const metadata: Metadata = {
     icon: [
       { url: '/images/favicon-tight.png?v=14', type: 'image/png', sizes: '512x512' },
     ],
-    apple: '/images/logo.png?v=7',
+    apple: '/images/favicon.png?v=7',
   },
   keywords: ['Above Apprl', 'premium streetwear', 'heavyweight apparel', 'streetwear Philippines', 'raw athleisure'],
   openGraph: {
