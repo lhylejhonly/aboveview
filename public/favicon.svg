@@ -1,6 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-label="Above Apprl">
-  <rect width="512" height="512" rx="96" fill="#24211f"/>
-  <path d="M48 384 190 126l54 96 47-72 173 234H48Z" fill="#d4b483"/>
-  <path d="m190 126 54 96-33-28-37 55-28-41 44-82Zm101 24 173 234h-62L291 223l-42 57-27-38 69-92Z" fill="#f7f4ee"/>
-  <path d="m48 384 142-258 54 96 47-72 173 234H48Z" fill="none" stroke="#f7f4ee" stroke-width="10" stroke-linejoin="round"/>
-</svg>

@@ -10,7 +10,7 @@ export const metadata: Metadata = {
   alternates: { canonical: SITE_URL },
   icons: {
     icon: [
-      { url: '/images/logo.png?v=13', type: 'image/png', sizes: '1024x1024' },
+      { url: '/images/favicon.png?v=13', type: 'image/png', sizes: '1024x1024' },
     ],
     apple: '/images/favicon.png?v=7',
   },
