@@ -10,9 +10,9 @@ export const metadata: Metadata = {
   alternates: { canonical: SITE_URL },
   icons: {
     icon: [
-      { url: '/favicon.svg?v=9', type: 'image/svg+xml' },
-      { url: '/images/favicon.png?v=9', type: 'image/png', sizes: '1024x1024' },
-      { url: '/images/favicon-cropped.png?v=9', type: 'image/png', sizes: '512x512' },
+      { url: '/images/favicon-cropped.png?v=10', type: 'image/png', sizes: '512x512' },
+      { url: '/images/favicon.png?v=10', type: 'image/png', sizes: '1024x1024' },
+      { url: '/favicon.svg?v=10', type: 'image/svg+xml' },
     ],
     apple: '/images/favicon.png?v=7',
   },
@@ -40,8 +40,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <head>
-        <link rel="icon" type="image/svg+xml" href="/favicon.svg?v=9" />
-        <link rel="shortcut icon" type="image/svg+xml" href="/favicon.svg?v=9" />
+        <link rel="icon" type="image/png" sizes="512x512" href="/images/favicon-cropped.png?v=10" />
+        <link rel="shortcut icon" type="image/png" href="/images/favicon-cropped.png?v=10" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link
