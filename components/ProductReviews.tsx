@@ -59,6 +59,9 @@ export function ProductReviews({ productId, onOpenLogin, onStatsChange }: Produc
     void supabase.auth.getUser().then(({ data }) => {
       if (active) setUserId(data.user?.id ?? null);
     });
+    const { data: authState } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (active) setUserId(session?.user?.id ?? null);
+    });
     void loadReviews();
     const channel = supabase
       .channel(`product-reviews-${productId}`)
@@ -68,6 +71,7 @@ export function ProductReviews({ productId, onOpenLogin, onStatsChange }: Produc
       .subscribe();
     return () => {
       active = false;
+      authState.subscription.unsubscribe();
       void supabase.removeChannel(channel);
     };
   }, [loadReviews, productId]);
@@ -120,7 +124,16 @@ export function ProductReviews({ productId, onOpenLogin, onStatsChange }: Produc
         </div>
         <ChevronDown className={`h-4 w-4 shrink-0 text-[#8E8B82] transition-transform duration-200 group-hover:text-[#2D2926] ${expanded ? 'rotate-180' : ''}`} />
         </button>
-        {!userId && <button type="button" onClick={onOpenLogin} className="text-[10px] font-bold uppercase tracking-wider text-[#8C806D] hover:text-[#2D2926]">Sign in to review</button>}
+        <button
+          type="button"
+          onClick={() => {
+            setExpanded(true);
+            if (!userId) onOpenLogin?.();
+          }}
+          className="shrink-0 text-[10px] font-bold uppercase tracking-wider text-[#8C806D] hover:text-[#2D2926]"
+        >
+          {userId ? 'Write a review' : 'Sign in to review'}
+        </button>
       </div>
 
       <div id={`reviews-panel-${productId}`} hidden={!expanded}>

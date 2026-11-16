@@ -55,6 +55,8 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({ product, onClose
 
   const unavailable = !product.isComingSoon && product.stockCount <= 0;
   const selectedSizeStock = getProductSizeStock(product, selectedSize);
+  const reviewCount = liveReviewStats?.count ?? product.reviewCount;
+  const reviewRating = reviewCount > 0 ? (liveReviewStats?.rating ?? product.rating) : 0;
 
   const currentImage = versionImage(activeSide === 'front' ? product.frontImage : product.backImage, product.updatedAt);
 
@@ -174,17 +176,17 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({ product, onClose
                       <Star
                         key={i}
                         className={`w-3.5 h-3.5 ${
-                          i < Math.floor(product.rating)
+                          i < Math.round(reviewRating)
                             ? 'text-[#B85D3D] fill-[#B85D3D]'
                             : 'text-[#D6CFC7]'
                         }`}
                       />
                     ))}
                     <span className="text-xs font-sans font-bold text-[#2D2926] ml-1">
-                      {liveReviewStats?.count ? liveReviewStats.rating.toFixed(1) : product.rating}
+                      {reviewCount ? reviewRating.toFixed(1) : '—'}
                     </span>
                     <span className="text-xs font-sans text-[#8E8B82]">
-                      ({liveReviewStats?.count ?? product.reviewCount} reviews)
+                      ({reviewCount} review{reviewCount === 1 ? '' : 's'})
                     </span>
                   </div>
                   <span className={`border px-2.5 py-1 font-sans text-[10px] font-semibold uppercase tracking-wider ${unavailable ? 'border-[#D6CFC7] bg-[#F0EDE8] text-[#8E8B82]' : 'border-[#C8D8C1] bg-[#EFF5EC] text-[#587052]'}`}>
