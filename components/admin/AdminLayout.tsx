@@ -11,6 +11,7 @@ import {
   MessageCircle,
   Settings,
   Tag,
+  TicketPercent,
   X,
   LogOut,
 } from 'lucide-react';
@@ -19,7 +20,7 @@ import { supabase } from '@/lib/supabase';
 import { useEffect, useRef, useState } from 'react';
 
 type BadgeKey = 'orders' | 'reviews';
-type NavigationItem = { href: string; label: string; icon: typeof LayoutDashboard; badgeKey?: BadgeKey };
+type NavigationItem = { href: string; label: string; icon: typeof LayoutDashboard; badgeKey?: BadgeKey; hash?: string };
 
 const navigation: NavigationItem[] = [
   { href: '/admin/dashboard', label: 'Dashboard', icon: LayoutDashboard },
@@ -27,6 +28,7 @@ const navigation: NavigationItem[] = [
   { href: '/admin/reviews', label: 'Reviews', icon: MessageCircle, badgeKey: 'reviews' },
   { href: '/admin/products', label: 'Products', icon: Package },
   { href: '/admin/categories', label: 'Categories', icon: Tag },
+  { href: '/admin/settings', hash: 'customer-voucher', label: 'Vouchers', icon: TicketPercent },
   { href: '/admin/settings', label: 'Settings', icon: Settings },
 ];
 
@@ -34,7 +36,15 @@ export function AdminSidebar({ onNavigate }: { onNavigate?: () => void }) {
   const pathname = usePathname();
   const { logout } = useAdmin();
   const router = useRouter();
+  const [hash, setHash] = useState('');
   const [badges, setBadges] = useState({ orders: 0, reviews: 0 });
+
+  useEffect(() => {
+    const updateHash = () => setHash(window.location.hash.replace(/^#/, ''));
+    updateHash();
+    window.addEventListener('hashchange', updateHash);
+    return () => window.removeEventListener('hashchange', updateHash);
+  }, []);
 
   useEffect(() => {
     let mounted = true;
@@ -76,8 +86,10 @@ export function AdminSidebar({ onNavigate }: { onNavigate?: () => void }) {
 
       <nav className="flex-1 space-y-1 px-3 py-6">
         <p className="px-3 pb-3 text-[10px] font-bold uppercase tracking-[0.2em] text-[#777b80]">Manage</p>
-        {navigation.map(({ href, label, icon: Icon, badgeKey }) => {
-          const active = pathname === href || (href !== '/admin/dashboard' && pathname.startsWith(`${href}/`));
+        {navigation.map(({ href, label, icon: Icon, badgeKey, hash: itemHash }) => {
+          const active = itemHash
+            ? pathname === href && hash === itemHash
+            : (pathname === href && !hash) || (href !== '/admin/dashboard' && pathname.startsWith(`${href}/`));
           const badge = badgeKey ? badges[badgeKey] : 0;
           return (
             <Link
