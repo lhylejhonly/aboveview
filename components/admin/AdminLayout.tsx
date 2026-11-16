@@ -28,7 +28,7 @@ const navigation: NavigationItem[] = [
   { href: '/admin/reviews', label: 'Reviews', icon: MessageCircle, badgeKey: 'reviews' },
   { href: '/admin/products', label: 'Products', icon: Package },
   { href: '/admin/categories', label: 'Categories', icon: Tag },
-  { href: '/admin/settings', hash: 'customer-voucher', label: 'Vouchers', icon: TicketPercent },
+  { href: '/admin/vouchers', label: 'Vouchers', icon: TicketPercent },
   { href: '/admin/settings', label: 'Settings', icon: Settings },
 ];
 
