@@ -14,10 +14,10 @@ export const metadata: Metadata = {
     ],
     apple: '/images/favicon.png?v=7',
   },
-  keywords: ['Above Apprl', 'premium streetwear', 'heavyweight apparel', 'streetwear Philippines', 'raw athleisure'],
+  keywords: ['Above Apprl', 'premium streetwear', 'streetwear Philippines', 'raw athleisure'],
   openGraph: {
     title: 'ABOVE APPRL | Premium Streetwear',
-    description: 'Premium heavyweight streetwear and raw athleisure apparel by Above Apprl.',
+    description: 'Premium  streetwear and raw athleisure apparel by Above Apprl.',
     type: 'website',
     siteName: 'Above Apprl',
     url: SITE_URL,
@@ -26,7 +26,7 @@ export const metadata: Metadata = {
   twitter: {
     card: 'summary_large_image',
     title: 'ABOVE APPRL | Premium Streetwear',
-    description: 'Premium heavyweight streetwear and raw athleisure apparel by Above Apprl.',
+    description: 'Premium  streetwear and raw athleisure apparel by Above Apprl.',
     images: [`${SITE_URL}/images/above-hero.jpg.jpg`],
   },
   verification: process.env.GOOGLE_SITE_VERIFICATION
