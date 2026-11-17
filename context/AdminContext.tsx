@@ -29,6 +29,16 @@ interface AdminContextType {
   deleteCategory: (id: string) => Promise<void>;
 }
 
+function getCatalogErrorMessage(reason: unknown): string {
+  // Keep implementation details such as Supabase/network errors out of the
+  // storefront. The original error is still logged below for debugging.
+  if (reason instanceof TypeError && reason.message.toLowerCase().includes('fetch')) {
+    return 'We are having trouble connecting to the catalog right now. Please check your connection and try again.';
+  }
+
+  return 'We could not load the catalog right now. Please try again in a moment.';
+}
+
 const AdminContext = createContext<AdminContextType | null>(null);
 
 export function AdminProvider({ children }: { children: ReactNode }) {
@@ -52,7 +62,8 @@ export function AdminProvider({ children }: { children: ReactNode }) {
       setProducts(dbProducts);
       setCategories(dbCategories);
     } catch (reason) {
-      setError(reason instanceof Error ? reason.message : 'Unable to load products and categories.');
+      console.error('Catalog loading failed:', reason);
+      setError(getCatalogErrorMessage(reason));
     } finally {
       setLoading(false);
     }
@@ -66,7 +77,8 @@ export function AdminProvider({ children }: { children: ReactNode }) {
         setProducts(dbProducts);
         setCategories(dbCategories);
       } catch (reason) {
-        setError(reason instanceof Error ? reason.message : 'Unable to load products and categories.');
+        console.error('Catalog loading failed:', reason);
+        setError(getCatalogErrorMessage(reason));
       } finally {
         setLoading(false);
       }
