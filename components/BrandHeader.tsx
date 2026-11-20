@@ -41,21 +41,12 @@ export const BrandHeader: React.FC<BrandHeaderProps> = ({
         <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0A] via-[#0A0A0A]/45 to-[#0A0A0A]/10" />
       </motion.div>
 
-      <div className="pointer-events-none absolute right-[10%] top-[12%] hidden h-20 w-20 rounded-full bg-[#D4B483]/35 shadow-[0_0_40px_rgba(212,180,131,0.2)] sm:block" />
-      <div className="pointer-events-none absolute right-[23%] top-[18%] hidden text-xl opacity-80 grayscale sm:block" aria-hidden="true">🦇</div>
-      <div className="pointer-events-none absolute right-[30%] top-[27%] hidden text-sm opacity-60 grayscale sm:block" aria-hidden="true">🦇</div>
-      <div className="pointer-events-none absolute -left-3 -top-3 hidden text-7xl leading-none opacity-55 grayscale sm:block" aria-hidden="true">🕸️</div>
-      <div className="pointer-events-none absolute left-[14%] top-0 hidden text-lg opacity-75 grayscale sm:block" aria-hidden="true">
-        <span className="mx-auto block h-10 w-px bg-white/35" />
-        🕷️
-      </div>
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_70%_65%_at_50%_45%,rgba(212,180,131,0.18)_0%,rgba(10,10,10,0.05)_42%,transparent_72%)]" />
       <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(115deg,rgba(212,180,131,0.08),transparent_32%,transparent_68%,rgba(255,255,255,0.04))]" />
       <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_35%,rgba(0,0,0,0.62)_100%)]" />
       <div className="pointer-events-none absolute inset-0 opacity-[0.035] [background-image:linear-gradient(rgba(255,255,255,0.7)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.7)_1px,transparent_1px)] [background-size:56px_56px]" />
       <div className="pointer-events-none absolute left-[10%] top-[22%] hidden text-lg text-[#D4B483]/60 sm:block" aria-hidden="true">✦</div>
       <div className="pointer-events-none absolute right-[17%] top-[30%] hidden text-xs text-[#D4B483]/50 sm:block" aria-hidden="true">✧</div>
-      <div className="pointer-events-none absolute bottom-[15%] left-[8%] hidden text-3xl drop-shadow-[0_0_10px_rgba(212,180,131,0.35)] sm:block" aria-hidden="true">🎃</div>
       <StarBurst centerY={58} className="hidden sm:block" />
       <div className="relative z-10 flex h-full min-h-0 flex-col items-center justify-end px-5 pb-20 pt-10 text-center sm:justify-center sm:px-4 sm:py-16">
         <motion.div
