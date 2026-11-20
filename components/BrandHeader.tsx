@@ -105,10 +105,10 @@ export const BrandHeader: React.FC<BrandHeaderProps> = ({
           href="/collections"
           initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.85 }}
-          className="mt-6 inline-flex min-h-9 items-center gap-2 border border-white/45 bg-white/[0.08] px-4 py-2.5 font-montserrat text-[8px] font-semibold uppercase tracking-[0.14em] text-white/90 shadow-[0_4px_14px_rgba(0,0,0,.12)] backdrop-blur-md transition-colors hover:border-[#D4B483]/80 hover:bg-white/[0.16] sm:mt-9 sm:px-5"
+          className="group relative mt-6 inline-flex min-h-11 items-center justify-center whitespace-nowrap px-2 py-2.5 font-montserrat text-[8px] font-bold uppercase tracking-[0.18em] text-[#F4F1EE] transition-[color,letter-spacing,transform] duration-300 ease-out hover:tracking-[0.22em] hover:text-[#C3A477] active:scale-[0.98] focus-visible:outline focus-visible:outline-1 focus-visible:outline-offset-4 focus-visible:outline-[#C3A477] sm:mt-9"
         >
           <span>Shop the collection</span>
-          <span aria-hidden="true" className="text-[9px] font-normal leading-none text-[#D4B483]">↗</span>
+          <span aria-hidden="true" className="pointer-events-none absolute bottom-1 left-1/2 h-px w-0 -translate-x-1/2 bg-[#C3A477] transition-[width] duration-300 ease-out group-hover:w-[calc(100%-1rem)]" />
         </motion.a>
 
         <motion.div
