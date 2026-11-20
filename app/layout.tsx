@@ -8,12 +8,6 @@ export const metadata: Metadata = {
   title: 'ABOVE APPRL | Premium Streetwear',
   description: 'Discover Above Apprl premium heavyweight streetwear and raw athleisure apparel, designed for the everyday ascent in the Philippines.',
   alternates: { canonical: SITE_URL },
-  icons: {
-    icon: [
-      { url: '/images/favicon-tight.png?v=15', type: 'image/png', sizes: '512x512' },
-    ],
-    apple: '/images/favicon-tight.png?v=15',
-  },
   keywords: ['Above Apprl', 'premium streetwear', 'streetwear Philippines', 'raw athleisure'],
   openGraph: {
     title: 'ABOVE APPRL | Premium Streetwear',
@@ -38,8 +32,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <head>
-        <link rel="icon" type="image/png" sizes="512x512" href="/images/favicon-tight.png?v=15" />
-        <link rel="shortcut icon" type="image/png" href="/images/favicon-tight.png?v=15" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link
