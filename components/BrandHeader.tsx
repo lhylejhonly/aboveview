@@ -48,7 +48,7 @@ export const BrandHeader: React.FC<BrandHeaderProps> = ({
       <div className="pointer-events-none absolute left-[10%] top-[22%] hidden text-lg text-[#D4B483]/60 sm:block" aria-hidden="true">✦</div>
       <div className="pointer-events-none absolute right-[17%] top-[30%] hidden text-xs text-[#D4B483]/50 sm:block" aria-hidden="true">✧</div>
       <StarBurst centerY={58} className="hidden sm:block" />
-      <div className="relative z-10 flex h-full min-h-0 flex-col items-center justify-end px-5 pb-20 pt-10 text-center sm:justify-center sm:px-4 sm:py-16">
+      <div className="relative z-10 flex h-full min-h-0 flex-col items-center justify-center px-5 py-16 text-center sm:px-4 sm:py-16">
         <motion.div
           key={`tag-${animationKey}`}
           initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
