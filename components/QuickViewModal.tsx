@@ -96,6 +96,15 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({ product, product
           aria-modal="true"
           aria-labelledby={`quickview-title-${product.id}`}
         >
+          <header className="sticky top-0 z-30 flex h-[4.5rem] shrink-0 items-center justify-between border-b border-[#D6CFC7] bg-[#FBFAF7]/95 px-5 backdrop-blur-md sm:px-10 lg:px-14">
+            <a href="/" className="group flex items-center gap-3" aria-label="Go to Above Apprl home">
+              <img src="/images/logo.png" alt="Above Apprl" className="h-9 w-9 object-contain transition-transform duration-300 group-hover:scale-105" />
+              <span className="font-cinzel text-[11px] font-bold tracking-[.22em] text-[#2D2926] sm:text-xs">ABOVE APPRL</span>
+            </a>
+            <span className="hidden font-sans text-[9px] font-bold uppercase tracking-[.3em] text-[#8E8B82] sm:block">Product details / Essentials</span>
+            <span className="w-9 sm:w-12" aria-hidden="true" />
+          </header>
+
           {/* Close Button */}
           <button
             onClick={onClose}
@@ -106,7 +115,7 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({ product, product
             <X className="w-5 h-5" />
           </button>
 
-          <div className="flex min-h-[calc(100svh-3.5rem)] flex-col bg-[#FBFAF7] md:flex-row">
+          <div className="flex min-h-[calc(100dvh-4.5rem)] flex-col bg-[#FBFAF7] md:flex-row">
           {/* Left Column: Image Gallery & View Switcher */}
           <div className="group relative flex min-h-[42svh] w-full flex-col justify-between border-b border-[#D6CFC7] bg-[#E1DDD6] p-3 sm:min-h-[50svh] sm:p-7 md:min-h-0 md:w-[54%] md:border-b-0 md:border-r">
             {/* Top Badges */}
@@ -304,6 +313,19 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({ product, product
               </div>
             </section>
           )}
+
+          <footer className="border-t border-[#D6CFC7] bg-[#2D2926] px-5 py-9 text-[#F4F1EE] sm:px-10 sm:py-11 md:px-14 lg:px-20">
+            <div className="mx-auto flex max-w-7xl flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
+              <div>
+                <p className="font-cinzel text-sm font-bold tracking-[.22em] text-[#F4F1EE]">ABOVE APPRL</p>
+                <p className="mt-2 max-w-sm font-cormorant text-lg italic text-[#D4B483]">Premium streetwear crafted for those who move with purpose.</p>
+              </div>
+              <div className="text-left sm:text-right">
+                <p className="font-sans text-[9px] uppercase tracking-[.24em] text-[#D6CFC7]">© 2026 Above Apprl</p>
+                <p className="mt-2 font-sans text-[9px] uppercase tracking-[.18em] text-[#8E8B82]">Essentials / Made to move</p>
+              </div>
+            </div>
+          </footer>
         </motion.div>
       </div>
     </AnimatePresence>
