@@ -1,5 +1,5 @@
 'use client';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { X, ShoppingBag, Star, ShieldCheck, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Product } from '@/types';
@@ -25,12 +25,14 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({ product, product
   const [selectedSize, setSelectedSize] = useState<string>(product?.sizes[0] || 'M');
   const [liveReviewStats, setLiveReviewStats] = useState<{ rating: number; count: number } | null>(null);
   const [copiedLink, setCopiedLink] = useState(false);
+  const modalRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (product) {
       setActiveSide('front');
       setSelectedSize(product.sizes[0] || 'M');
       setLiveReviewStats(null);
+      requestAnimationFrame(() => modalRef.current?.scrollTo({ top: 0, behavior: 'instant' }));
       
       // Prevent background body scroll when modal is open
       document.body.style.overflow = 'hidden';
@@ -85,7 +87,8 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({ product, product
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.95, y: 15 }}
           transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-          className="relative z-10 flex min-h-screen w-full max-w-none flex-col overflow-y-auto bg-[#FBFAF7] shadow-[0_28px_90px_rgba(20,18,16,0.32)]"
+          ref={modalRef}
+          className="relative z-10 flex min-h-screen w-full max-w-none flex-col overflow-y-auto bg-[#FBFAF7] shadow-[0_28px_90px_rgba(20,18,16,0.32)] [scrollbar-color:#c9c1b6_transparent]"
           id={`quickview-modal-${product.id}`}
           role="dialog"
           aria-modal="true"
@@ -101,7 +104,7 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({ product, product
             <X className="w-5 h-5" />
           </button>
 
-          <div className="flex min-h-[calc(100svh-3.5rem)] flex-col md:flex-row">
+          <div className="flex min-h-[calc(100svh-3.5rem)] flex-col bg-[#FBFAF7] md:flex-row">
           {/* Left Column: Image Gallery & View Switcher */}
           <div className="group relative flex min-h-[42svh] w-full flex-col justify-between border-b border-[#D6CFC7] bg-[#E1DDD6] p-3 sm:min-h-[50svh] sm:p-7 md:min-h-0 md:w-[54%] md:border-b-0 md:border-r">
             {/* Top Badges */}
@@ -164,7 +167,7 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({ product, product
           </div>
 
           {/* Right Column: Details & Specs */}
-          <div className="flex min-h-0 w-full flex-col justify-between overflow-y-auto p-5 sm:p-9 md:w-[46%] md:p-10">
+          <div className="flex min-h-0 w-full flex-col justify-between overflow-visible p-5 sm:p-9 md:w-[46%] md:p-10 lg:p-14">
             <div className="space-y-6">
               {/* Header: Code & Category */}
               <div>
@@ -281,7 +284,7 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({ product, product
           </div>
 
           {suggestedProducts.length > 0 && (
-            <section className="border-t border-[#D6CFC7] bg-[#F4F1EC] px-5 py-10 sm:px-10 md:px-14 lg:px-20" aria-labelledby="suggested-products-title">
+            <section className="border-t border-[#D6CFC7] bg-[#F4F1EC] px-5 py-12 sm:px-10 md:px-14 lg:px-20" aria-labelledby="suggested-products-title">
               <div className="mx-auto flex max-w-7xl items-end justify-between gap-4">
                 <div>
                   <p className="font-sans text-[10px] font-bold uppercase tracking-[.28em] text-[#8E8B82]">Complete your edit</p>
@@ -289,10 +292,10 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({ product, product
                 </div>
                 <span className="hidden font-sans text-[10px] uppercase tracking-[.18em] text-[#8E8B82] sm:block">Curated for you</span>
               </div>
-              <div className="mx-auto mt-6 grid max-w-7xl grid-cols-2 gap-3 sm:grid-cols-4 sm:gap-5">
+              <div className="mx-auto mt-7 grid max-w-7xl grid-cols-2 gap-3 sm:grid-cols-4 sm:gap-6">
                 {suggestedProducts.map(item => (
                   <button key={item.id} type="button" onClick={() => onSelectProduct?.(item)} className="group text-left">
-                    <div className="relative aspect-[4/5] overflow-hidden border border-[#D6CFC7] bg-[#FBFAF7]">
+                    <div className="relative aspect-[4/5] overflow-hidden border border-[#D6CFC7] bg-[#FBFAF7] shadow-[0_8px_24px_rgba(45,41,38,.05)]">
                       <img src={versionImage(item.frontImage, item.updatedAt)} alt={item.name} loading="lazy" className="h-full w-full object-contain mix-blend-multiply transition-transform duration-500 group-hover:scale-105" />
                     </div>
                     <p className="mt-3 truncate font-cormorant text-lg font-semibold text-[#2D2926] group-hover:text-[#8C6B42]">{item.name}</p>
