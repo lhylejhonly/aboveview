@@ -1,5 +1,5 @@
 'use client';
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useLayoutEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { X, ShoppingBag, Star, ShieldCheck, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Product } from '@/types';
@@ -27,14 +27,12 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({ product, product
   const [copiedLink, setCopiedLink] = useState(false);
   const modalRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (product) {
       setActiveSide('front');
       setSelectedSize(product.sizes[0] || 'M');
       setLiveReviewStats(null);
-      requestAnimationFrame(() => {
-        if (modalRef.current) modalRef.current.scrollTop = 0;
-      });
+      if (modalRef.current) modalRef.current.scrollTop = 0;
       
       // Prevent background body scroll when modal is open
       document.body.style.overflow = 'hidden';
@@ -85,12 +83,14 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({ product, product
 
         {/* Modal Container */}
         <motion.div
+          key={product.id}
           initial={{ opacity: 0, scale: 0.95, y: 15 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.95, y: 15 }}
           transition={{ type: 'spring', damping: 25, stiffness: 300 }}
+          onAnimationComplete={() => { if (modalRef.current) modalRef.current.scrollTop = 0; }}
           ref={modalRef}
-          className="relative z-10 flex min-h-screen w-full max-w-none flex-col overflow-y-auto bg-[#FBFAF7] shadow-[0_28px_90px_rgba(20,18,16,0.32)] [scrollbar-color:#c9c1b6_transparent]"
+          className="relative z-10 flex h-dvh min-h-dvh w-full max-w-none flex-col overflow-y-auto overscroll-contain bg-[#FBFAF7] shadow-[0_28px_90px_rgba(20,18,16,0.32)] [scrollbar-color:#c9c1b6_transparent]"
           id={`quickview-modal-${product.id}`}
           role="dialog"
           aria-modal="true"
