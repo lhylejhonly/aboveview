@@ -201,9 +201,6 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({ product, product
                       ({reviewCount} review{reviewCount === 1 ? '' : 's'})
                     </span>
                   </div>
-                  <span className={`border px-2.5 py-1 font-sans text-[10px] font-semibold uppercase tracking-wider ${unavailable ? 'border-[#D6CFC7] bg-[#F0EDE8] text-[#8E8B82]' : 'border-[#C8D8C1] bg-[#EFF5EC] text-[#587052]'}`}>
-                  {product.isComingSoon ? 'Available for Preorder' : product.stockCount <= 0 ? 'Out of Stock' : `In Stock (${product.stockCount} available)`}
-                  </span>
                 </div>
               </div>
 
