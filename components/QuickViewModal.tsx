@@ -9,6 +9,8 @@ import { getProductSizeStock } from '@/lib/inventory';
 
 interface QuickViewModalProps {
   product: Product | null;
+  products?: Product[];
+  onSelectProduct?: (product: Product) => void;
   onClose: () => void;
   onOrder?: (product: Product, size: string) => void;
   onAddToCart?: (product: Product, size: string) => void;
@@ -18,7 +20,7 @@ interface QuickViewModalProps {
 const versionImage = (url: string, version?: string) =>
   version ? `${url}${url.includes('?') ? '&' : '?'}v=${encodeURIComponent(version)}` : url;
 
-export const QuickViewModal: React.FC<QuickViewModalProps> = ({ product, onClose, onOrder, onOpenLogin, onAddToCart }) => {
+export const QuickViewModal: React.FC<QuickViewModalProps> = ({ product, products = [], onSelectProduct, onClose, onOrder, onOpenLogin, onAddToCart }) => {
   const [activeSide, setActiveSide] = useState<'front' | 'back'>('front');
   const [selectedSize, setSelectedSize] = useState<string>(product?.sizes[0] || 'M');
   const [liveReviewStats, setLiveReviewStats] = useState<{ rating: number; count: number } | null>(null);
@@ -59,10 +61,14 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({ product, onClose
   const reviewRating = reviewCount > 0 ? (liveReviewStats?.rating ?? product.rating) : 0;
 
   const currentImage = versionImage(activeSide === 'front' ? product.frontImage : product.backImage, product.updatedAt);
+  const suggestedProducts = products
+    .filter(item => item.id !== product.id && !item.isComingSoon && item.stockCount > 0)
+    .sort((a, b) => Number(b.category === product.category) - Number(a.category === product.category))
+    .slice(0, 4);
 
   return (
     <AnimatePresence>
-      <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto p-2 sm:p-6">
+      <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto">
         {/* Backdrop overlay */}
         <motion.div
           initial={{ opacity: 0 }}
@@ -79,7 +85,7 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({ product, onClose
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.95, y: 15 }}
           transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-          className="relative z-10 my-auto flex min-h-0 max-h-[calc(100svh-1rem)] w-full max-w-5xl flex-col overflow-hidden rounded-xl border border-[#D6CFC7]/80 bg-[#FBFAF7] shadow-[0_28px_90px_rgba(20,18,16,0.32)] sm:max-h-[92vh] sm:rounded-2xl md:flex-row"
+          className="relative z-10 flex min-h-screen w-full max-w-none flex-col overflow-y-auto bg-[#FBFAF7] shadow-[0_28px_90px_rgba(20,18,16,0.32)]"
           id={`quickview-modal-${product.id}`}
           role="dialog"
           aria-modal="true"
@@ -95,8 +101,9 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({ product, onClose
             <X className="w-5 h-5" />
           </button>
 
+          <div className="flex min-h-[calc(100svh-3.5rem)] flex-col md:flex-row">
           {/* Left Column: Image Gallery & View Switcher */}
-          <div className="group relative flex min-h-0 max-h-[46svh] min-h-[18rem] w-full flex-col justify-between border-b border-[#D6CFC7] bg-[#E1DDD6] p-3 sm:max-h-none sm:p-7 md:w-[54%] md:border-b-0 md:border-r">
+          <div className="group relative flex min-h-[42svh] w-full flex-col justify-between border-b border-[#D6CFC7] bg-[#E1DDD6] p-3 sm:min-h-[50svh] sm:p-7 md:min-h-0 md:w-[54%] md:border-b-0 md:border-r">
             {/* Top Badges */}
             <div className="pointer-events-none absolute left-5 top-5 z-20 flex flex-wrap items-center gap-1.5 sm:left-8 sm:top-7">
               {product.isNew && (
@@ -117,7 +124,7 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({ product, onClose
             </div>
 
             {/* Main Image View */}
-            <div className="relative my-auto flex aspect-[4/5] max-h-[42svh] w-full items-center justify-center overflow-hidden rounded-lg bg-white shadow-inner ring-1 ring-[#FBFAF7]/40 sm:max-h-none sm:rounded-xl">
+            <div className="relative my-auto flex aspect-[4/5] max-h-[48svh] w-full items-center justify-center overflow-hidden rounded-lg bg-white shadow-inner ring-1 ring-[#FBFAF7]/40 sm:max-h-[70svh] sm:rounded-xl md:max-h-none">
               <motion.img
                 key={`${product.id}-${activeSide}`}
                 src={currentImage}
@@ -271,6 +278,30 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({ product, onClose
               </div>
             </div>
           </div>
+          </div>
+
+          {suggestedProducts.length > 0 && (
+            <section className="border-t border-[#D6CFC7] bg-[#F4F1EC] px-5 py-10 sm:px-10 md:px-14 lg:px-20" aria-labelledby="suggested-products-title">
+              <div className="mx-auto flex max-w-7xl items-end justify-between gap-4">
+                <div>
+                  <p className="font-sans text-[10px] font-bold uppercase tracking-[.28em] text-[#8E8B82]">Complete your edit</p>
+                  <h3 id="suggested-products-title" className="mt-2 font-cormorant text-3xl font-semibold text-[#2D2926] sm:text-4xl">You may also like</h3>
+                </div>
+                <span className="hidden font-sans text-[10px] uppercase tracking-[.18em] text-[#8E8B82] sm:block">Curated for you</span>
+              </div>
+              <div className="mx-auto mt-6 grid max-w-7xl grid-cols-2 gap-3 sm:grid-cols-4 sm:gap-5">
+                {suggestedProducts.map(item => (
+                  <button key={item.id} type="button" onClick={() => onSelectProduct?.(item)} className="group text-left">
+                    <div className="relative aspect-[4/5] overflow-hidden border border-[#D6CFC7] bg-[#FBFAF7]">
+                      <img src={versionImage(item.frontImage, item.updatedAt)} alt={item.name} loading="lazy" className="h-full w-full object-contain mix-blend-multiply transition-transform duration-500 group-hover:scale-105" />
+                    </div>
+                    <p className="mt-3 truncate font-cormorant text-lg font-semibold text-[#2D2926] group-hover:text-[#8C6B42]">{item.name}</p>
+                    <p className="mt-1 font-sans text-xs font-semibold text-[#641f2b]">{formatPrice(item.price)}</p>
+                  </button>
+                ))}
+              </div>
+            </section>
+          )}
         </motion.div>
       </div>
     </AnimatePresence>
