@@ -1,6 +1,6 @@
 'use client';
 import React, { useState, useEffect, useRef } from 'react';
-import { Gift, RotateCw, Sparkles } from 'lucide-react';
+import { Gift, RotateCw } from 'lucide-react';
 import { motion, useMotionValue, useSpring, useTransform } from 'motion/react';
 import { Product } from '@/types';
 import { formatPrice } from '@/lib/currency';
@@ -64,7 +64,6 @@ export const ProductCard: React.FC<ProductCardProps> = ({ product, forceFlipped 
           <div className={`relative aspect-[4/5] w-full cursor-pointer overflow-hidden bg-[#FAF9F6] ${product.isComingSoon ? 'grayscale-[0.35]' : ''}`} onClick={handleImageClick}>
           <div className="absolute top-2 sm:top-3 left-2 sm:left-3 right-2 sm:right-3 z-20 flex items-center justify-between pointer-events-none">
             <div>{product.isComingSoon ? <span className="px-2 py-0.5 bg-[#8E8B82] text-[#F7F5F0] font-sans text-[7px] sm:text-[8px] font-bold tracking-widest uppercase rounded-md shadow-xs">COMING SOON</span> : product.isNew ? <span className="px-2 py-0.5 bg-[#641f2b] text-[#F7F5F0] font-sans text-[7px] sm:text-[8px] font-bold tracking-widest uppercase rounded-md shadow-xs">NEW</span> : product.isBestseller ? <span className="px-2 py-0.5 bg-[#234437] text-[#F7F5F0] font-sans text-[7px] sm:text-[8px] font-bold tracking-widest uppercase rounded-md shadow-xs">BESTSELLER</span> : null}</div>
-            <span className="christmas-card__badge inline-flex items-center gap-1 rounded-full border border-[#d4b483]/60 bg-[#fbfaf6]/90 px-2 py-1 font-sans text-[7px] font-bold uppercase tracking-[.16em] text-[#8f6a32] shadow-sm backdrop-blur-sm"><Sparkles className="h-2.5 w-2.5" /> Gift edit</span>
           </div>
           <div className="relative w-full h-full overflow-hidden">
             <div className="absolute bottom-5 left-1/2 z-0 h-8 w-3/5 -translate-x-1/2 rounded-[50%] bg-[#234437]/10 blur-xl" />
