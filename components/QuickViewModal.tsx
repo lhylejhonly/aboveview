@@ -98,12 +98,10 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({ product, product
           aria-labelledby={`quickview-title-${product.id}`}
         >
           <header className="sticky top-0 z-30 flex h-[4.5rem] shrink-0 items-center justify-between border-b border-[#D6CFC7] bg-[#FBFAF7]/95 px-5 backdrop-blur-md sm:px-10 lg:px-14">
-            <a href="/" className="group flex items-center gap-3" aria-label="Go to Above Apprl home">
-              <img src="/images/logo.png" alt="Above Apprl" className="h-9 w-9 object-contain transition-transform duration-300 group-hover:scale-105" />
-              <span className="font-cinzel text-[11px] font-bold tracking-[.22em] text-[#2D2926] sm:text-xs">ABOVE APPRL</span>
+            <span className="font-sans text-[9px] font-bold uppercase tracking-[.3em] text-[#8E8B82]">Product details / Essentials</span>
+            <a href="/" className="group mr-11 flex items-center" aria-label="Go to Above Apprl home">
+              <img src="/images/logo.png" alt="Above Apprl" className="h-12 w-12 object-contain transition-transform duration-300 group-hover:scale-105 sm:h-14 sm:w-14" />
             </a>
-            <span className="hidden font-sans text-[9px] font-bold uppercase tracking-[.3em] text-[#8E8B82] sm:block">Product details / Essentials</span>
-            <span className="w-9 sm:w-12" aria-hidden="true" />
           </header>
 
           {/* Close Button */}
