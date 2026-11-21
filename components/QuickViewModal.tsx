@@ -32,7 +32,9 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({ product, product
       setActiveSide('front');
       setSelectedSize(product.sizes[0] || 'M');
       setLiveReviewStats(null);
-      requestAnimationFrame(() => modalRef.current?.scrollTo({ top: 0, behavior: 'instant' }));
+      requestAnimationFrame(() => {
+        if (modalRef.current) modalRef.current.scrollTop = 0;
+      });
       
       // Prevent background body scroll when modal is open
       document.body.style.overflow = 'hidden';
@@ -70,7 +72,7 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({ product, product
 
   return (
     <AnimatePresence>
-      <div className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto">
+      <div className="fixed inset-0 z-50 flex items-center justify-center overflow-hidden">
         {/* Backdrop overlay */}
         <motion.div
           initial={{ opacity: 0 }}
