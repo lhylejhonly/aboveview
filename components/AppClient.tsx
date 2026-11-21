@@ -319,9 +319,9 @@ export default function AppClient({ collectionsOnly = false }: { collectionsOnly
         </div>
       )}
 
-      <main id="product-grid-section" className={`flex-1 w-full max-w-7xl mx-auto px-3 py-4 sm:px-8 ${collectionsOnly ? 'sm:py-6' : ''}`}>
+      <main id="product-grid-section" className={`flex-1 w-full max-w-7xl mx-auto px-3 py-5 sm:px-8 ${collectionsOnly ? 'sm:py-6' : ''}`}>
         {loading ? (
-        <div className={`grid gap-3 sm:gap-5 ${viewMode === 'large' ? 'grid-cols-1 md:grid-cols-2 max-w-5xl mx-auto' : 'grid-cols-2 max-[380px]:grid-cols-1 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5'}`}>
+        <div className={`grid gap-4 sm:gap-5 ${viewMode === 'large' ? 'grid-cols-1 md:grid-cols-2 max-w-5xl mx-auto' : 'grid-cols-1 min-[420px]:grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5'}`}>
             {Array.from({ length: 6 }).map((_, i) => <ProductSkeletonCard key={i} viewMode={viewMode === 'large' ? 'large' : 'grid'} />)}
           </div>
         ) : error ? (
@@ -344,7 +344,7 @@ export default function AppClient({ collectionsOnly = false }: { collectionsOnly
             </motion.div>
             ) : (
             <motion.div key={`grid-${activeCategory}-${searchQuery}-${currentPage}-${viewMode}`} layout
-              className={`grid gap-3 sm:gap-5 ${viewMode === 'large' ? 'grid-cols-1 md:grid-cols-2 max-w-5xl mx-auto' : 'grid-cols-2 max-[380px]:grid-cols-1 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5'}`}>
+              className={`grid gap-4 sm:gap-5 ${viewMode === 'large' ? 'grid-cols-1 md:grid-cols-2 max-w-5xl mx-auto' : 'grid-cols-1 min-[420px]:grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5'}`}>
               <AnimatePresence mode="popLayout">
                 {paginatedProducts.map((product, index) => (
                   <motion.div key={product.id} layout initial={{ opacity: 0, y: 32, scale: 0.97 }}

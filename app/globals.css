@@ -15,9 +15,46 @@ body {
   margin: 0;
   min-width: 320px;
   overflow-x: hidden;
-  background: #f7f5f0;
+  background: #f5f2eb;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
+}
+
+.christmas-card {
+  isolation: isolate;
+}
+
+.christmas-card::before,
+.christmas-card::after {
+  content: '';
+  position: absolute;
+  z-index: 1;
+  pointer-events: none;
+  width: 5px;
+  height: 5px;
+  border-radius: 999px;
+  background: #d4b483;
+  box-shadow: 0 0 12px 2px rgba(212, 180, 131, .7);
+  animation: christmasTwinkle 2.8s ease-in-out infinite;
+}
+
+.christmas-card::before { top: 22%; left: 5%; }
+.christmas-card::after { top: 43%; right: 6%; animation-delay: 1.2s; }
+
+.christmas-card__lights {
+  background: linear-gradient(90deg, #641f2b 0 32%, #d4b483 32% 36%, #234437 36% 68%, #d4b483 68% 72%, #641f2b 72%);
+  background-size: 180% 100%;
+  animation: christmasLights 5s ease-in-out infinite;
+}
+
+@keyframes christmasTwinkle {
+  0%, 100% { opacity: .25; transform: scale(.7); }
+  50% { opacity: 1; transform: scale(1.25); }
+}
+
+@keyframes christmasLights {
+  0%, 100% { background-position: 0 0; opacity: .75; }
+  50% { background-position: 100% 0; opacity: 1; }
 }
 
 button, a, input, select, textarea { -webkit-tap-highlight-color: transparent; }
