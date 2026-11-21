@@ -97,10 +97,10 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({ product, product
           aria-modal="true"
           aria-labelledby={`quickview-title-${product.id}`}
         >
-          <header className="sticky top-0 z-30 flex h-[4.5rem] shrink-0 items-center justify-between border-b border-[#D6CFC7] bg-[#FBFAF7]/95 px-5 backdrop-blur-md sm:px-10 lg:px-14">
+          <header className="sticky top-0 z-30 flex h-20 shrink-0 items-center justify-between border-b border-[#D6CFC7] bg-[#FBFAF7]/95 px-5 backdrop-blur-md sm:h-24 sm:px-10 lg:px-14">
             <span className="font-sans text-[9px] font-bold uppercase tracking-[.3em] text-[#8E8B82]">Product details / Essentials</span>
             <a href="/" className="group absolute left-1/2 flex -translate-x-1/2 items-center" aria-label="Go to Above Apprl home">
-              <img src="/images/logo.png" alt="Above Apprl" className="h-12 w-12 object-contain transition-transform duration-300 group-hover:scale-105 sm:h-14 sm:w-14" />
+              <img src="/images/logo.png" alt="Above Apprl" className="h-16 w-32 object-contain transition-transform duration-300 group-hover:scale-105 sm:h-20 sm:w-40" />
             </a>
           </header>
 
@@ -114,7 +114,7 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({ product, product
             <X className="w-5 h-5" />
           </button>
 
-          <div className="flex min-h-[calc(100dvh-4.5rem)] flex-col bg-[#FBFAF7] md:flex-row">
+          <div className="flex min-h-[calc(100dvh-5rem)] flex-col bg-[#FBFAF7] sm:min-h-[calc(100dvh-6rem)] md:flex-row">
           {/* Left Column: Image Gallery & View Switcher */}
           <div className="group relative flex min-h-[42svh] w-full flex-col justify-between border-b border-[#D6CFC7] bg-[#E1DDD6] p-3 sm:min-h-[50svh] sm:p-7 md:min-h-0 md:w-[54%] md:border-b-0 md:border-r">
             {/* Top Badges */}
