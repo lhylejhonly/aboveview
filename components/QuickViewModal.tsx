@@ -5,6 +5,7 @@ import { X, ShoppingBag, Star, ShieldCheck, ChevronLeft, ChevronRight } from 'lu
 import { Product } from '@/types';
 import { formatPrice } from '@/lib/currency';
 import { ProductReviews } from '@/components/ProductReviews';
+import { Footer } from '@/components/Footer';
 import { getProductSizeStock } from '@/lib/inventory';
 
 interface QuickViewModalProps {
@@ -314,18 +315,7 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({ product, product
             </section>
           )}
 
-          <footer className="border-t border-[#D6CFC7] bg-[#2D2926] px-5 py-9 text-[#F4F1EE] sm:px-10 sm:py-11 md:px-14 lg:px-20">
-            <div className="mx-auto flex max-w-7xl flex-col gap-6 sm:flex-row sm:items-end sm:justify-between">
-              <div>
-                <p className="font-cinzel text-sm font-bold tracking-[.22em] text-[#F4F1EE]">ABOVE APPRL</p>
-                <p className="mt-2 max-w-sm font-cormorant text-lg italic text-[#D4B483]">Premium streetwear crafted for those who move with purpose.</p>
-              </div>
-              <div className="text-left sm:text-right">
-                <p className="font-sans text-[9px] uppercase tracking-[.24em] text-[#D6CFC7]">© 2026 Above Apprl</p>
-                <p className="mt-2 font-sans text-[9px] uppercase tracking-[.18em] text-[#8E8B82]">Essentials / Made to move</p>
-              </div>
-            </div>
-          </footer>
+          <Footer totalPages={1} />
         </motion.div>
       </div>
     </AnimatePresence>
