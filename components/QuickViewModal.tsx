@@ -91,7 +91,7 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({ product, product
           transition={{ type: 'spring', damping: 25, stiffness: 300 }}
           onAnimationComplete={() => { if (modalRef.current) modalRef.current.scrollTop = 0; }}
           ref={modalRef}
-          className="relative z-10 flex h-dvh min-h-dvh w-full max-w-none flex-col overflow-y-auto overscroll-contain bg-[#FBFAF7] shadow-[0_28px_90px_rgba(20,18,16,0.32)] [scrollbar-color:#c9c1b6_transparent]"
+          className="relative z-10 flex h-[calc(100dvh-1.5rem)] max-h-[900px] w-[calc(100%-1.5rem)] max-w-6xl flex-col overflow-y-auto overscroll-contain rounded-2xl bg-[#FBFAF7] shadow-[0_28px_90px_rgba(20,18,16,0.32)] [scrollbar-color:#c9c1b6_transparent] sm:h-[calc(100dvh-3rem)] sm:w-[calc(100%-3rem)]"
           id={`quickview-modal-${product.id}`}
           role="dialog"
           aria-modal="true"
@@ -114,7 +114,7 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({ product, product
             <X className="w-5 h-5" />
           </button>
 
-          <div className="flex min-h-[calc(100dvh-5rem)] flex-col bg-[#FBFAF7] sm:min-h-[calc(100dvh-6rem)] md:flex-row">
+          <div className="flex min-h-0 flex-1 flex-col bg-[#FBFAF7] md:flex-row">
           {/* Left Column: Image Gallery & View Switcher */}
           <div className="group relative flex min-h-[42svh] w-full flex-col justify-between border-b border-[#D6CFC7] bg-[#E1DDD6] p-3 sm:min-h-[50svh] sm:p-7 md:min-h-0 md:w-[54%] md:border-b-0 md:border-r">
             {/* Top Badges */}
