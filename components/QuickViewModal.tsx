@@ -114,7 +114,7 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({ product, product
             <X className="w-5 h-5" />
           </button>
 
-          <div className="flex min-h-0 flex-1 flex-col bg-[#FBFAF7] md:flex-row md:overflow-hidden">
+          <div className="flex min-h-[calc(100dvh-6rem)] flex-none flex-col bg-[#FBFAF7] md:flex-row md:overflow-hidden">
           {/* Left Column: Image Gallery & View Switcher */}
           <div className="group relative flex min-h-[42svh] w-full flex-col justify-between border-b border-[#D6CFC7] bg-[#E1DDD6] p-3 sm:min-h-[50svh] sm:p-7 md:min-h-0 md:w-[54%] md:border-b-0 md:border-r">
             {/* Top Badges */}
