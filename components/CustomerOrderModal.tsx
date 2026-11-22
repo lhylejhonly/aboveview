@@ -449,7 +449,7 @@ export function CustomerOrderModal({
                         <option value="">Select</option>
                         {product.sizes.map((item) => (
                           <option key={item} value={item} disabled={!product.isComingSoon && getProductSizeStock(product, item) <= 0}>
-                            {item} ({product.isComingSoon ? "preorder" : `${getProductSizeStock(product, item)} available`})
+                            {item}
                           </option>
                         ))}
                       </select>
