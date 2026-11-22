@@ -430,12 +430,23 @@ export function CustomerOrderModal({
                     <ShoppingBag className="h-5 w-5 text-[#8C806D]" />
                   </div>
                   <div className="mt-5 border-b border-[#E5DFD7] pb-5">
-                    <p className="text-lg font-semibold text-[#2D2926]">
-                      {product.name}
-                    </p>
-                    <p className="mt-1 text-xs text-[#6F6963]">
-                      {product.code}
-                    </p>
+                    <div className="flex items-center gap-3">
+                      <div className="h-20 w-16 shrink-0 overflow-hidden rounded-lg bg-[#E5E0DA]">
+                        <img
+                          src={product.frontImage}
+                          alt={product.name}
+                          className="h-full w-full object-contain mix-blend-multiply"
+                        />
+                      </div>
+                      <div className="min-w-0">
+                        <p className="text-lg font-semibold text-[#2D2926]">
+                          {product.name}
+                        </p>
+                        <p className="mt-1 text-xs text-[#6F6963]">
+                          {product.code}
+                        </p>
+                      </div>
+                    </div>
                   </div>
                   <div className="mt-5 grid grid-cols-2 gap-3">
                     <label className={labelClass}>
