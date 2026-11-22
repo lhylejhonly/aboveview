@@ -97,17 +97,17 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({ product, product
           aria-modal="true"
           aria-labelledby={`quickview-title-${product.id}`}
         >
-          <header className="sticky top-0 z-30 flex h-20 shrink-0 items-center justify-between border-b border-[#D6CFC7] bg-[#FBFAF7]/95 px-5 backdrop-blur-md sm:h-24 sm:px-10 lg:px-14">
+          <header className="sticky top-0 z-30 flex h-14 shrink-0 items-center justify-between border-b border-[#D6CFC7] bg-[#FBFAF7]/95 px-4 backdrop-blur-md sm:h-16 sm:px-6 lg:px-8">
             <span className="font-sans text-[9px] font-bold uppercase tracking-[.3em] text-[#8E8B82]">Product details / Essentials</span>
             <a href="/" className="group absolute left-1/2 flex -translate-x-1/2 items-center" aria-label="Go to Above Apprl home">
-              <img src="/images/logo.png" alt="Above Apprl" className="h-16 w-32 object-contain transition-transform duration-300 group-hover:scale-105 sm:h-20 sm:w-40" />
+              <img src="/images/logo.png" alt="Above Apprl" className="h-10 w-20 object-contain transition-transform duration-300 group-hover:scale-105 sm:h-12 sm:w-24" />
             </a>
           </header>
 
           {/* Close Button */}
           <button
             onClick={onClose}
-            className="absolute right-4 top-4 z-30 rounded-full border border-[#D6CFC7] bg-[#FBFAF7]/90 p-2.5 text-[#2D2926] backdrop-blur-sm transition-all duration-200 hover:bg-[#2D2926] hover:text-[#F4F1EE]"
+            className="absolute right-3 top-3 z-30 rounded-full border border-[#D6CFC7] bg-[#FBFAF7]/90 p-2 text-[#2D2926] backdrop-blur-sm transition-all duration-200 hover:bg-[#2D2926] hover:text-[#F4F1EE]"
             title="Close Quick View"
             id="quickview-close-btn"
           >
