@@ -171,7 +171,9 @@ export function CustomerOrderModal({
   const discount = voucherApplied
     ? Math.round(subtotal * (voucherDiscountPercent / 100) * 100) / 100
     : 0;
-  const total = subtotal - discount;
+  const discountedSubtotal = subtotal - discount;
+  const shippingFee = discountedSubtotal >= 2500 ? 0 : 100;
+  const total = discountedSubtotal + shippingFee;
   const depositAmount = Math.round(total * 0.5 * 100) / 100;
   const sizeStock = getProductSizeStock(product, size);
   const applyVoucher = async () => {
@@ -320,13 +322,14 @@ export function CustomerOrderModal({
         is_preorder: product.isComingSoon === true,
         size,
         quantity,
-        unit_price: total / quantity,
+        unit_price: discountedSubtotal / quantity,
         voucher_code: voucherApplied ? voucherCode.trim().toUpperCase() : null,
         discount_amount: discount,
         ...deliveryProfile,
         ...shipping,
         package_weight_kg: Number(shipping.package_weight_kg),
         cod_amount: paymentMethod === "cod" ? total : 0,
+        shipping_fee: shippingFee,
         payment_method: paymentMethod,
         deposit_amount: paymentMethod === "cod" ? depositAmount : 0,
         deposit_status: paymentMethod === "cod" ? "pending" : "not_required",
@@ -525,6 +528,10 @@ export function CustomerOrderModal({
                       {voucherApplied && <p className="text-xs text-[#56704B]">-{formatPrice(discount)}</p>}
                       <strong className="text-2xl text-[#2D2926]">{formatPrice(total)}</strong>
                     </div>
+                  </div>
+                  <div className="mt-4 space-y-2 text-xs">
+                    <div className="flex items-center justify-between text-[#6F6963]"><span>Shipping fee</span><span className="font-semibold text-[#2D2926]">{shippingFee === 0 ? "FREE" : formatPrice(shippingFee)}</span></div>
+                    {shippingFee > 0 && <p className="text-[10px] leading-4 text-[#8E8B82]">Free shipping on orders ₱2,500 and above.</p>}
                   </div>
                   <div className="mt-5 border-t border-[#E5DFD7] pt-5">
                     <label className={labelClass}>

@@ -44,6 +44,7 @@ type Order = {
   postal_code?: string;
   package_weight_kg?: number;
   cod_amount?: number;
+  shipping_fee?: number;
   shipment?: {
     id: string;
     tracking_number?: string | null;
@@ -514,7 +515,7 @@ function OrderDetails({
             />
             <CopyField
               label="COD amount"
-              value={formatPrice(Number(order.unit_price) * order.quantity)}
+              value={formatPrice(Number(order.unit_price) * order.quantity + Number(order.shipping_fee ?? 0))}
             />
           </div>
         </div>
@@ -538,8 +539,9 @@ function OrderDetails({
             <Detail label="Quantity" value={String(order.quantity)} />
             <Detail
               label="Total"
-              value={formatPrice(Number(order.unit_price) * order.quantity)}
+              value={formatPrice(Number(order.unit_price) * order.quantity + Number(order.shipping_fee ?? 0))}
             />
+            <Detail label="Shipping fee" value={Number(order.shipping_fee ?? 0) === 0 ? "FREE" : formatPrice(Number(order.shipping_fee))} />
             <Detail label="Status" value={order.status} />
             <Detail
               label="Payment status"
