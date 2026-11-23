@@ -407,6 +407,9 @@ function OrderDetails({
   const [depositState, setDepositState] = useState("");
   const [verifyingDeposit, setVerifyingDeposit] = useState(false);
   const [depositStatus, setDepositStatus] = useState(order.deposit_status ?? "pending");
+  const orderTotal = Number(order.unit_price) * order.quantity + Number(order.shipping_fee ?? 0);
+  const depositPaid = order.payment_method === "cod" ? Number(order.deposit_amount ?? 0) : 0;
+  const remainingBalance = Math.max(0, orderTotal - depositPaid);
   const sendMessage = async (event: React.FormEvent) => {
     event.preventDefault();
     if (!message.trim()) return;
@@ -517,7 +520,7 @@ function OrderDetails({
             />
             <CopyField
               label="COD amount"
-              value={formatPrice(Number(order.unit_price) * order.quantity + Number(order.shipping_fee ?? 0))}
+              value={formatPrice(order.payment_method === "cod" ? remainingBalance : orderTotal)}
             />
           </div>
         </div>
@@ -541,7 +544,7 @@ function OrderDetails({
             <Detail label="Quantity" value={String(order.quantity)} />
             <Detail
               label="Total"
-              value={formatPrice(Number(order.unit_price) * order.quantity + Number(order.shipping_fee ?? 0))}
+              value={formatPrice(orderTotal)}
             />
             <Detail label="Shipping fee" value={Number(order.shipping_fee ?? 0) === 0 ? "FREE" : formatPrice(Number(order.shipping_fee))} />
             <Detail label="Status" value={order.status} />
@@ -557,6 +560,7 @@ function OrderDetails({
               <>
                 <Detail label="Required deposit" value={formatPrice(Number(order.deposit_amount ?? 0))} />
                 <Detail label="Deposit status" value={depositStatus} />
+                <Detail label="Remaining balance" value={formatPrice(remainingBalance)} />
                 {order.receipt_url && (
                   <a href={order.receipt_url} target="_blank" rel="noreferrer" className="block overflow-hidden rounded-lg border border-[#dfe0da] bg-[#fbfbf8]">
                     <img src={order.receipt_url} alt="Customer deposit receipt" className="max-h-64 w-full object-contain" />
