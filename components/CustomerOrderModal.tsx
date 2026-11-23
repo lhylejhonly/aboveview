@@ -515,29 +515,6 @@ export function CustomerOrderModal({
                     </label>
                     {voucherMessage && <p className={`mt-2 text-xs ${voucherApplied ? "text-[#56704B]" : "text-[#9A4D3A]"}`}>{voucherMessage}</p>}
                   </div>
-                  <div className="mt-5 border-t border-[#E5DFD7] pt-5">
-                    <p className={labelClass}>Payment method</p>
-                    <div className="mt-2 grid gap-2">
-                      <PaymentOption
-                        active={paymentMethod === "cod"}
-                        icon={Banknote}
-                        title="Cash on Delivery"
-                        description="Pay when your order arrives."
-                        onClick={() => setPaymentMethod("cod")}
-                      />
-                      <PaymentOption
-                        active={paymentMethod === "qr"}
-                        icon={QrCode}
-                        title="QR payment"
-                        description="We’ll send the QR details after checkout."
-                        onClick={() => setPaymentMethod("qr")}
-                      />
-                    </div>
-                    <div className="mt-3 flex items-start gap-2 text-[10px] leading-4 text-[#8E8B82]">
-                      <PackageCheck className="mt-0.5 h-4 w-4 shrink-0 text-[#8C806D]" />
-                      <span>We’ll confirm your payment and delivery details before fulfillment.</span>
-                    </div>
-                  </div>
                 </aside>
                 <div id="delivery-details">
                   <div className="mb-6 flex items-start justify-between gap-4 border-b border-[#DDD7CF] pb-5">
@@ -577,6 +554,29 @@ export function CustomerOrderModal({
                         className={inputClass}
                       />
                     </label>
+                    <div className="border-t border-[#DDD7CF] pt-5">
+                      <p className={labelClass}>Payment method</p>
+                      <div className="mt-2 grid gap-2">
+                        <PaymentOption
+                          active={paymentMethod === "cod"}
+                          icon={Banknote}
+                          title="Cash on Delivery"
+                          description="Pay when your order arrives."
+                          onClick={() => setPaymentMethod("cod")}
+                        />
+                        <PaymentOption
+                          active={paymentMethod === "qr"}
+                          icon={QrCode}
+                          title="QR payment"
+                          description="We’ll send the QR details after checkout."
+                          onClick={() => setPaymentMethod("qr")}
+                        />
+                      </div>
+                      <div className="mt-3 flex items-start gap-2 text-[10px] leading-4 text-[#8E8B82]">
+                        <PackageCheck className="mt-0.5 h-4 w-4 shrink-0 text-[#8C806D]" />
+                        <span>We’ll confirm your payment and delivery details before fulfillment.</span>
+                      </div>
+                    </div>
                   </div>
                   {error && (
                     <p className="mt-5 rounded-lg border border-[#E5BDB0] bg-[#FFF5F1] p-3 text-xs text-[#9A4D3A]">
