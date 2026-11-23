@@ -119,7 +119,7 @@ export function AdminOrders() {
 
   const pending = orders.filter((order) => order.status === "pending").length;
   const total = orders.reduce(
-    (sum, order) => sum + Number(order.unit_price) * order.quantity,
+    (sum, order) => sum + Number(order.unit_price) * order.quantity + Number(order.shipping_fee ?? 0),
     0,
   );
 
@@ -307,7 +307,7 @@ export function AdminOrders() {
                       </p>
                     </td>
                     <td className="px-5 py-4 text-sm font-semibold">
-                      {formatPrice(Number(order.unit_price) * order.quantity)}
+                      {formatPrice(Number(order.unit_price) * order.quantity + Number(order.shipping_fee ?? 0))}
                     </td>
                     <td className="px-5 py-4">
                       <div className="relative inline-flex items-center">
@@ -377,7 +377,7 @@ export function AdminOrders() {
               <div className="mt-5 rounded-xl border border-[#ecece6] bg-[#fbfbf8] p-4">
                 <p className="font-mono text-[10px] font-bold uppercase tracking-widest text-[#85898a]">{deletingOrder.order_number}</p>
                 <p className="mt-1 text-sm font-semibold text-[#20242b]">{deletingOrder.product_name}</p>
-                <p className="mt-1 text-xs text-[#85898a]">{deletingOrder.full_name} · {formatPrice(Number(deletingOrder.unit_price) * deletingOrder.quantity)}</p>
+                <p className="mt-1 text-xs text-[#85898a]">{deletingOrder.full_name} · {formatPrice(Number(deletingOrder.unit_price) * deletingOrder.quantity + Number(deletingOrder.shipping_fee ?? 0))}</p>
               </div>
               <p className="mt-4 text-xs leading-5 text-[#777b80]">This permanently removes the order. Reserved stock and voucher usage will be restored when applicable.</p>
               <div className="mt-6 flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
