@@ -8,7 +8,7 @@ export function MarketingAd({ isLoggedIn = false }: { isLoggedIn?: boolean }) {
   const [mobileOpen, setMobileOpen] = useState(false);
 
   return (
-    <section className="mt-5 w-full overflow-hidden border-y border-[#D6CFC7] bg-[#E8E1D7] sm:mt-8">
+    <section className="mt-0 w-full overflow-hidden border-y border-[#D6CFC7] bg-[#E8E1D7]">
       <div className="grid items-stretch md:grid-cols-[1.15fr_1fr]">
         <motion.div initial={{ opacity: 0, x: -24 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true, amount: .25 }} transition={{ duration: .8, ease: [0.22, 1, 0.36, 1] }} className="group relative min-h-[190px] overflow-hidden bg-[#1F1D1B] sm:min-h-[280px] md:min-h-[330px]">
           <motion.img
