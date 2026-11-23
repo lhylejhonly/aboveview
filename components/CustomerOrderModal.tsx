@@ -564,10 +564,6 @@ export function CustomerOrderModal({
                       Sign out
                     </button>
                   </div>
-                  <div className="mb-5 flex items-center gap-3 rounded-xl border border-[#DDD7CF] bg-[#F1EEE8] px-4 py-3 text-xs text-[#6F6963]">
-                    <MapPin className="h-4 w-4 text-[#8C806D]" /> Where should
-                    we deliver your order?
-                  </div>
                   <div className="grid gap-4 sm:grid-cols-2">
                     <label className={labelClass}>
                       Full name
