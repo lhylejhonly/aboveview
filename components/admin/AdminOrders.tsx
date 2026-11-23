@@ -36,6 +36,7 @@ type Order = {
   deposit_amount?: number;
   deposit_status?: "not_required" | "pending" | "verified" | "rejected" | string;
   deposit_verified_at?: string | null;
+  receipt_url?: string | null;
   payment_provider?: string | null;
   province?: string;
   city_municipality?: string;
@@ -552,6 +553,12 @@ function OrderDetails({
               <>
                 <Detail label="Required deposit" value={formatPrice(Number(order.deposit_amount ?? 0))} />
                 <Detail label="Deposit status" value={order.deposit_status ?? "pending"} />
+                {order.receipt_url && (
+                  <a href={order.receipt_url} target="_blank" rel="noreferrer" className="block overflow-hidden rounded-lg border border-[#dfe0da] bg-[#fbfbf8]">
+                    <img src={order.receipt_url} alt="Customer deposit receipt" className="max-h-64 w-full object-contain" />
+                    <span className="block border-t border-[#dfe0da] px-3 py-2 text-center text-[10px] font-bold uppercase tracking-wider text-[#626741]">Open receipt</span>
+                  </a>
+                )}
                 {order.deposit_status === "pending" && (
                   <button
                     type="button"

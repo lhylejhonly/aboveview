@@ -39,12 +39,19 @@ export async function GET(request: NextRequest) {
   const shipmentByOrder = new Map(
     (shipments ?? []).map((shipment) => [shipment.order_id, shipment]),
   );
-  return NextResponse.json({
-    orders: orders.map((order) => ({
+  const ordersWithReceiptUrls = await Promise.all(orders.map(async (order) => {
+    let receipt_url: string | null = null;
+    if (order.receipt_path) {
+      const signed = await supabase.storage.from("order-receipts").createSignedUrl(order.receipt_path, 60 * 60);
+      receipt_url = signed.data?.signedUrl ?? null;
+    }
+    return {
       ...order,
+      receipt_url,
       shipment: shipmentByOrder.get(order.id) ?? null,
-    })),
-  });
+    };
+  }));
+  return NextResponse.json({ orders: ordersWithReceiptUrls });
 }
 
 export async function DELETE(request: NextRequest) {

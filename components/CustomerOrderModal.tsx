@@ -77,6 +77,10 @@ export function CustomerOrderModal({
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("cod");
   const [depositModalOpen, setDepositModalOpen] = useState(false);
   const [depositAcknowledged, setDepositAcknowledged] = useState(false);
+  const [receiptPath, setReceiptPath] = useState("");
+  const [receiptName, setReceiptName] = useState("");
+  const [receiptUploading, setReceiptUploading] = useState(false);
+  const [receiptError, setReceiptError] = useState("");
   const [userId, setUserId] = useState<string | null>(null);
   const [authLoading, setAuthLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
@@ -111,6 +115,9 @@ export function CustomerOrderModal({
     setPaymentMethod("cod");
     setDepositModalOpen(false);
     setDepositAcknowledged(false);
+    setReceiptPath("");
+    setReceiptName("");
+    setReceiptError("");
     setMessage("");
     setError("");
     setSubmittedOrder(null);
@@ -272,6 +279,11 @@ export function CustomerOrderModal({
       setDepositModalOpen(true);
       return;
     }
+    if (paymentMethod === "cod" && !receiptPath) {
+      setDepositModalOpen(true);
+      setReceiptError("Please upload your deposit receipt before continuing.");
+      return;
+    }
     setOrderConfirmationOpen(true);
   };
 
@@ -316,6 +328,7 @@ export function CustomerOrderModal({
         payment_method: paymentMethod,
         deposit_amount: paymentMethod === "cod" ? depositAmount : 0,
         deposit_status: paymentMethod === "cod" ? "pending" : "not_required",
+        receipt_path: paymentMethod === "cod" ? receiptPath : null,
       })
       .select("id, order_number")
       .single();
@@ -663,11 +676,49 @@ export function CustomerOrderModal({
                   <img src="/images/gotyme-qr.jpg" alt="GoTyme payment QR code" className="mx-auto block h-64 w-full object-contain" />
                 </div>
                 <p className="mt-3 text-center text-[10px] leading-4 text-[#8E8B82]">Send exactly the amount above to the GoTyme QR code, then wait for seller verification.</p>
+                <label className="mt-4 block rounded-lg border border-[#D9D3CA] bg-[#F8F6F2] p-3">
+                  <span className="block text-[10px] font-bold uppercase tracking-[.14em] text-[#6F6963]">Deposit receipt screenshot</span>
+                  <input
+                    type="file"
+                    accept="image/jpeg,image/png,image/webp"
+                    className="mt-2 block w-full text-xs text-[#6F6963] file:mr-3 file:rounded-md file:border-0 file:bg-[#2D2926] file:px-3 file:py-2 file:text-[10px] file:font-bold file:uppercase file:text-white"
+                    disabled={receiptUploading}
+                    onChange={async (event) => {
+                      const file = event.target.files?.[0];
+                      if (!file) return;
+                      setReceiptError("");
+                      setReceiptPath("");
+                      if (!file.type.startsWith("image/") || file.size > 5 * 1024 * 1024) {
+                        setReceiptError("Please upload a JPG, PNG, or WEBP image up to 5MB.");
+                        return;
+                      }
+                      if (!userId) {
+                        setReceiptError("Please sign in again before uploading your receipt.");
+                        return;
+                      }
+                      setReceiptUploading(true);
+                      try {
+                        const safeName = file.name.replace(/[^a-z0-9.-]/gi, "-").toLowerCase();
+                        const path = `${userId}/${crypto.randomUUID()}-${safeName}`;
+                        const { error: uploadError } = await supabase.storage.from("order-receipts").upload(path, file, { cacheControl: "3600", contentType: file.type, upsert: false });
+                        if (uploadError) throw uploadError;
+                        setReceiptPath(path);
+                        setReceiptName(file.name);
+                      } catch (uploadError) {
+                        setReceiptError(uploadError instanceof Error ? uploadError.message : "Unable to upload receipt.");
+                      } finally {
+                        setReceiptUploading(false);
+                      }
+                    }}
+                  />
+                  <span className="mt-2 block text-[10px] text-[#8E8B82]">Required before you can continue. {receiptName ? `Uploaded: ${receiptName}` : "Max 5MB."}</span>
+                </label>
+                {receiptError && <p className="mt-2 text-xs text-[#9A4D3A]">{receiptError}</p>}
                 <label className="mt-4 flex items-start gap-3 rounded-lg border border-[#D9D3CA] bg-[#F8F6F2] p-3 text-xs leading-5 text-[#6F6963]">
                   <input type="checkbox" checked={depositAcknowledged} onChange={(event) => setDepositAcknowledged(event.target.checked)} className="mt-1 h-4 w-4 accent-[#74784F]" />
                   <span>I have sent the 50% deposit and understand that my order will wait for seller verification.</span>
                 </label>
-                <button type="button" disabled={!depositAcknowledged} onClick={() => setDepositModalOpen(false)} className="mt-4 min-h-12 w-full rounded-lg bg-[#2D2926] px-5 text-xs font-bold uppercase tracking-[.14em] text-white transition-colors hover:bg-[#5A5A40] disabled:cursor-not-allowed disabled:opacity-50">
+                <button type="button" disabled={!depositAcknowledged || !receiptPath || receiptUploading} onClick={() => setDepositModalOpen(false)} className="mt-4 min-h-12 w-full rounded-lg bg-[#2D2926] px-5 text-xs font-bold uppercase tracking-[.14em] text-white transition-colors hover:bg-[#5A5A40] disabled:cursor-not-allowed disabled:opacity-50">
                   Continue with COD
                 </button>
               </motion.div>
