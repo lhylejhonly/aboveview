@@ -26,6 +26,7 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({ product, product
   const [selectedSize, setSelectedSize] = useState<string>(product?.sizes[0] || 'M');
   const [liveReviewStats, setLiveReviewStats] = useState<{ rating: number; count: number } | null>(null);
   const [copiedLink, setCopiedLink] = useState(false);
+  const [sizeChartOpen, setSizeChartOpen] = useState(false);
   const modalRef = useRef<HTMLDivElement>(null);
 
   useLayoutEffect(() => {
@@ -33,6 +34,7 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({ product, product
       setActiveSide('front');
       setSelectedSize(product.sizes[0] || 'M');
       setLiveReviewStats(null);
+      setSizeChartOpen(false);
       if (modalRef.current) modalRef.current.scrollTop = 0;
       
       // Prevent background body scroll when modal is open
@@ -48,13 +50,15 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({ product, product
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
+      if (e.key === 'Escape' && sizeChartOpen) {
+        setSizeChartOpen(false);
+      } else if (e.key === 'Escape') {
         onClose();
       }
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [onClose]);
+  }, [onClose, sizeChartOpen]);
 
   if (!product) return null;
 
@@ -243,20 +247,26 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({ product, product
 
               {/* Sizes Selection */}
               <div>
-                <label className="block text-xs font-sans font-semibold uppercase tracking-wider text-[#2D2926] mb-2">
-                  Available Sizes
-                </label>
+                <div className="mb-2 flex items-center justify-between gap-3">
+                  <label className="block text-xs font-sans font-semibold uppercase tracking-wider text-[#2D2926]">
+                    Available Sizes
+                  </label>
+                  <button
+                    type="button"
+                    onClick={() => setSizeChartOpen(true)}
+                    className="border border-[#2D2926] px-2 py-1 font-sans text-[10px] font-bold uppercase tracking-wide text-[#2D2926] transition-colors hover:bg-[#2D2926] hover:text-[#F4F1EE]"
+                    aria-label="Open size chart"
+                  >
+                    Size Chart
+                  </button>
+                </div>
                 <div className="flex flex-wrap gap-2">
                   {product.sizes.map((size) => (
                     <button
                       key={size}
                       disabled={!product.isComingSoon && getProductSizeStock(product, size) <= 0}
                       onClick={() => setSelectedSize(size)}
-                        className={`px-3 py-1.5 text-xs font-sans font-medium uppercase border transition-all ${!product.isComingSoon && getProductSizeStock(product, size) <= 0 ? 'cursor-not-allowed border-[#E5E0DA] text-[#AAA39A] line-through' :
-                        selectedSize === size
-                          ? 'border-[#2D2926] bg-[#2D2926] text-[#F4F1EE] shadow-sm'
-                          : 'border-[#D6CFC7] bg-transparent text-[#2D2926] hover:border-[#2D2926]'
-                      }`}
+                      className={`border px-3 py-1.5 text-xs font-sans font-medium uppercase transition-all ${!product.isComingSoon && getProductSizeStock(product, size) <= 0 ? 'cursor-not-allowed border-[#E5E0DA] text-[#AAA39A] line-through' : selectedSize === size ? 'border-[#2D2926] bg-[#2D2926] text-[#F4F1EE] shadow-sm' : 'border-[#D6CFC7] bg-transparent text-[#2D2926] hover:border-[#2D2926]'}`}
                     >
                       {size}
                     </button>
@@ -289,6 +299,51 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({ product, product
             </div>
           </div>
           </div>
+
+          {sizeChartOpen && (
+            <div className="absolute inset-0 z-40 flex items-center justify-center bg-[#2D2926]/55 p-4 backdrop-blur-sm" role="dialog" aria-modal="true" aria-labelledby="size-chart-title">
+              <div className="relative w-full max-w-lg border border-[#D6CFC7] bg-[#FBFAF7] p-5 shadow-2xl sm:p-8">
+                <button
+                  type="button"
+                  onClick={() => setSizeChartOpen(false)}
+                  className="absolute right-4 top-4 p-1 text-[#8E8B82] transition-colors hover:text-[#2D2926]"
+                  aria-label="Close size chart"
+                >
+                  <X className="h-5 w-5" />
+                </button>
+                <p className="font-sans text-[10px] uppercase tracking-[.25em] text-[#8E8B82]">Above Apprl / Essentials</p>
+                <h3 id="size-chart-title" className="mt-2 font-cormorant text-3xl font-semibold text-[#2D2926]">Size Chart</h3>
+                <p className="mt-1 font-sans text-xs text-[#8E8B82]">Measurements are in inches. For the best fit, compare with a similar garment.</p>
+                <div className="mt-6 overflow-x-auto">
+                  <table className="w-full min-w-[390px] border-collapse text-left font-sans text-xs">
+                    <thead>
+                      <tr className="border-y border-[#D6CFC7] text-[10px] uppercase tracking-wider text-[#8E8B82]">
+                        <th className="px-3 py-3 font-semibold">Size</th>
+                        <th className="px-3 py-3 font-semibold">Chest</th>
+                        <th className="px-3 py-3 font-semibold">Length</th>
+                        <th className="px-3 py-3 font-semibold">Shoulder</th>
+                        <th className="px-3 py-3 font-semibold">Sleeve</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {product.sizes.map((size) => {
+                        const chart: Record<string, string[]> = {
+                          S: ['19', '27', '17', '8'], M: ['20', '28', '18', '8.5'], L: ['21', '29', '19', '9'], XL: ['22', '30', '20', '9.5'], XXL: ['23', '31', '21', '10'],
+                        };
+                        const measurements = chart[size.toUpperCase()] ?? ['—', '—', '—', '—'];
+                        return (
+                          <tr key={size} className="border-b border-[#E5E0DA] text-[#2D2926]">
+                            <th className="px-3 py-3 font-semibold">{size}</th>
+                            {measurements.map((measurement, index) => <td key={`${size}-${index}`} className="px-3 py-3">{measurement}</td>)}
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          )}
 
           {suggestedProducts.length > 0 && (
             <section className="border-t border-[#D6CFC7] bg-[#F4F1EC] px-5 py-12 sm:px-10 md:px-14 lg:px-20" aria-labelledby="suggested-products-title">
