@@ -83,7 +83,8 @@ export async function PATCH(request: NextRequest) {
   if (!authorized(request))
     return NextResponse.json({ error: "Unauthorized." }, { status: 401 });
   try {
-    const { id, status } = await request.json();
+    const { id, status: requestedStatus, action } = await request.json() as { id?: string; status?: string; action?: string };
+    const status = action === "verify_deposit" ? "confirmed" : requestedStatus;
     const allowed = [
       "pending",
       "confirmed",
@@ -93,7 +94,7 @@ export async function PATCH(request: NextRequest) {
       "cancelled",
       "returned",
     ];
-    if (!id || !allowed.includes(status))
+    if (!id || typeof status !== "string" || !allowed.includes(status))
       return NextResponse.json(
         { error: "Invalid order update." },
         { status: 400 },
@@ -101,15 +102,20 @@ export async function PATCH(request: NextRequest) {
     const supabase = getSupabaseAdmin();
     const { data: currentOrder, error: findError } = await supabase
       .from("orders")
-      .select("id, order_number, user_id, status, product_name, product_code, size, quantity, unit_price, full_name, contact_number, destination, address")
+      .select("id, order_number, user_id, status, product_name, product_code, size, quantity, unit_price, full_name, contact_number, destination, address, payment_method, deposit_amount, deposit_status")
       .eq("id", id)
       .maybeSingle();
     if (findError) throw findError;
     if (!currentOrder) return NextResponse.json({ error: "Order not found." }, { status: 404 });
+    if (action === "verify_deposit" && (currentOrder.payment_method !== "cod" || currentOrder.deposit_status !== "pending")) {
+      return NextResponse.json({ error: "This order is not waiting for COD deposit verification." }, { status: 400 });
+    }
 
     const { error } = await supabase
       .from("orders")
-      .update({ status })
+      .update(action === "verify_deposit"
+        ? { status, deposit_status: "verified", deposit_verified_at: new Date().toISOString() }
+        : { status })
       .eq("id", id);
     if (error) throw error;
     let emailSent = false;
@@ -152,7 +158,7 @@ export async function PATCH(request: NextRequest) {
         }
       }
     }
-    return NextResponse.json({ ok: true, emailSent, emailError: emailError || undefined });
+    return NextResponse.json({ ok: true, emailSent, emailError: emailError || undefined, depositStatus: action === "verify_deposit" ? "verified" : undefined });
   } catch (error) {
     console.error("Admin order status update error", error);
     return NextResponse.json(

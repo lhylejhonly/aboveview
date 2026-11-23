@@ -75,6 +75,8 @@ export function CustomerOrderModal({
   const [size, setSize] = useState(initialSize || product?.sizes[0] || "M");
   const [quantity, setQuantity] = useState(1);
   const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("cod");
+  const [depositModalOpen, setDepositModalOpen] = useState(false);
+  const [depositAcknowledged, setDepositAcknowledged] = useState(false);
   const [userId, setUserId] = useState<string | null>(null);
   const [authLoading, setAuthLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
@@ -107,6 +109,8 @@ export function CustomerOrderModal({
     setSize(initialSize || product.sizes[0] || "M");
     setShipping(emptyShipping);
     setPaymentMethod("cod");
+    setDepositModalOpen(false);
+    setDepositAcknowledged(false);
     setMessage("");
     setError("");
     setSubmittedOrder(null);
@@ -159,6 +163,7 @@ export function CustomerOrderModal({
     ? Math.round(subtotal * (voucherDiscountPercent / 100) * 100) / 100
     : 0;
   const total = subtotal - discount;
+  const depositAmount = Math.round(total * 0.5 * 100) / 100;
   const sizeStock = getProductSizeStock(product, size);
   const applyVoucher = async () => {
     setVoucherApplied(false);
@@ -263,6 +268,10 @@ export function CustomerOrderModal({
   const handleOrder = (event: React.FormEvent) => {
     event.preventDefault();
     if (!userId) return;
+    if (paymentMethod === "cod" && !depositAcknowledged) {
+      setDepositModalOpen(true);
+      return;
+    }
     setOrderConfirmationOpen(true);
   };
 
@@ -305,6 +314,8 @@ export function CustomerOrderModal({
         package_weight_kg: Number(shipping.package_weight_kg),
         cod_amount: paymentMethod === "cod" ? total : 0,
         payment_method: paymentMethod,
+        deposit_amount: paymentMethod === "cod" ? depositAmount : 0,
+        deposit_status: paymentMethod === "cod" ? "pending" : "not_required",
       })
       .select("id, order_number")
       .single();
@@ -562,14 +573,22 @@ export function CustomerOrderModal({
                           icon={Banknote}
                           title="Cash on Delivery"
                           description="Pay when your order arrives."
-                          onClick={() => setPaymentMethod("cod")}
+                          onClick={() => {
+                            setPaymentMethod("cod");
+                            setDepositAcknowledged(false);
+                            setDepositModalOpen(true);
+                          }}
                         />
                         <PaymentOption
                           active={paymentMethod === "qr"}
                           icon={QrCode}
                           title="QR payment"
                           description="We’ll send the QR details after checkout."
-                          onClick={() => setPaymentMethod("qr")}
+                          onClick={() => {
+                            setPaymentMethod("qr");
+                            setDepositAcknowledged(false);
+                            setDepositModalOpen(false);
+                          }}
                         />
                       </div>
                       <div className="mt-3 flex items-start gap-2 text-[10px] leading-4 text-[#8E8B82]">
@@ -606,6 +625,54 @@ export function CustomerOrderModal({
           </div>
         </motion.div>
         <AnimatePresence>
+          {depositModalOpen && paymentMethod === "cod" && (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="fixed inset-0 z-[80] flex items-center justify-center bg-[#171513]/60 p-5 backdrop-blur-sm"
+              onClick={() => setDepositModalOpen(false)}
+            >
+              <motion.div
+                initial={{ opacity: 0, y: 18, scale: 0.96 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                exit={{ opacity: 0, y: 12, scale: 0.96 }}
+                role="dialog"
+                aria-modal="true"
+                aria-labelledby="cod-deposit-title"
+                className="w-full max-w-sm rounded-2xl border border-[#D6CFC7] bg-[#FCFBF9] p-5 text-[#2D2926] shadow-2xl sm:p-7"
+                onClick={(event) => event.stopPropagation()}
+              >
+                <div className="flex items-start justify-between gap-4">
+                  <div>
+                    <p className="text-[10px] font-bold uppercase tracking-[.18em] text-[#74784F]">COD deposit required</p>
+                    <h3 id="cod-deposit-title" className="mt-2 text-xl font-bold">Pay 50% deposit</h3>
+                  </div>
+                  <button type="button" onClick={() => setDepositModalOpen(false)} className="rounded-full p-1 text-[#6F6963] hover:bg-[#EEEAE4]" aria-label="Close deposit instructions">
+                    <X className="h-5 w-5" />
+                  </button>
+                </div>
+                <p className="mt-3 text-sm leading-6 text-[#6F6963]">
+                  To prevent cancelled or returned COD orders, please send the required deposit before we prepare your order.
+                </p>
+                <div className="mt-4 rounded-xl border border-[#D9E3D2] bg-[#F1F6EE] p-4 text-center">
+                  <p className="text-[10px] font-bold uppercase tracking-[.15em] text-[#56704B]">Required deposit</p>
+                  <strong className="mt-1 block text-2xl text-[#2D2926]">{formatPrice(depositAmount)}</strong>
+                </div>
+                <div className="mt-5 overflow-hidden rounded-xl border border-[#E2DDD5] bg-white">
+                  <img src="/images/gotyme-qr.jpg" alt="GoTyme payment QR code" className="mx-auto block h-64 w-full object-contain" />
+                </div>
+                <p className="mt-3 text-center text-[10px] leading-4 text-[#8E8B82]">Send exactly the amount above to the GoTyme QR code, then wait for seller verification.</p>
+                <label className="mt-4 flex items-start gap-3 rounded-lg border border-[#D9D3CA] bg-[#F8F6F2] p-3 text-xs leading-5 text-[#6F6963]">
+                  <input type="checkbox" checked={depositAcknowledged} onChange={(event) => setDepositAcknowledged(event.target.checked)} className="mt-1 h-4 w-4 accent-[#74784F]" />
+                  <span>I have sent the 50% deposit and understand that my order will wait for seller verification.</span>
+                </label>
+                <button type="button" disabled={!depositAcknowledged} onClick={() => setDepositModalOpen(false)} className="mt-4 min-h-12 w-full rounded-lg bg-[#2D2926] px-5 text-xs font-bold uppercase tracking-[.14em] text-white transition-colors hover:bg-[#5A5A40] disabled:cursor-not-allowed disabled:opacity-50">
+                  Continue with COD
+                </button>
+              </motion.div>
+            </motion.div>
+          )}
           {orderConfirmationOpen && (
             <motion.div
               initial={{ opacity: 0 }}
@@ -679,8 +746,8 @@ function SuccessState({
         <strong className="text-[#2D2926]">{orderNumber}</strong>.
       </p>
       <div className="mx-auto mt-6 max-w-md rounded-xl border border-[#D9E3D2] bg-[#F1F6EE] p-4 text-left text-sm leading-6 text-[#52634A]">
-        <strong>Next step:</strong> We will contact you to arrange payment and
-        confirm your delivery details before your order is shipped.
+        <strong>Next step:</strong> We will review your order and notify you
+        after the payment verification is complete.
       </div>
       <button
         onClick={onClose}

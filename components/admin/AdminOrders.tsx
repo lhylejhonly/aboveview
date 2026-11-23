@@ -33,6 +33,9 @@ type Order = {
   status: string;
   payment_status?: string;
   payment_method?: "cod" | "qr" | string;
+  deposit_amount?: number;
+  deposit_status?: "not_required" | "pending" | "verified" | "rejected" | string;
+  deposit_verified_at?: string | null;
   payment_provider?: string | null;
   province?: string;
   city_municipality?: string;
@@ -399,6 +402,8 @@ function OrderDetails({
   const [messageState, setMessageState] = useState("");
   const [shipmentState, setShipmentState] = useState("");
   const [creatingShipment, setCreatingShipment] = useState(false);
+  const [depositState, setDepositState] = useState("");
+  const [verifyingDeposit, setVerifyingDeposit] = useState(false);
   const sendMessage = async (event: React.FormEvent) => {
     event.preventDefault();
     if (!message.trim()) return;
@@ -421,6 +426,24 @@ function OrderDetails({
       );
     } finally {
       setSending(false);
+    }
+  };
+  const verifyDeposit = async () => {
+    setVerifyingDeposit(true);
+    setDepositState("");
+    try {
+      const response = await fetch("/api/admin/orders", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id: order.id, action: "verify_deposit" }),
+      });
+      const data = await response.json() as { error?: string; emailSent?: boolean; emailError?: string };
+      if (!response.ok) throw new Error(data.error ?? "Unable to verify deposit.");
+      setDepositState(data.emailSent === false ? `Deposit verified, but customer email was not sent: ${data.emailError ?? "check SMTP settings."}` : "Deposit verified. Customer was notified.");
+    } catch (error) {
+      setDepositState(error instanceof Error ? error.message : "Unable to verify deposit.");
+    } finally {
+      setVerifyingDeposit(false);
     }
   };
   const createShipment = async () => {
@@ -525,6 +548,23 @@ function OrderDetails({
               label="Payment method"
               value={order.payment_method === "qr" ? "QR payment" : "Cash on Delivery"}
             />
+            {order.payment_method === "cod" && (
+              <>
+                <Detail label="Required deposit" value={formatPrice(Number(order.deposit_amount ?? 0))} />
+                <Detail label="Deposit status" value={order.deposit_status ?? "pending"} />
+                {order.deposit_status === "pending" && (
+                  <button
+                    type="button"
+                    onClick={() => void verifyDeposit()}
+                    disabled={verifyingDeposit}
+                    className="w-full rounded-lg bg-[#74784f] px-4 py-3 text-xs font-bold uppercase tracking-[.12em] text-white hover:bg-[#626741] disabled:cursor-wait disabled:opacity-60"
+                  >
+                    {verifyingDeposit ? "Verifying..." : "Verify 50% deposit"}
+                  </button>
+                )}
+                {depositState && <p className={`text-xs ${depositState.startsWith("Deposit verified") ? "text-[#58603c]" : "text-[#a5523b]"}`}>{depositState}</p>}
+              </>
+            )}
             <Detail
               label="Shipping address"
               value={[
