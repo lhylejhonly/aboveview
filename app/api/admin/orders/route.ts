@@ -109,19 +109,19 @@ export async function PATCH(request: NextRequest) {
     const supabase = getSupabaseAdmin();
     const { data: currentOrder, error: findError } = await supabase
       .from("orders")
-      .select("id, order_number, user_id, status, product_name, product_code, size, quantity, unit_price, full_name, contact_number, destination, address, payment_method, deposit_amount, deposit_status, receipt_path")
+      .select("id, order_number, user_id, status, product_name, product_code, size, quantity, unit_price, full_name, contact_number, destination, address, payment_method, payment_status, deposit_amount, deposit_status, receipt_path")
       .eq("id", id)
       .maybeSingle();
     if (findError) throw findError;
     if (!currentOrder) return NextResponse.json({ error: "Order not found." }, { status: 404 });
-    if (action === "verify_deposit" && (currentOrder.payment_method !== "cod" || currentOrder.deposit_status === "verified" || !currentOrder.receipt_path)) {
-      return NextResponse.json({ error: "This COD order needs an uploaded receipt and must not already be verified." }, { status: 400 });
+    if (action === "verify_deposit" && (!['cod', 'qr'].includes(currentOrder.payment_method) || currentOrder.deposit_status === "verified" || !currentOrder.receipt_path)) {
+      return NextResponse.json({ error: "This order needs an uploaded payment receipt and must not already be verified." }, { status: 400 });
     }
 
     const { error } = await supabase
       .from("orders")
       .update(action === "verify_deposit"
-        ? { status, deposit_status: "verified", deposit_verified_at: new Date().toISOString() }
+        ? { status, deposit_status: "verified", deposit_verified_at: new Date().toISOString(), payment_status: "paid", payment_provider: currentOrder.payment_method === "qr" ? "gotyme_qr" : undefined }
         : { status })
       .eq("id", id);
     if (error) throw error;

@@ -4,7 +4,6 @@ import React, { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import {
   Check,
-  Banknote,
   LockKeyhole,
   LogIn,
   MapPin,
@@ -26,7 +25,7 @@ interface CustomerOrderModalProps {
   onClose: () => void;
 }
 type AuthMode = "sign-in" | "sign-up";
-type PaymentMethod = "cod" | "qr";
+type PaymentMethod = "qr";
 interface CustomerProfile {
   full_name: string;
   contact_number: string;
@@ -74,9 +73,9 @@ export function CustomerOrderModal({
   const [shipping, setShipping] = useState<ShippingDetails>(emptyShipping);
   const [size, setSize] = useState(initialSize || product?.sizes[0] || "M");
   const [quantity, setQuantity] = useState(1);
-  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("cod");
-  const [depositModalOpen, setDepositModalOpen] = useState(false);
-  const [depositAcknowledged, setDepositAcknowledged] = useState(false);
+  const [paymentMethod] = useState<PaymentMethod>("qr");
+  const [qrPaymentModalOpen, setQrPaymentModalOpen] = useState(false);
+  const [paymentAcknowledged, setPaymentAcknowledged] = useState(false);
   const [receiptPath, setReceiptPath] = useState("");
   const [receiptName, setReceiptName] = useState("");
   const [receiptUploading, setReceiptUploading] = useState(false);
@@ -113,9 +112,8 @@ export function CustomerOrderModal({
     document.body.style.overflow = "hidden";
     setSize(initialSize || product.sizes[0] || "M");
     setShipping(emptyShipping);
-    setPaymentMethod("cod");
-    setDepositModalOpen(false);
-    setDepositAcknowledged(false);
+    setQrPaymentModalOpen(false);
+    setPaymentAcknowledged(false);
     setReceiptPath("");
     setReceiptName("");
     setReceiptChecking(false);
@@ -174,7 +172,7 @@ export function CustomerOrderModal({
   const discountedSubtotal = subtotal - discount;
   const shippingFee = discountedSubtotal >= 2500 ? 0 : 100;
   const total = discountedSubtotal + shippingFee;
-  const depositAmount = Math.round(total * 0.5 * 100) / 100;
+  const paymentAmount = total;
   const sizeStock = getProductSizeStock(product, size);
   const applyVoucher = async () => {
     setVoucherApplied(false);
@@ -279,13 +277,13 @@ export function CustomerOrderModal({
   const handleOrder = (event: React.FormEvent) => {
     event.preventDefault();
     if (!userId) return;
-    if (paymentMethod === "cod" && !depositAcknowledged) {
-      setDepositModalOpen(true);
+    if (!paymentAcknowledged) {
+      setQrPaymentModalOpen(true);
       return;
     }
-    if (paymentMethod === "cod" && !receiptPath) {
-      setDepositModalOpen(true);
-      setReceiptError("Please upload your deposit receipt before continuing.");
+    if (!receiptPath) {
+      setQrPaymentModalOpen(true);
+      setReceiptError("Please upload your full payment receipt before continuing.");
       return;
     }
     setOrderConfirmationOpen(true);
@@ -328,12 +326,12 @@ export function CustomerOrderModal({
         ...deliveryProfile,
         ...shipping,
         package_weight_kg: Number(shipping.package_weight_kg),
-        cod_amount: paymentMethod === "cod" ? total : 0,
+        cod_amount: 0,
         shipping_fee: shippingFee,
         payment_method: paymentMethod,
-        deposit_amount: paymentMethod === "cod" ? depositAmount : 0,
-        deposit_status: paymentMethod === "cod" ? "pending" : "not_required",
-        receipt_path: paymentMethod === "cod" ? receiptPath : null,
+        deposit_amount: paymentAmount,
+        deposit_status: "pending",
+        receipt_path: receiptPath,
       })
       .select("id, order_number")
       .single();
@@ -591,25 +589,13 @@ export function CustomerOrderModal({
                       <p className={labelClass}>Payment method</p>
                       <div className="mt-2 grid gap-2">
                         <PaymentOption
-                          active={paymentMethod === "cod"}
-                          icon={Banknote}
-                          title="Cash on Delivery"
-                          description="Pay when your order arrives."
-                          onClick={() => {
-                            setPaymentMethod("cod");
-                            setDepositAcknowledged(false);
-                            setDepositModalOpen(true);
-                          }}
-                        />
-                        <PaymentOption
-                          active={paymentMethod === "qr"}
+                          active
                           icon={QrCode}
-                          title="QR payment"
-                          description="We’ll send the QR details after checkout."
+                          title="Pay via QR"
+                          description="Pay the full amount before we prepare your order."
                           onClick={() => {
-                            setPaymentMethod("qr");
-                            setDepositAcknowledged(false);
-                            setDepositModalOpen(false);
+                            setPaymentAcknowledged(false);
+                            setQrPaymentModalOpen(true);
                           }}
                         />
                       </div>
@@ -647,13 +633,13 @@ export function CustomerOrderModal({
           </div>
         </motion.div>
         <AnimatePresence>
-          {depositModalOpen && paymentMethod === "cod" && (
+          {qrPaymentModalOpen && (
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               className="fixed inset-0 z-[80] flex items-center justify-center bg-[#171513]/60 p-5 backdrop-blur-sm"
-              onClick={() => setDepositModalOpen(false)}
+              onClick={() => setQrPaymentModalOpen(false)}
             >
               <motion.div
                 initial={{ opacity: 0, y: 18, scale: 0.96 }}
@@ -661,32 +647,32 @@ export function CustomerOrderModal({
                 exit={{ opacity: 0, y: 12, scale: 0.96 }}
                 role="dialog"
                 aria-modal="true"
-                aria-labelledby="cod-deposit-title"
+                aria-labelledby="qr-payment-title"
                 className="w-full max-w-sm rounded-2xl border border-[#D6CFC7] bg-[#FCFBF9] p-5 text-[#2D2926] shadow-2xl sm:p-7"
                 onClick={(event) => event.stopPropagation()}
               >
                 <div className="flex items-start justify-between gap-4">
                   <div>
-                    <p className="text-[10px] font-bold uppercase tracking-[.18em] text-[#74784F]">COD deposit required</p>
-                    <h3 id="cod-deposit-title" className="mt-2 text-xl font-bold">Pay 50% deposit</h3>
+                    <p className="text-[10px] font-bold uppercase tracking-[.18em] text-[#74784F]">QR payment required</p>
+                    <h3 id="qr-payment-title" className="mt-2 text-xl font-bold">Pay in full via QR</h3>
                   </div>
-                  <button type="button" onClick={() => setDepositModalOpen(false)} className="rounded-full p-1 text-[#6F6963] hover:bg-[#EEEAE4]" aria-label="Close deposit instructions">
+                  <button type="button" onClick={() => setQrPaymentModalOpen(false)} className="rounded-full p-1 text-[#6F6963] hover:bg-[#EEEAE4]" aria-label="Close payment instructions">
                     <X className="h-5 w-5" />
                   </button>
                 </div>
                 <p className="mt-3 text-sm leading-6 text-[#6F6963]">
-                  To prevent cancelled or returned COD orders, please send the required deposit before we prepare your order.
+                  Please send the full amount below before we prepare your order.
                 </p>
                 <div className="mt-4 rounded-xl border border-[#D9E3D2] bg-[#F1F6EE] p-4 text-center">
-                  <p className="text-[10px] font-bold uppercase tracking-[.15em] text-[#56704B]">Required deposit</p>
-                  <strong className="mt-1 block text-2xl text-[#2D2926]">{formatPrice(depositAmount)}</strong>
+                  <p className="text-[10px] font-bold uppercase tracking-[.15em] text-[#56704B]">Total payment</p>
+                  <strong className="mt-1 block text-2xl text-[#2D2926]">{formatPrice(paymentAmount)}</strong>
                 </div>
                 <div className="mt-5 overflow-hidden rounded-xl border border-[#E2DDD5] bg-white">
                   <img src="/images/gotyme-qr.jpg" alt="GoTyme payment QR code" className="mx-auto block h-64 w-full object-contain" />
                 </div>
-                <p className="mt-3 text-center text-[10px] leading-4 text-[#8E8B82]">Send exactly the amount above to the GoTyme QR code, then wait for seller verification.</p>
+                <p className="mt-3 text-center text-[10px] leading-4 text-[#8E8B82]">Send exactly the amount above to the GoTyme QR code, then upload your receipt for seller verification.</p>
                 <label className="mt-4 block rounded-lg border border-[#D9D3CA] bg-[#F8F6F2] p-3">
-                  <span className="block text-[10px] font-bold uppercase tracking-[.14em] text-[#6F6963]">Deposit receipt screenshot</span>
+                  <span className="block text-[10px] font-bold uppercase tracking-[.14em] text-[#6F6963]">Payment receipt screenshot</span>
                   <input
                     type="file"
                     accept="image/jpeg,image/png,image/webp"
@@ -737,11 +723,11 @@ export function CustomerOrderModal({
                 </label>
                 {receiptError && <p className="mt-2 text-xs text-[#9A4D3A]">{receiptError}</p>}
                 <label className="mt-4 flex items-start gap-3 rounded-lg border border-[#D9D3CA] bg-[#F8F6F2] p-3 text-xs leading-5 text-[#6F6963]">
-                  <input type="checkbox" checked={depositAcknowledged} onChange={(event) => setDepositAcknowledged(event.target.checked)} className="mt-1 h-4 w-4 accent-[#74784F]" />
-                  <span>I have sent the 50% deposit and understand that my order will wait for seller verification.</span>
+                  <input type="checkbox" checked={paymentAcknowledged} onChange={(event) => setPaymentAcknowledged(event.target.checked)} className="mt-1 h-4 w-4 accent-[#74784F]" />
+                  <span>I have sent the full payment and understand that my order will wait for seller verification.</span>
                 </label>
-                <button type="button" disabled={!depositAcknowledged || !receiptPath || receiptUploading || receiptChecking} onClick={() => setDepositModalOpen(false)} className="mt-4 min-h-12 w-full rounded-lg bg-[#2D2926] px-5 text-xs font-bold uppercase tracking-[.14em] text-white transition-colors hover:bg-[#5A5A40] disabled:cursor-not-allowed disabled:opacity-50">
-                  Continue with COD
+                <button type="button" disabled={!paymentAcknowledged || !receiptPath || receiptUploading || receiptChecking} onClick={() => setQrPaymentModalOpen(false)} className="mt-4 min-h-12 w-full rounded-lg bg-[#2D2926] px-5 text-xs font-bold uppercase tracking-[.14em] text-white transition-colors hover:bg-[#5A5A40] disabled:cursor-not-allowed disabled:opacity-50">
+                  Continue with QR payment
                 </button>
               </motion.div>
             </motion.div>
@@ -840,7 +826,7 @@ function PaymentOption({
   onClick,
 }: {
   active: boolean;
-  icon: typeof Banknote;
+  icon: typeof QrCode;
   title: string;
   description: string;
   onClick: () => void;

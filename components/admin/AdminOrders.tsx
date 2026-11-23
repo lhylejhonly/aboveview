@@ -451,7 +451,7 @@ function OrderDetails({
       const data = await response.json() as { error?: string; emailSent?: boolean; emailError?: string };
       if (!response.ok) throw new Error(data.error ?? "Unable to verify deposit.");
       setDepositStatus("verified");
-      setDepositState(data.emailSent === false ? `Deposit verified, but customer email was not sent: ${data.emailError ?? "check SMTP settings."}` : "Deposit verified. Customer was notified.");
+      setDepositState(data.emailSent === false ? `Payment verified, but customer email was not sent: ${data.emailError ?? "check SMTP settings."}` : "Payment verified. Customer was notified.");
     } catch (error) {
       setDepositState(error instanceof Error ? error.message : "Unable to verify deposit.");
     } finally {
@@ -525,7 +525,7 @@ function OrderDetails({
             />
             <CopyField
               label="COD amount"
-              value={formatPrice(order.payment_method === "cod" ? remainingBalance : orderTotal)}
+              value={order.payment_method === "cod" ? formatPrice(remainingBalance) : "Prepaid via QR"}
             />
           </div>
         </div>
@@ -561,14 +561,14 @@ function OrderDetails({
               label="Payment method"
               value={order.payment_method === "qr" ? "QR payment" : "Cash on Delivery"}
             />
-            {order.payment_method === "cod" && (
+            {(order.payment_method === "qr" || order.payment_method === "cod") && (
               <>
-                <Detail label="Required deposit" value={formatPrice(Number(order.deposit_amount ?? 0))} />
-                <Detail label="Deposit status" value={depositStatus} />
-                <Detail label="Remaining balance" value={formatPrice(remainingBalance)} />
+                <Detail label={order.payment_method === "qr" ? "Payment amount" : "Required deposit"} value={formatPrice(Number(order.deposit_amount ?? 0))} />
+                <Detail label="Payment verification" value={depositStatus} />
+                {order.payment_method === "cod" && <Detail label="Remaining balance" value={formatPrice(remainingBalance)} />}
                 {order.receipt_url && (
                   <a href={order.receipt_url} target="_blank" rel="noreferrer" className="block overflow-hidden rounded-lg border border-[#dfe0da] bg-[#fbfbf8]">
-                    <img src={order.receipt_url} alt="Customer deposit receipt" className="max-h-64 w-full object-contain" />
+                    <img src={order.receipt_url} alt="Customer payment receipt" className="max-h-64 w-full object-contain" />
                     <span className="block border-t border-[#dfe0da] px-3 py-2 text-center text-[10px] font-bold uppercase tracking-wider text-[#626741]">Open receipt</span>
                   </a>
                 )}
@@ -579,10 +579,10 @@ function OrderDetails({
                     disabled={verifyingDeposit}
                     className="w-full rounded-lg bg-[#74784f] px-4 py-3 text-xs font-bold uppercase tracking-[.12em] text-white hover:bg-[#626741] disabled:cursor-wait disabled:opacity-60"
                   >
-                    {verifyingDeposit ? "Verifying..." : "Verify 50% deposit"}
+                    {verifyingDeposit ? "Verifying..." : order.payment_method === "qr" ? "Verify QR payment" : "Verify 50% deposit"}
                   </button>
                 )}
-                {depositState && <p className={`text-xs ${depositState.startsWith("Deposit verified") ? "text-[#58603c]" : "text-[#a5523b]"}`}>{depositState}</p>}
+                {depositState && <p className={`text-xs ${depositState.startsWith("Payment verified") ? "text-[#58603c]" : "text-[#a5523b]"}`}>{depositState}</p>}
               </>
             )}
             <Detail
