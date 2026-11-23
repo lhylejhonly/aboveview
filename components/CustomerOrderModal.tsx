@@ -660,11 +660,9 @@ export function CustomerOrderModal({
                       />
                     </label>
                     <label className={`${labelClass} sm:col-span-2`}>
-                      Delivery notes{" "}
-                      <span className="font-normal normal-case tracking-normal">
-                        (optional)
-                      </span>
+                      Delivery notes
                       <textarea
+                        required
                         rows={2}
                         value={profile.delivery_notes}
                         onChange={(e) =>
