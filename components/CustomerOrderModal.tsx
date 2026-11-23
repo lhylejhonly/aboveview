@@ -638,7 +638,7 @@ export function CustomerOrderModal({
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="fixed inset-0 z-[80] flex items-center justify-center bg-[#171513]/60 p-5 backdrop-blur-sm"
+              className="fixed inset-0 z-[80] flex items-center justify-center overflow-y-auto bg-[#171513]/60 p-3 backdrop-blur-sm sm:p-5"
               onClick={() => setQrPaymentModalOpen(false)}
             >
               <motion.div
@@ -648,7 +648,7 @@ export function CustomerOrderModal({
                 role="dialog"
                 aria-modal="true"
                 aria-labelledby="qr-payment-title"
-                className="w-full max-w-sm rounded-2xl border border-[#D6CFC7] bg-[#FCFBF9] p-5 text-[#2D2926] shadow-2xl sm:p-7"
+                className="my-auto max-h-[calc(100dvh-1.5rem)] w-full max-w-sm overflow-y-auto overscroll-contain rounded-2xl border border-[#D6CFC7] bg-[#FCFBF9] p-5 text-[#2D2926] shadow-2xl sm:max-h-[calc(100dvh-2.5rem)] sm:p-7"
                 onClick={(event) => event.stopPropagation()}
               >
                 <div className="flex items-start justify-between gap-4">
@@ -668,7 +668,7 @@ export function CustomerOrderModal({
                   <strong className="mt-1 block text-2xl text-[#2D2926]">{formatPrice(paymentAmount)}</strong>
                 </div>
                 <div className="mt-5 overflow-hidden rounded-xl border border-[#E2DDD5] bg-white">
-                  <img src="/images/gotyme-qr.jpg" alt="GoTyme payment QR code" className="mx-auto block h-64 w-full object-contain" />
+                  <img src="/images/gotyme-qr.jpg" alt="GoTyme payment QR code" className="mx-auto block h-48 w-full object-contain sm:h-64" />
                 </div>
                 <p className="mt-3 text-center text-[10px] leading-4 text-[#8E8B82]">Send exactly the amount above to the GoTyme QR code, then upload your receipt for seller verification.</p>
                 <label className="mt-4 block rounded-lg border border-[#D9D3CA] bg-[#F8F6F2] p-3">
