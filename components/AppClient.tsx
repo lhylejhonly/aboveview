@@ -378,7 +378,7 @@ export default function AppClient({ collectionsOnly = false }: { collectionsOnly
       <StylistDrawer isOpen={stylistOpen} onClose={() => setStylistOpen(false)} />
       <WallpaperGeneratorStudio isOpen={wallpaperStudioOpen} onClose={() => setWallpaperStudioOpen(false)} onApplyBannerToStore={(url) => { setCustomBannerUrl(url); showToast('Applied custom AI banner to Store Hero!'); }} />
       <QuickViewModal product={quickViewProduct} products={adminProducts} onSelectProduct={setQuickViewProduct} onClose={() => setQuickViewProduct(null)} onOpenLogin={() => setCustomerLoginOpen(true)} onAddToCart={addToCart} onOrder={(item, size) => { setQuickViewProduct(null); setOrderSize(size); setOrderProduct(item); }} />
-      <CustomerOrderModal product={orderProduct} initialSize={orderSize} onClose={() => setOrderProduct(null)} />
+      <CustomerOrderModal product={orderProduct} initialSize={orderSize} onClose={() => setOrderProduct(null)} onOpenProfile={() => router.push('/profile')} />
       {cartOpen && <CartDrawer items={cartItems} onClose={() => setCartOpen(false)} onRemove={(productId, size) => updateCartQuantity(productId, size, 0)} onQuantityChange={updateCartQuantity} onClear={() => setCartItems([])} onCheckout={item => { setCartOpen(false); setOrderSize(item.size); setOrderProduct(item.product); }} />}
       {addedToCart && <AddedToCartModal product={addedToCart.product} size={addedToCart.size} onClose={() => setAddedToCart(null)} onViewCart={() => { setAddedToCart(null); setCartOpen(true); }} onCheckout={() => { setAddedToCart(null); setOrderSize(addedToCart.size); setOrderProduct(addedToCart.product); }} />}
       <StoreInfoModal topic={storeInfoTopic} onClose={() => setStoreInfoTopic(null)} />

@@ -23,6 +23,7 @@ interface CustomerOrderModalProps {
   product: Product | null;
   initialSize?: string;
   onClose: () => void;
+  onOpenProfile: () => void;
 }
 type AuthMode = "sign-in" | "sign-up";
 type PaymentMethod = "qr";
@@ -65,6 +66,7 @@ export function CustomerOrderModal({
   product,
   initialSize,
   onClose,
+  onOpenProfile,
 }: CustomerOrderModalProps) {
   const [authMode, setAuthMode] = useState<AuthMode>("sign-in");
   const [email, setEmail] = useState("");
@@ -453,7 +455,16 @@ export function CustomerOrderModal({
                         )}
                       </div>
                     </div>
-                    <button type="button" onClick={() => document.getElementById("delivery-details")?.scrollIntoView({ behavior: "smooth", block: "start" })} className="shrink-0 text-xs font-semibold text-[#B85D3D] hover:underline">Change</button>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        onClose();
+                        onOpenProfile();
+                      }}
+                      className="shrink-0 text-xs font-semibold text-[#B85D3D] hover:underline"
+                    >
+                      Change
+                    </button>
                   </div>
                 </section>
                 <aside className="h-fit rounded-2xl border border-[#DDD7CF] bg-[#FCFBF9] p-5 shadow-[0_12px_30px_rgba(45,41,38,.05)] lg:sticky lg:top-4">
