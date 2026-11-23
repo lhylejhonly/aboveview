@@ -444,7 +444,7 @@ function ProductDetails({
       : "Not available";
   return (
     <div className="fixed inset-0 z-[55] flex items-center justify-center bg-[#11151a]/60 p-5">
-      <div className="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-xl bg-white p-6 shadow-2xl">
+      <div className="my-auto max-h-[calc(100dvh-2rem)] w-full max-w-2xl overflow-y-auto overscroll-contain rounded-xl bg-white p-5 shadow-2xl sm:p-6">
         <div className="flex justify-between">
           <div>
             <h2 className="text-xl font-semibold">
@@ -547,7 +547,7 @@ function ProductDetails({
                 {date(product.updatedAt)}
               </p>
             </div>
-            <div className="mt-6 flex justify-end gap-3">
+            <div className="mt-6 flex flex-col-reverse justify-end gap-3 sm:flex-row">
               <button
                 onClick={() => onDelete(product.id)}
                 className="rounded-lg border border-[#e6cfc7] px-4 py-2.5 text-sm font-semibold text-[#ad6250]"

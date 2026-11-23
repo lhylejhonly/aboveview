@@ -7,7 +7,7 @@ import { motion } from 'motion/react';
 export function MemberWelcomeModal({ email, onClose }: { email: string; onClose: () => void }) {
   return (
     <div className="fixed inset-0 z-[86] flex items-center justify-center bg-[#171513]/65 p-4 backdrop-blur-sm" role="dialog" aria-modal="true" aria-labelledby="member-welcome-title">
-      <motion.div initial={{ opacity: 0, y: 24, scale: .94 }} animate={{ opacity: 1, y: 0, scale: 1 }} transition={{ duration: .55, ease: [0.22, 1, 0.36, 1] }} className="relative w-full max-w-sm overflow-hidden rounded-2xl border border-[#D6CFC7] bg-[#F7F5F0] shadow-[0_24px_80px_rgba(23,21,19,.3)]">
+      <motion.div initial={{ opacity: 0, y: 24, scale: .94 }} animate={{ opacity: 1, y: 0, scale: 1 }} transition={{ duration: .55, ease: [0.22, 1, 0.36, 1] }} className="relative my-auto max-h-[calc(100dvh-2rem)] w-full max-w-sm overflow-y-auto overscroll-contain rounded-2xl border border-[#D6CFC7] bg-[#F7F5F0] shadow-[0_24px_80px_rgba(23,21,19,.3)]">
         <motion.div animate={{ backgroundPosition: ['0% 50%', '100% 50%', '0% 50%'] }} transition={{ duration: 6, repeat: Infinity, ease: 'linear' }} className="h-1.5 bg-[linear-gradient(90deg,#2D2926,#D4B483,#5A5A40,#D4B483,#2D2926)] bg-[length:220%_100%]" />
         <motion.div animate={{ x: [0, 18, 0], y: [0, -10, 0], scale: [1, 1.08, 1] }} transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut' }} className="pointer-events-none absolute -right-20 -top-20 h-48 w-48 rounded-full bg-[#D4B483]/20 blur-3xl" />
         <motion.div animate={{ x: [0, -14, 0], y: [0, 10, 0] }} transition={{ duration: 8, repeat: Infinity, ease: 'easeInOut' }} className="pointer-events-none absolute -bottom-24 -left-20 h-48 w-48 rounded-full bg-[#5A7050]/10 blur-3xl" />

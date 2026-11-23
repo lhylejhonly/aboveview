@@ -366,8 +366,8 @@ export function AdminOrders() {
       )}
 
       {deletingOrder && (
-        <div className="fixed inset-0 z-[80] flex items-center justify-center bg-[#11151a]/70 p-4 backdrop-blur-md" onClick={() => !deleteLoading && setDeletingOrder(null)}>
-          <motion.div initial={{ opacity: 0, y: 14, scale: 0.97 }} animate={{ opacity: 1, y: 0, scale: 1 }} transition={{ duration: 0.2, ease: "easeOut" }} className="w-full max-w-md overflow-hidden rounded-2xl border border-[#deded8] bg-white shadow-[0_24px_80px_rgba(18,22,27,.28)]" onClick={(event) => event.stopPropagation()}>
+        <div className="fixed inset-0 z-[80] flex items-center justify-center overflow-y-auto bg-[#11151a]/70 p-3 backdrop-blur-md sm:p-4" onClick={() => !deleteLoading && setDeletingOrder(null)}>
+          <motion.div initial={{ opacity: 0, y: 14, scale: 0.97 }} animate={{ opacity: 1, y: 0, scale: 1 }} transition={{ duration: 0.2, ease: "easeOut" }} className="my-auto max-h-[calc(100dvh-1.5rem)] w-full max-w-md overflow-y-auto overscroll-contain rounded-2xl border border-[#deded8] bg-white shadow-[0_24px_80px_rgba(18,22,27,.28)] sm:max-h-[calc(100dvh-2.5rem)]" onClick={(event) => event.stopPropagation()}>
             <div className="flex items-center justify-between bg-[#20242b] px-6 py-4 text-white sm:px-7">
               <div className="flex items-center gap-2.5"><span className="flex h-7 w-7 items-center justify-center rounded-full bg-[#ad6250]/20 text-[#e7a18e]"><AlertTriangle className="h-3.5 w-3.5" /></span><span className="text-[10px] font-bold uppercase tracking-[.2em] text-white/75">Admin confirmation</span></div>
               <button type="button" onClick={() => setDeletingOrder(null)} disabled={deleteLoading} className="rounded-lg p-1.5 text-white/55 transition-colors hover:bg-white/10 hover:text-white disabled:opacity-50" aria-label="Close delete confirmation"><X className="h-4 w-4" /></button>
@@ -491,12 +491,12 @@ function OrderDetails({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-[#17191dcc] p-4"
+      className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-[#17191dcc] p-3 sm:p-4"
       onMouseDown={(event) => {
         if (event.target === event.currentTarget) onClose();
       }}
     >
-      <div className="max-h-[90vh] w-full max-w-2xl overflow-y-auto rounded-2xl bg-[#fbfbf8] shadow-2xl">
+      <div className="my-auto max-h-[calc(100dvh-1.5rem)] w-full max-w-2xl overflow-y-auto overscroll-contain rounded-2xl bg-[#fbfbf8] shadow-2xl sm:max-h-[calc(100dvh-2rem)]">
         <div className="flex items-start justify-between border-b border-[#e4e5df] p-5 sm:p-6">
           <div>
             <p className="text-[10px] font-bold uppercase tracking-[0.24em] text-[#74784f]">

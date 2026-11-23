@@ -23,7 +23,7 @@ export const BrandHeader: React.FC<BrandHeaderProps> = ({
   const [animationKey, setAnimationKey] = useState(0);
 
   return (
-    <section className="relative h-[min(78svh,680px)] min-h-[540px] overflow-hidden bg-[#0A0A0A] text-white sm:min-h-[480px] max-[380px]:min-h-[510px]">
+    <section className="relative h-[min(78svh,680px)] min-h-[min(540px,100svh)] overflow-hidden bg-[#0A0A0A] text-white sm:min-h-[480px] max-[380px]:min-h-[min(510px,100svh)]">
       <motion.div
         key={`background-${animationKey}`}
         initial={{ scale: 1.01, opacity: 0 }}

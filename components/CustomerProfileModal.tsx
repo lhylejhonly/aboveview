@@ -879,7 +879,7 @@ function CustomerOrderHistory({ orders, onOrderUpdated }: { orders: CustomerOrde
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[100] flex items-center justify-center bg-[#171513]/70 p-4 backdrop-blur-sm"
+            className="fixed inset-0 z-[100] flex items-center justify-center overflow-y-auto bg-[#171513]/70 p-3 backdrop-blur-sm sm:p-4"
             onClick={() => setPendingAction(null)}
           >
             <motion.div
@@ -890,7 +890,7 @@ function CustomerOrderHistory({ orders, onOrderUpdated }: { orders: CustomerOrde
               role="dialog"
               aria-modal="true"
               aria-labelledby="order-action-title"
-              className="relative w-full max-w-md overflow-hidden rounded-2xl border border-[#D6CFC7] bg-[#FBFAF7] shadow-[0_24px_80px_rgba(23,21,19,.28)]"
+              className="relative my-auto max-h-[calc(100dvh-1.5rem)] w-full max-w-md overflow-y-auto overscroll-contain rounded-2xl border border-[#D6CFC7] bg-[#FBFAF7] shadow-[0_24px_80px_rgba(23,21,19,.28)] sm:max-h-[calc(100dvh-2.5rem)]"
               onClick={event => event.stopPropagation()}
             >
               <div className="h-1.5 w-full bg-[#B85D3D]" />

@@ -75,13 +75,13 @@ export const StylistDrawer: React.FC<StylistDrawerProps> = ({ isOpen, onClose })
 
         {/* Drawer Header */}
         <div className="p-5 border-b border-[#D6CFC7] bg-[#E5E0DA] flex items-center justify-between">
-          <div className="flex items-center gap-2.5">
+          <div className="flex min-w-0 items-center gap-2.5">
             <div className="p-2 bg-[#2D2926] text-[#F4F1EE]">
               <Sparkles className="w-4 h-4" />
             </div>
-            <div>
-              <h3 className="font-cinzel text-xs font-black uppercase text-[#2D2926] tracking-wider">AI Earth Stylist</h3>
-              <p className="font-sans text-[10px] text-[#4A443F] uppercase tracking-wider font-bold">Powered by Gemini AI</p>
+            <div className="min-w-0">
+              <h3 className="truncate font-cinzel text-xs font-black uppercase text-[#2D2926] tracking-wider">AI Earth Stylist</h3>
+              <p className="truncate font-sans text-[10px] text-[#4A443F] uppercase tracking-wider font-bold">Powered by Gemini AI</p>
             </div>
           </div>
 
@@ -159,7 +159,7 @@ export const StylistDrawer: React.FC<StylistDrawerProps> = ({ isOpen, onClose })
             value={input}
             onChange={(e) => setInput(e.target.value)}
             placeholder="Ask about sizing, outfit combos..."
-            className="flex-1 px-4 py-2 bg-[#F4F1EE] border border-[#D6CFC7] font-sans text-xs text-[#2D2926] focus:outline-none focus:border-[#2D2926] placeholder-[#8E8B82]"
+            className="min-w-0 flex-1 px-4 py-2 bg-[#F4F1EE] border border-[#D6CFC7] font-sans text-xs text-[#2D2926] focus:outline-none focus:border-[#2D2926] placeholder-[#8E8B82]"
           />
           <button
             type="submit"

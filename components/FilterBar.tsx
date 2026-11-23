@@ -86,7 +86,7 @@ export const FilterBar: React.FC<FilterBarProps> = ({
           <div><p className="text-[9px] font-bold uppercase tracking-[.22em] text-[#8E8B82]">Browse the edit</p><p className="mt-1 text-xs text-[#6F6963]">Choose a collection</p></div>
           <button
             onClick={() => setIsCategoryDropdownOpen(!isCategoryDropdownOpen)}
-            className={`inline-flex max-w-[15rem] items-center gap-1.5 truncate rounded-full border px-3 py-2 text-[10px] font-sans font-bold uppercase tracking-[0.1em] shadow-xs transition-all active:scale-95 sm:gap-2 sm:px-6 sm:text-xs sm:tracking-[0.14em] ${
+            className={`inline-flex max-w-[11rem] items-center gap-1.5 truncate rounded-full border px-3 py-2 text-[10px] font-sans font-bold uppercase tracking-[0.1em] shadow-xs transition-all active:scale-95 sm:max-w-[15rem] sm:gap-2 sm:px-6 sm:text-xs sm:tracking-[0.14em] ${
               isCategoryDropdownOpen
                 ? 'bg-[#1F1D1B] text-[#F7F5F0] border-[#1F1D1B]'
                 : 'bg-[#EFECE6]/90 text-[#1F1D1B] border-[#E2DDD5] hover:border-[#1F1D1B]'

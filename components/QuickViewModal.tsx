@@ -103,7 +103,7 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({ product, product
           aria-labelledby={`quickview-title-${product.id}`}
         >
           <header className="sticky top-0 z-30 flex h-14 shrink-0 items-center justify-between border-b border-[#D6CFC7] bg-[#FBFAF7]/95 px-4 backdrop-blur-md sm:h-16 sm:px-6 lg:px-8">
-            <span className="font-sans text-[9px] font-bold uppercase tracking-[.3em] text-[#8E8B82]">Product details / Essentials</span>
+            <span className="hidden font-sans text-[9px] font-bold uppercase tracking-[.3em] text-[#8E8B82] sm:inline">Product details / Essentials</span>
             <a href="/" className="group absolute left-1/2 flex -translate-x-1/2 items-center" aria-label="Go to Above Apprl home">
               <img src="/images/logo.png" alt="Above Apprl" className="h-10 w-20 object-contain transition-transform duration-300 group-hover:scale-105 sm:h-12 sm:w-24" />
             </a>
@@ -186,9 +186,9 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({ product, product
             <div className="space-y-6">
               {/* Header: Code & Category */}
               <div>
-                <div className="mb-2 flex items-center justify-between font-mono text-[10px] uppercase tracking-[0.2em] text-[#8E8B82]">
-                  <span>Above Apprl / Essentials</span>
-                  <span>{product.code}</span>
+                <div className="mb-2 flex min-w-0 items-center justify-between gap-3 font-mono text-[10px] uppercase tracking-[0.2em] text-[#8E8B82]">
+                  <span className="min-w-0 truncate">Above Apprl / Essentials</span>
+                  <span className="shrink-0">{product.code}</span>
                 </div>
                 <h2 id={`quickview-title-${product.id}`} className="font-cormorant text-4xl font-semibold leading-none tracking-tight text-[#2D2926] sm:text-[2.75rem]">
                   {product.name}
@@ -309,7 +309,7 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({ product, product
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.2, ease: 'easeOut' }}
-                className="pointer-events-none fixed inset-0 z-[100] flex items-center justify-center bg-[#2D2926]/55 p-4 backdrop-blur-sm"
+                className="pointer-events-none fixed inset-0 z-[100] flex items-center justify-center overflow-y-auto bg-[#2D2926]/55 p-3 backdrop-blur-sm sm:p-4"
                 role="dialog"
                 aria-modal="true"
                 aria-labelledby="size-chart-title"
@@ -320,7 +320,7 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({ product, product
                   animate={{ opacity: 1, scale: 1, y: 0 }}
                   exit={{ opacity: 0, scale: 0.96, y: 10 }}
                   transition={{ type: 'spring', stiffness: 360, damping: 26 }}
-                  className="pointer-events-auto relative w-full max-w-lg border border-[#D6CFC7] bg-[#FBFAF7] p-5 shadow-2xl sm:p-8"
+                  className="pointer-events-auto relative my-auto max-h-[calc(100dvh-1.5rem)] w-full max-w-lg overflow-y-auto overscroll-contain border border-[#D6CFC7] bg-[#FBFAF7] p-5 shadow-2xl sm:max-h-[calc(100dvh-2.5rem)] sm:p-8"
                   onClick={(event) => event.stopPropagation()}
                 >
                 <button

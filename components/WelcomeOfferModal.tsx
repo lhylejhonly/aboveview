@@ -15,7 +15,7 @@ export function WelcomeOfferModal({ onClose, onOpenLogin }: WelcomeOfferModalPro
       <motion.div
         initial={{ opacity: 0, y: 18, scale: 0.96 }}
         animate={{ opacity: 1, y: 0, scale: 1 }}
-        className="relative w-full max-w-md overflow-hidden rounded-2xl border border-[#D6CFC7] bg-[#F7F5F0] shadow-[0_24px_80px_rgba(23,21,19,.3)]"
+        className="relative my-auto max-h-[calc(100dvh-2rem)] w-full max-w-md overflow-y-auto overscroll-contain rounded-2xl border border-[#D6CFC7] bg-[#F7F5F0] shadow-[0_24px_80px_rgba(23,21,19,.3)]"
       >
         <div className="h-1.5 bg-gradient-to-r from-[#B85D3D] via-[#D4B483] to-[#5A5A40]" />
         <button onClick={onClose} className="absolute right-3 top-4 rounded-full p-2 text-[#6F6963] transition-colors hover:bg-[#EEEAE4] hover:text-[#2D2926]" aria-label="Close welcome offer">
