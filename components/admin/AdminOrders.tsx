@@ -406,6 +406,7 @@ function OrderDetails({
   const [creatingShipment, setCreatingShipment] = useState(false);
   const [depositState, setDepositState] = useState("");
   const [verifyingDeposit, setVerifyingDeposit] = useState(false);
+  const [depositStatus, setDepositStatus] = useState(order.deposit_status ?? "pending");
   const sendMessage = async (event: React.FormEvent) => {
     event.preventDefault();
     if (!message.trim()) return;
@@ -441,6 +442,7 @@ function OrderDetails({
       });
       const data = await response.json() as { error?: string; emailSent?: boolean; emailError?: string };
       if (!response.ok) throw new Error(data.error ?? "Unable to verify deposit.");
+      setDepositStatus("verified");
       setDepositState(data.emailSent === false ? `Deposit verified, but customer email was not sent: ${data.emailError ?? "check SMTP settings."}` : "Deposit verified. Customer was notified.");
     } catch (error) {
       setDepositState(error instanceof Error ? error.message : "Unable to verify deposit.");
@@ -554,14 +556,14 @@ function OrderDetails({
             {order.payment_method === "cod" && (
               <>
                 <Detail label="Required deposit" value={formatPrice(Number(order.deposit_amount ?? 0))} />
-                <Detail label="Deposit status" value={order.deposit_status ?? "pending"} />
+                <Detail label="Deposit status" value={depositStatus} />
                 {order.receipt_url && (
                   <a href={order.receipt_url} target="_blank" rel="noreferrer" className="block overflow-hidden rounded-lg border border-[#dfe0da] bg-[#fbfbf8]">
                     <img src={order.receipt_url} alt="Customer deposit receipt" className="max-h-64 w-full object-contain" />
                     <span className="block border-t border-[#dfe0da] px-3 py-2 text-center text-[10px] font-bold uppercase tracking-wider text-[#626741]">Open receipt</span>
                   </a>
                 )}
-                {order.deposit_status === "pending" && (
+                {depositStatus !== "verified" && order.receipt_url && (
                   <button
                     type="button"
                     onClick={() => void verifyDeposit()}

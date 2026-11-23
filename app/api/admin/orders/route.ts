@@ -109,13 +109,13 @@ export async function PATCH(request: NextRequest) {
     const supabase = getSupabaseAdmin();
     const { data: currentOrder, error: findError } = await supabase
       .from("orders")
-      .select("id, order_number, user_id, status, product_name, product_code, size, quantity, unit_price, full_name, contact_number, destination, address, payment_method, deposit_amount, deposit_status")
+      .select("id, order_number, user_id, status, product_name, product_code, size, quantity, unit_price, full_name, contact_number, destination, address, payment_method, deposit_amount, deposit_status, receipt_path")
       .eq("id", id)
       .maybeSingle();
     if (findError) throw findError;
     if (!currentOrder) return NextResponse.json({ error: "Order not found." }, { status: 404 });
-    if (action === "verify_deposit" && (currentOrder.payment_method !== "cod" || currentOrder.deposit_status !== "pending")) {
-      return NextResponse.json({ error: "This order is not waiting for COD deposit verification." }, { status: 400 });
+    if (action === "verify_deposit" && (currentOrder.payment_method !== "cod" || currentOrder.deposit_status === "verified" || !currentOrder.receipt_path)) {
+      return NextResponse.json({ error: "This COD order needs an uploaded receipt and must not already be verified." }, { status: 400 });
     }
 
     const { error } = await supabase
@@ -127,7 +127,7 @@ export async function PATCH(request: NextRequest) {
     if (error) throw error;
     let emailSent = false;
     let emailError = "";
-    if (status !== "pending" && currentOrder.status !== status) {
+    if (action === "verify_deposit" || (status !== "pending" && currentOrder.status !== status)) {
       const smtpHost = process.env.SMTP_HOST;
       const smtpUser = process.env.SMTP_USER;
       const smtpPassword = process.env.SMTP_PASSWORD;
