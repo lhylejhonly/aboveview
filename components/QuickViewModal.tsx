@@ -309,7 +309,7 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({ product, product
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.2, ease: 'easeOut' }}
-                className="fixed inset-0 z-[100] flex items-center justify-center bg-[#2D2926]/55 p-4 backdrop-blur-sm"
+                className="pointer-events-none fixed inset-0 z-[100] flex items-center justify-center bg-[#2D2926]/55 p-4 backdrop-blur-sm"
                 role="dialog"
                 aria-modal="true"
                 aria-labelledby="size-chart-title"
@@ -320,7 +320,7 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({ product, product
                   animate={{ opacity: 1, scale: 1, y: 0 }}
                   exit={{ opacity: 0, scale: 0.96, y: 10 }}
                   transition={{ type: 'spring', stiffness: 360, damping: 26 }}
-                  className="relative w-full max-w-lg border border-[#D6CFC7] bg-[#FBFAF7] p-5 shadow-2xl sm:p-8"
+                  className="pointer-events-auto relative w-full max-w-lg border border-[#D6CFC7] bg-[#FBFAF7] p-5 shadow-2xl sm:p-8"
                   onClick={(event) => event.stopPropagation()}
                 >
                 <button
