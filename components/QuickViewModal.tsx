@@ -1,5 +1,6 @@
 'use client';
 import React, { useState, useEffect, useLayoutEffect, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import { X, ShoppingBag, Star, ShieldCheck, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Product } from '@/types';
@@ -300,8 +301,9 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({ product, product
           </div>
           </div>
 
-          <AnimatePresence>
-            {sizeChartOpen && (
+          {typeof document !== 'undefined' && createPortal(
+            <AnimatePresence>
+              {sizeChartOpen && (
               <motion.div
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
@@ -361,8 +363,10 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({ product, product
                 </div>
                 </motion.div>
               </motion.div>
-            )}
-          </AnimatePresence>
+              )}
+            </AnimatePresence>,
+            document.body
+          )}
 
           {suggestedProducts.length > 0 && (
             <section className="border-t border-[#D6CFC7] bg-[#F4F1EC] px-5 py-12 sm:px-10 md:px-14 lg:px-20" aria-labelledby="suggested-products-title">
