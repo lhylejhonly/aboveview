@@ -300,9 +300,27 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({ product, product
           </div>
           </div>
 
-          {sizeChartOpen && (
-            <div className="absolute inset-0 z-40 flex items-center justify-center bg-[#2D2926]/55 p-4 backdrop-blur-sm" role="dialog" aria-modal="true" aria-labelledby="size-chart-title">
-              <div className="relative w-full max-w-lg border border-[#D6CFC7] bg-[#FBFAF7] p-5 shadow-2xl sm:p-8">
+          <AnimatePresence>
+            {sizeChartOpen && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.2, ease: 'easeOut' }}
+                className="absolute inset-0 z-40 flex items-center justify-center bg-[#2D2926]/55 p-4 backdrop-blur-sm"
+                role="dialog"
+                aria-modal="true"
+                aria-labelledby="size-chart-title"
+                onClick={() => setSizeChartOpen(false)}
+              >
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.92, y: 18 }}
+                  animate={{ opacity: 1, scale: 1, y: 0 }}
+                  exit={{ opacity: 0, scale: 0.96, y: 10 }}
+                  transition={{ type: 'spring', stiffness: 360, damping: 26 }}
+                  className="relative w-full max-w-lg border border-[#D6CFC7] bg-[#FBFAF7] p-5 shadow-2xl sm:p-8"
+                  onClick={(event) => event.stopPropagation()}
+                >
                 <button
                   type="button"
                   onClick={() => setSizeChartOpen(false)}
@@ -341,9 +359,10 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({ product, product
                     </tbody>
                   </table>
                 </div>
-              </div>
-            </div>
-          )}
+                </motion.div>
+              </motion.div>
+            )}
+          </AnimatePresence>
 
           {suggestedProducts.length > 0 && (
             <section className="border-t border-[#D6CFC7] bg-[#F4F1EC] px-5 py-12 sm:px-10 md:px-14 lg:px-20" aria-labelledby="suggested-products-title">
