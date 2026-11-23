@@ -308,6 +308,11 @@ export function AdminOrders() {
                     </td>
                     <td className="px-5 py-4 text-sm font-semibold">
                       {formatPrice(Number(order.unit_price) * order.quantity + Number(order.shipping_fee ?? 0))}
+                      {order.payment_method === "cod" && (
+                        <p className="mt-1 text-[10px] font-semibold text-[#74784f]">
+                          COD balance: {formatPrice(Math.max(0, Number(order.unit_price) * order.quantity + Number(order.shipping_fee ?? 0) - Number(order.deposit_amount ?? 0)))}
+                        </p>
+                      )}
                     </td>
                     <td className="px-5 py-4">
                       <div className="relative inline-flex items-center">
