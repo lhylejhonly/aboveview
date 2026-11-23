@@ -80,6 +80,7 @@ export function CustomerOrderModal({
   const [receiptPath, setReceiptPath] = useState("");
   const [receiptName, setReceiptName] = useState("");
   const [receiptUploading, setReceiptUploading] = useState(false);
+  const [receiptChecking, setReceiptChecking] = useState(false);
   const [receiptError, setReceiptError] = useState("");
   const [userId, setUserId] = useState<string | null>(null);
   const [authLoading, setAuthLoading] = useState(true);
@@ -117,6 +118,7 @@ export function CustomerOrderModal({
     setDepositAcknowledged(false);
     setReceiptPath("");
     setReceiptName("");
+    setReceiptChecking(false);
     setReceiptError("");
     setMessage("");
     setError("");
@@ -682,7 +684,7 @@ export function CustomerOrderModal({
                     type="file"
                     accept="image/jpeg,image/png,image/webp"
                     className="mt-2 block w-full text-xs text-[#6F6963] file:mr-3 file:rounded-md file:border-0 file:bg-[#2D2926] file:px-3 file:py-2 file:text-[10px] file:font-bold file:uppercase file:text-white"
-                    disabled={receiptUploading}
+                    disabled={receiptUploading || receiptChecking}
                     onChange={async (event) => {
                       const file = event.target.files?.[0];
                       if (!file) return;
@@ -696,8 +698,20 @@ export function CustomerOrderModal({
                         setReceiptError("Please sign in again before uploading your receipt.");
                         return;
                       }
+                      setReceiptChecking(true);
                       setReceiptUploading(true);
                       try {
+                        const { createWorker } = await import("tesseract.js");
+                        const worker = await createWorker("eng");
+                        const result = await worker.recognize(file);
+                        await worker.terminate();
+                        const text = result.data.text.toLowerCase();
+                        const hasPaymentSource = /gotyme|instapay|gcash|maya|bank|transfer/.test(text);
+                        const hasReceiptProof = /paid|successful|completed|amount|reference|transaction|receipt|php|₱/.test(text);
+                        if (!hasPaymentSource || !hasReceiptProof) {
+                          setReceiptError("This does not look like a payment receipt. Please upload a clear GoTyme or InstaPay receipt screenshot.");
+                          return;
+                        }
                         const safeName = file.name.replace(/[^a-z0-9.-]/gi, "-").toLowerCase();
                         const path = `${userId}/${crypto.randomUUID()}-${safeName}`;
                         const { error: uploadError } = await supabase.storage.from("order-receipts").upload(path, file, { cacheControl: "3600", contentType: file.type, upsert: false });
@@ -707,18 +721,19 @@ export function CustomerOrderModal({
                       } catch (uploadError) {
                         setReceiptError(uploadError instanceof Error ? uploadError.message : "Unable to upload receipt.");
                       } finally {
+                        setReceiptChecking(false);
                         setReceiptUploading(false);
                       }
                     }}
                   />
-                  <span className="mt-2 block text-[10px] text-[#8E8B82]">Required before you can continue. {receiptName ? `Uploaded: ${receiptName}` : "Max 5MB."}</span>
+                  <span className="mt-2 block text-[10px] text-[#8E8B82]">Required before you can continue. {receiptChecking ? "Checking receipt content..." : receiptName ? `Uploaded: ${receiptName}` : "Max 5MB."}</span>
                 </label>
                 {receiptError && <p className="mt-2 text-xs text-[#9A4D3A]">{receiptError}</p>}
                 <label className="mt-4 flex items-start gap-3 rounded-lg border border-[#D9D3CA] bg-[#F8F6F2] p-3 text-xs leading-5 text-[#6F6963]">
                   <input type="checkbox" checked={depositAcknowledged} onChange={(event) => setDepositAcknowledged(event.target.checked)} className="mt-1 h-4 w-4 accent-[#74784F]" />
                   <span>I have sent the 50% deposit and understand that my order will wait for seller verification.</span>
                 </label>
-                <button type="button" disabled={!depositAcknowledged || !receiptPath || receiptUploading} onClick={() => setDepositModalOpen(false)} className="mt-4 min-h-12 w-full rounded-lg bg-[#2D2926] px-5 text-xs font-bold uppercase tracking-[.14em] text-white transition-colors hover:bg-[#5A5A40] disabled:cursor-not-allowed disabled:opacity-50">
+                <button type="button" disabled={!depositAcknowledged || !receiptPath || receiptUploading || receiptChecking} onClick={() => setDepositModalOpen(false)} className="mt-4 min-h-12 w-full rounded-lg bg-[#2D2926] px-5 text-xs font-bold uppercase tracking-[.14em] text-white transition-colors hover:bg-[#5A5A40] disabled:cursor-not-allowed disabled:opacity-50">
                   Continue with COD
                 </button>
               </motion.div>
