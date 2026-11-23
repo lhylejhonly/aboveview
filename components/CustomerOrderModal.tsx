@@ -4,10 +4,12 @@ import React, { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import {
   Check,
+  Banknote,
   LockKeyhole,
   LogIn,
   MapPin,
   PackageCheck,
+  QrCode,
   ShoppingBag,
   TicketPercent,
   UserPlus,
@@ -24,6 +26,7 @@ interface CustomerOrderModalProps {
   onClose: () => void;
 }
 type AuthMode = "sign-in" | "sign-up";
+type PaymentMethod = "cod" | "qr";
 interface CustomerProfile {
   full_name: string;
   contact_number: string;
@@ -71,6 +74,7 @@ export function CustomerOrderModal({
   const [shipping, setShipping] = useState<ShippingDetails>(emptyShipping);
   const [size, setSize] = useState(initialSize || product?.sizes[0] || "M");
   const [quantity, setQuantity] = useState(1);
+  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>("cod");
   const [userId, setUserId] = useState<string | null>(null);
   const [authLoading, setAuthLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
@@ -102,6 +106,7 @@ export function CustomerOrderModal({
     document.body.style.overflow = "hidden";
     setSize(initialSize || product.sizes[0] || "M");
     setShipping(emptyShipping);
+    setPaymentMethod("cod");
     setMessage("");
     setError("");
     setSubmittedOrder(null);
@@ -298,7 +303,8 @@ export function CustomerOrderModal({
         ...deliveryProfile,
         ...shipping,
         package_weight_kg: Number(shipping.package_weight_kg),
-        cod_amount: total,
+        cod_amount: paymentMethod === "cod" ? total : 0,
+        payment_method: paymentMethod,
       })
       .select("id, order_number")
       .single();
@@ -324,6 +330,7 @@ export function CustomerOrderModal({
             size,
             quantity,
             total: formatPrice(total),
+            paymentMethod,
           }),
         });
       } catch {
@@ -508,12 +515,28 @@ export function CustomerOrderModal({
                     </label>
                     {voucherMessage && <p className={`mt-2 text-xs ${voucherApplied ? "text-[#56704B]" : "text-[#9A4D3A]"}`}>{voucherMessage}</p>}
                   </div>
-                  <div className="mt-5 flex items-start gap-2 text-[10px] leading-4 text-[#8E8B82]">
-                    <PackageCheck className="mt-0.5 h-4 w-4 shrink-0 text-[#8C806D]" />
-                    <span>
-                      Manual payment. We will contact you to confirm payment and
-                      delivery before fulfillment.
-                    </span>
+                  <div className="mt-5 border-t border-[#E5DFD7] pt-5">
+                    <p className={labelClass}>Payment method</p>
+                    <div className="mt-2 grid gap-2">
+                      <PaymentOption
+                        active={paymentMethod === "cod"}
+                        icon={Banknote}
+                        title="Cash on Delivery"
+                        description="Pay when your order arrives."
+                        onClick={() => setPaymentMethod("cod")}
+                      />
+                      <PaymentOption
+                        active={paymentMethod === "qr"}
+                        icon={QrCode}
+                        title="QR payment"
+                        description="We’ll send the QR details after checkout."
+                        onClick={() => setPaymentMethod("qr")}
+                      />
+                    </div>
+                    <div className="mt-3 flex items-start gap-2 text-[10px] leading-4 text-[#8E8B82]">
+                      <PackageCheck className="mt-0.5 h-4 w-4 shrink-0 text-[#8C806D]" />
+                      <span>We’ll confirm your payment and delivery details before fulfillment.</span>
+                    </div>
                   </div>
                 </aside>
                 <div id="delivery-details">
@@ -766,6 +789,38 @@ function SuccessState({
         Okay
       </button>
     </div>
+  );
+}
+
+function PaymentOption({
+  active,
+  icon: Icon,
+  title,
+  description,
+  onClick,
+}: {
+  active: boolean;
+  icon: typeof Banknote;
+  title: string;
+  description: string;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={`flex w-full items-center gap-3 rounded-lg border p-3 text-left transition-colors ${active ? "border-[#74784F] bg-[#F1F5EA]" : "border-[#D9D3CA] bg-[#FCFBF9] hover:border-[#AAA39A]"}`}
+      aria-pressed={active}
+    >
+      <span className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full ${active ? "bg-[#74784F] text-white" : "bg-[#EEEAE4] text-[#6F6963]"}`}>
+        <Icon className="h-4 w-4" />
+      </span>
+      <span className="min-w-0 flex-1">
+        <span className="block text-xs font-bold text-[#2D2926]">{title}</span>
+        <span className="mt-0.5 block text-[10px] text-[#6F6963]">{description}</span>
+      </span>
+      <span className={`h-4 w-4 rounded-full border ${active ? "border-[5px] border-[#74784F]" : "border-[#B9B1A7]"}`} />
+    </button>
   );
 }
 

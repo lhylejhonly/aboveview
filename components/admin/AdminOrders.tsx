@@ -32,6 +32,7 @@ type Order = {
   delivery_notes: string;
   status: string;
   payment_status?: string;
+  payment_method?: "cod" | "qr" | string;
   payment_provider?: string | null;
   province?: string;
   city_municipality?: string;
@@ -519,6 +520,10 @@ function OrderDetails({
             <Detail
               label="Payment status"
               value={order.payment_status ?? "unpaid"}
+            />
+            <Detail
+              label="Payment method"
+              value={order.payment_method === "qr" ? "QR payment" : "Cash on Delivery"}
             />
             <Detail
               label="Shipping address"
