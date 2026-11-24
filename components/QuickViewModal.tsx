@@ -152,7 +152,7 @@ export const QuickViewModal: React.FC<QuickViewModalProps> = ({ product, product
                 initial={{ opacity: 0.8, scale: 0.98 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.25 }}
-                className={`h-full w-full object-contain object-center mix-blend-multiply scale-[0.88] transition-transform duration-500 group-hover:scale-[0.92] ${product.isComingSoon ? 'blur-[4px]' : ''}`}
+                className="h-full w-full scale-[0.88] object-contain object-center mix-blend-multiply transition-transform duration-500 group-hover:scale-[0.92]"
               />
 
               {product.isComingSoon && (
