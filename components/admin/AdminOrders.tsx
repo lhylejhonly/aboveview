@@ -31,6 +31,7 @@ type Order = {
   address: string;
   delivery_notes: string;
   status: string;
+  is_preorder?: boolean;
   payment_status?: string;
   payment_method?: "cod" | "qr" | string;
   deposit_amount?: number;
@@ -279,6 +280,11 @@ export function AdminOrders() {
                         <p className="text-sm font-semibold hover:text-[#74784f]">
                           {order.order_number}
                         </p>
+                        {order.is_preorder && (
+                          <span className="mt-1 inline-flex rounded-full bg-[#eee8d7] px-2 py-0.5 text-[9px] font-bold uppercase tracking-wider text-[#76652f]">
+                            Pre-order
+                          </span>
+                        )}
                         <p className="mt-1 text-[11px] text-[#85898a]">
                           {order.product_code} · Size {order.size}
                         </p>
@@ -503,6 +509,11 @@ function OrderDetails({
               Customer and order details
             </p>
             <h2 className="mt-2 text-xl font-semibold">{order.order_number}</h2>
+            {order.is_preorder && (
+              <span className="mt-2 inline-flex rounded-full bg-[#eee8d7] px-2.5 py-1 text-[9px] font-bold uppercase tracking-wider text-[#76652f]">
+                Pre-order request
+              </span>
+            )}
           </div>
           <button
             onClick={onClose}
@@ -544,6 +555,7 @@ function OrderDetails({
           <div className="space-y-4">
             <h3 className="text-sm font-semibold">Order</h3>
             <Detail label="Product" value={order.product_name} />
+            <Detail label="Order type" value={order.is_preorder ? "Pre-order" : "Regular order"} />
             <Detail label="Product code" value={order.product_code} />
             <Detail label="Size" value={order.size} />
             <Detail label="Quantity" value={String(order.quantity)} />
